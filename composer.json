@@ -1,0 +1,12 @@
+{
+    "require": {
+        "silex/silex": "~1.1",
+        "mustache/silex-provider": "~1.0",
+        "symfony/console": "~2.3.8",
+        "league/oauth2-server": "dev-develop",
+        "zendframework/zend-db": "~2.2.5"
+    },
+    "require-dev": {
+        "silex/web-profiler": "~1.0"
+    }
+}
