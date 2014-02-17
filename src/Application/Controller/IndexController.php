@@ -8,6 +8,6 @@ class IndexController
 {
     public function indexAction()
     {
-        return new Response();
+        return new Response('hello');
     }
 }

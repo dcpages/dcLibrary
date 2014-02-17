@@ -14,10 +14,10 @@ class Config
      * it to override any configs read by previously attached readers.
      *
      * @param  Reader  $reader
-     * @param  boolean $first
+     * @param  boolean $last
      * @return [type]
      */
-    public function attach(Reader $reader, $last = true)
+    public function attach(ReaderInterface $reader, $last = true)
     {
         if ($last) {
             // Add to the end (i.e. read this last, highest merge priority)
@@ -31,7 +31,7 @@ class Config
         $this->groups = array();
     }
 
-    public function detach(Reader $reader)
+    public function detach(ReaderInterface $reader)
     {
         if (($key = array_search($reader, $this->readers)) !== false) {
             unset($this->readers[$key]);
@@ -63,7 +63,7 @@ class Config
 
         foreach ($this->readers as $reader) {
             if ($groupConfig = $reader->load($groupName)) {
-                $config = array_merge_recursive($config, $groupConfig);
+                $config = array_replace_recursive($config, $groupConfig);
             }
         }
 
