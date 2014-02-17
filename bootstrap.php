@@ -1,7 +1,7 @@
 <?php
 
 // Require the composer autoloader
-require_once APPDIR.'/../vendor/autoload.php';
+require_once APPDIR.'/vendor/autoload.php';
 
 // Autoload the rest of our application
 spl_autoload_register(function ($className) {

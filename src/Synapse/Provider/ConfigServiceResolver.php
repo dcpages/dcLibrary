@@ -3,19 +3,13 @@
 namespace Synapse\Provider;
 
 use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
-use Synapse\Controller\AbstractRestController;
-use Synapse\Rest\Exception\MethodNotImplementedException;
 
 /**
- * Enables name_of_service:rest syntax for declaring controllers.
- *
- * @link http://silex.sensiolabs.org/doc/providers/service_controller.html
+ * Enables config:config_namespace syntax for loading config values.
  */
-class ServiceRestControllerResolver implements ControllerResolverInterface
+class ConfigServiceResolver
 {
-    const SERVICE_PATTERN = "/[A-Za-z0-9\._\-]+:rest/";
+    const SERVICE_PATTERN = "/config:[A-Za-z0-9\._\-]+/";
 
     protected $resolver;
     protected $app;
@@ -26,10 +20,11 @@ class ServiceRestControllerResolver implements ControllerResolverInterface
      * @param ControllerResolverInterface $resolver A ControllerResolverInterface instance to delegate to
      * @param Application                 $app      An Application instance
      */
-    public function __construct(ControllerResolverInterface $resolver, Application $app)
+    public function __construct($resolver, Application $app)
     {
+        var_dump($resolver);die();
         $this->resolver = $resolver;
-        $this->app = $app;
+        $this->app      = $app;
     }
 
     /**

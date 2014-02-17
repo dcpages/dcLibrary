@@ -1,7 +1,7 @@
 <?php
 
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
-$app->register(new Synapse\Provider\ServiceRestControllerServiceProvider());
+$app->register(new Synapse\Provider\RestControllerServiceProvider());
 
 $app['index.controller'] = $app->share(function () use ($app) {
     return new \Application\Controller\IndexController;

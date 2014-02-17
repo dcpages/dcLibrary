@@ -8,7 +8,7 @@
  * @codingStandardsIgnoreFile
  */
 defined('WEBDIR') or define('WEBDIR', realpath(__DIR__));
-defined('APPDIR') or define('APPDIR', realpath(WEBDIR.'/../application'));
+defined('APPDIR') or define('APPDIR', realpath(WEBDIR.'/..'));
 defined('TMPDIR') or define('TMPDIR', '/tmp');
 
 require APPDIR.'/bootstrap.php';
