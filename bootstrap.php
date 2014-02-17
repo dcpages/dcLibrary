@@ -25,6 +25,29 @@ spl_autoload_register(function ($className) {
 // Create the application object
 $app = new Silex\Application;
 
+// Define acceptable environments
+$environments = array(
+    'production',
+    'staging',
+    'qa',
+    'testing',
+    'development',
+);
+
+// Detect the current application environment
+if (isset($_SERVER['APP_ENV']) && in_array($_SERVER['APP_ENV'], $environments)) {
+    $environment = $_SERVER['APP_ENV'];
+} else {
+    $environment = 'development';
+}
+
+$app->register(new Synapse\Provider\ConfigServiceProvider(), array(
+    'config_dirs' => array(
+        APPDIR.'/config/',
+        APPDIR.'/config/'.$environment.'/',
+    ),
+));
+
 // Create routes
 require_once APPDIR.'/routes.php';
 
