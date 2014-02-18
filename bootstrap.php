@@ -48,6 +48,8 @@ $app->register(new Synapse\Provider\ConfigServiceProvider(), array(
     ),
 ));
 
+$app->register(new Synapse\Provider\ZendDbServiceProvider());
+
 // Create routes
 require_once APPDIR.'/routes.php';
 

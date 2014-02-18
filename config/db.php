@@ -1,6 +1,6 @@
 <?php
 
 return array(
-    'username' => 'root',
-    'password' => 'root',
+    'driver' => 'Mysqli',
+    'chaset' => 'utf-8',
 );
