@@ -50,6 +50,12 @@ $app->register(new Synapse\Provider\ConfigServiceProvider(), array(
     ),
 ));
 
+$initConfig = $app['config']->load('init');
+
+if ($initConfig['debug']) {
+    Symfony\Component\Debug\Debug::enable();
+}
+
 // Register services
 require_once APPDIR.'/services.php';
 
