@@ -1,5 +1,7 @@
 <?php
 
+$app->command('test.command');
+
 $app->get('/', 'index.controller:indexAction');
 $app->match('/rest', 'rest.controller:rest');
 

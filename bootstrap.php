@@ -23,7 +23,7 @@ spl_autoload_register(function ($className) {
 });
 
 // Create the application object
-$app = new Silex\Application;
+$app = new Synapse\Application;
 
 // Define acceptable environments
 $environments = array(

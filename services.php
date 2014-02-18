@@ -1,6 +1,7 @@
 <?php
 
 // Register service providers
+$app->register(new Synapse\Provider\ConsoleServiceProvider());
 $app->register(new Synapse\Provider\ZendDbServiceProvider());
 $app->register(new Synapse\Provider\RestControllerServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
@@ -19,4 +20,8 @@ $app['index.controller'] = $app->share(function () use ($app) {
 
 $app['rest.controller'] = $app->share(function () use ($app) {
     return new \Application\Controller\RestController;
+});
+
+$app['test.command'] = $app->share(function () use ($app) {
+    return new \Application\Command\TestCommand;
 });
