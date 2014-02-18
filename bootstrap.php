@@ -56,11 +56,4 @@ require_once APPDIR.'/services.php';
 // Create routes
 require_once APPDIR.'/routes.php';
 
-$app->register(new Mustache\Silex\Provider\MustacheServiceProvider, array(
-    'mustache.path' => APPDIR.'/templates',
-    'mustache.options' => array(
-        'cache' => TMPDIR,
-    ),
-));
-
 $app->run();
