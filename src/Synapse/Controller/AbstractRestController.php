@@ -17,7 +17,13 @@ class AbstractRestController
         $method = $request->getMethod();
 
         if (!method_exists($this, $method)) {
-            throw new MethodNotImplementedException(sprintf('HTTP method "%s" has not been implemented in class "%s"', $method, get_class($this)));
+            throw new MethodNotImplementedException(
+                sprintf(
+                    'HTTP method "%s" has not been implemented in class "%s"',
+                    $method,
+                    get_class($this)
+                )
+            );
         }
 
         return $this->{$method}($request);
