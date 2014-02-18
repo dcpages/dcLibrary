@@ -41,6 +41,8 @@ if (isset($_SERVER['APP_ENV']) && in_array($_SERVER['APP_ENV'], $environments)) 
     $environment = 'development';
 }
 
+// Config is a bit of a special-case service provider and needs to be registered
+// before all the others (so that they can access it)
 $app->register(new Synapse\Provider\ConfigServiceProvider(), array(
     'config_dirs' => array(
         APPDIR.'/config/',
@@ -48,7 +50,8 @@ $app->register(new Synapse\Provider\ConfigServiceProvider(), array(
     ),
 ));
 
-$app->register(new Synapse\Provider\ZendDbServiceProvider());
+// Register services
+require_once APPDIR.'/services.php';
 
 // Create routes
 require_once APPDIR.'/routes.php';
