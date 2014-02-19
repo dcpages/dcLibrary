@@ -16,7 +16,9 @@ $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, array(
 
 // Register controllers and other shared services
 $app['index.controller'] = $app->share(function () use ($app) {
-    return new \Application\Controller\IndexController;
+    $index = new \Application\Controller\IndexController;
+    $index->setOAuth2Server($app['oauth_server']);
+    return $index;
 });
 
 $app['rest.controller'] = $app->share(function () use ($app) {
