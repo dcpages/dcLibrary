@@ -22,7 +22,7 @@ class GenericResponse extends AbstractResponse
      * Optional HTTP headers to send with the response
      * @var array
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * __construct
@@ -50,7 +50,7 @@ class GenericResponse extends AbstractResponse
      * @param array $headers an associative array of response headers
      * @return GenericResponse $this
      */
-    public function setHeaders(array $headers = array())
+    public function setHeaders(array $headers = [])
     {
         $this->headers = $headers;
         return $this;

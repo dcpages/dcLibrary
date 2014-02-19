@@ -46,7 +46,7 @@ class OAuth2ServiceProvider implements ServiceProviderInterface
                 $app['oauth2.scope_manager']
             );
 
-            $options = isset($app['oauth2.options']) ? $app['oauth2.options'] : array();
+            $options = isset($app['oauth2.options']) ? $app['oauth2.options'] : [];
 
             if (array_key_exists('access_token_ttl', $options)) {
                 $authServer->setExpiresIn($options['access_token_ttl']);

@@ -4,8 +4,8 @@ namespace Synapse\Config;
 
 class Config
 {
-    protected $readers = array();
-    protected $groups  = array();
+    protected $readers = [];
+    protected $groups  = [];
 
     /**
      * Attaches a new config reader. Readers are accessed in order by their
@@ -28,7 +28,7 @@ class Config
         }
 
         // Clear any cached groups
-        $this->groups = array();
+        $this->groups = [];
     }
 
     public function detach(ReaderInterface $reader)
@@ -38,7 +38,7 @@ class Config
         }
 
         // Clear any cached groups
-        $this->groups = array();
+        $this->groups = [];
     }
 
     public function load($groupName)
@@ -59,7 +59,7 @@ class Config
             return $this->groups[$groupName];
         }
 
-        $config = array();
+        $config = [];
 
         foreach ($this->readers as $reader) {
             if ($groupConfig = $reader->load($groupName)) {
