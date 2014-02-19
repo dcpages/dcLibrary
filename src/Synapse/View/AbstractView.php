@@ -18,6 +18,11 @@ abstract class AbstractView
         $this->mustache = $mustache;
     }
 
+    public function __toString()
+    {
+        return $this->render();
+    }
+
     /**
      * Return the string representation of this rendered view
      * @return string

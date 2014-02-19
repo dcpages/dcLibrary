@@ -15,7 +15,9 @@ $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, array(
 
 // Register controllers and other shared services
 $app['index.controller'] = $app->share(function () use ($app) {
-    return new \Application\Controller\IndexController;
+    return new \Application\Controller\IndexController(
+        new \Application\View\Test($app['mustache'])
+    );
 });
 
 $app['rest.controller'] = $app->share(function () use ($app) {
