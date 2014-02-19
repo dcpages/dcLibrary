@@ -135,7 +135,7 @@ class Arr
             } elseif ($key === '*') {
                 // Handle wildcards
 
-                $values = array();
+                $values = [];
                 foreach ($array as $arr) {
                     if ($value = Arr::path($arr, implode('.', $keys))) {
                         $values[] = $value;
@@ -192,7 +192,7 @@ class Arr
             }
 
             if (! isset($array[$key])) {
-                $array[$key] = array();
+                $array[$key] = [];
             }
 
             $array = & $array[$key];
@@ -215,10 +215,10 @@ class Arr
     public static function range($step = 10, $max = 100)
     {
         if ($step < 1) {
-            return array();
+            return [];
         }
 
-        $array = array();
+        $array = [];
         for ($i = $step; $i <= $max; $i += $step) {
             $array[$i] = $i;
         }
@@ -264,7 +264,7 @@ class Arr
      */
     public static function extract($array, array $paths, $default = null)
     {
-        $found = array();
+        $found = [];
         foreach ($paths as $path) {
             Arr::set_path($found, $path, Arr::path($array, $path, $default));
         }
@@ -286,7 +286,7 @@ class Arr
      */
     public static function pluck($array, $key)
     {
-        $values = array();
+        $values = [];
 
         foreach ($array as $row) {
             if (isset($row[$key])) {
@@ -524,7 +524,7 @@ class Arr
     {
         $is_assoc = Arr::is_assoc($array);
 
-        $flat = array();
+        $flat = [];
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $flat = array_merge($flat, Arr::flatten($value));
