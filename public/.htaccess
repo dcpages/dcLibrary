@@ -12,6 +12,9 @@ RewriteEngine On
 # Installation directory
 RewriteBase /
 
+# Pass through the Authorization header
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
+
 # Protect hidden files from being viewed
 RedirectMatch 404 ".*\/\..*"
 
