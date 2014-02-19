@@ -54,7 +54,7 @@ class RestControllerResolver implements ControllerResolverInterface
             return null;
         }
 
-        return array($this->app[$service], 'execute');
+        return [$this->app[$service], 'execute'];
     }
 
     /**

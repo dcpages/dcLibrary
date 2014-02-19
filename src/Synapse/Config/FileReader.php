@@ -34,7 +34,7 @@ class FileReader implements ReaderInterface
         $filename = $this->directory.$namespace.'.php';
 
         if (! file_exists($filename)) {
-            return array();
+            return [];
         }
 
         return include $filename;

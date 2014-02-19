@@ -10,7 +10,7 @@ class RestController extends AbstractRestController
 {
     public function get()
     {
-        return new Response(json_encode(array('hello' => 'world')));
+        return new Response(json_encode(['hello' => 'world']));
     }
 
     public function post()
