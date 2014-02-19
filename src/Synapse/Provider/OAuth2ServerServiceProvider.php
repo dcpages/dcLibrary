@@ -23,15 +23,15 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
         // Create the storage object
         $storage = new OAuth2Pdo($pdo);
 
-        $grantTypes = array(
+        $grantTypes = [
             //'authorization_code' => new AuthorizationCode($storage),
             'user_credentials'   => new UserCredentials($storage),
-        );
+        ];
 
-        $server = new OAuth2Server($storage, array(
+        $server = new OAuth2Server($storage, [
             'enforce_state'  => true,
             'allow_implicit' => true,
-        ), $grantTypes);
+        ], $grantTypes);
 
         $app['oauth_server'] = $server;
 
@@ -43,8 +43,6 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $this->setup($app);
-
-        $controller = $app['oauth.controller'];
 
         $app->post('/authorize', 'oauth.controller:authorize');
         $app->post('/token', 'oauth.controller:token');

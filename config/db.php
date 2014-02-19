@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     'driver' => 'Pdo_Mysql',
     'chaset' => 'utf-8',
-);
+];

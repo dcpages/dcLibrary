@@ -7,12 +7,12 @@ $app->register(new Synapse\Provider\RestControllerServiceProvider());
 $app->register(new Synapse\Provider\OAuth2ServerServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 
-$app->register(new Mustache\Silex\Provider\MustacheServiceProvider, array(
+$app->register(new Mustache\Silex\Provider\MustacheServiceProvider, [
     'mustache.path' => APPDIR.'/templates',
-    'mustache.options' => array(
+    'mustache.options' => [
         'cache' => TMPDIR,
-    ),
-));
+    ],
+]);
 
 // Register controllers and other shared services
 $app['index.controller'] = $app->share(function () use ($app) {

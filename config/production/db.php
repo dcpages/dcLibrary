@@ -1,5 +1,5 @@
 <?php
 
-return array(
+return [
     'username' => 'production',
-);
+];
