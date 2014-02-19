@@ -24,7 +24,9 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
         $storage = new OAuth2Pdo($pdo);
 
         $grantTypes = [
-            //'authorization_code' => new AuthorizationCode($storage),
+            // @todo may want to implement this so that tools like postman are
+            // easier to use
+            // 'authorization_code' => new AuthorizationCode($storage),
             'user_credentials'   => new UserCredentials($storage),
         ];
 
