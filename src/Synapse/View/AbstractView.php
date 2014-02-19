@@ -5,8 +5,42 @@ namespace Synapse\View;
 abstract class AbstractView
 {
     /**
+     * @var Mustache_Engine
+     */
+    protected $mustache;
+
+    /**
+     * Set injected dependencies
+     * @param Mustache_Engine $mustache
+     */
+    public function __construct($mustache)
+    {
+        $this->mustache = $mustache;
+    }
+
+    /**
      * Return the string representation of this rendered view
      * @return string
      */
-    abstract public function render();
+    public function render()
+    {
+        $template = $this->template();
+
+        return $this->mustache->render($template, $this);
+    }
+
+    /**
+     * Return the corresponding template file name for this class minus file extension
+     * @return string
+     */
+    protected function template()
+    {
+        $reflector = new \ReflectionClass(get_class($this));
+        $className = $reflector->getName();
+
+        $template = str_replace('Application\View\\', '', $className);
+        $template = str_replace('\\', '/', $template);
+
+        return $template;
+    }
 }
