@@ -2,7 +2,7 @@
 
 return array(
     'username' => 'development',
-    'database' => 'project_vm',
+    'database' => 'database_vm',
     'username' => 'root',
     'password' => 'synapse1',
     'hostname' => 'localhost',
