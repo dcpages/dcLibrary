@@ -1,6 +1,10 @@
 <?php
 
 $app->command('test.command');
+$app->command('upgrade.run');
+$app->command('upgrade.create');
+$app->command('migrations.run');
+$app->command('migrations.create');
 
 $app->get('/', 'index.controller:indexAction');
 $app->match('/rest', 'rest.controller:rest');
