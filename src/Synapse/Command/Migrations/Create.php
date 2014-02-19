@@ -29,5 +29,18 @@ class Create extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $time  = date('YmdHis');
+        $group = $input->getOption('group');
+        $class = $this->classname($group, $time);
+        $file  = $this->filename($time);
+    }
+
+    protected function classname($group, $time)
+    {
+        $class = ucwords(str_replace('/', ' ', $group));
+
+        $class .= '_'.$time;
+
+        return 'Migration_'.preg_replace('~[^a-zA-Z0-9]+~', '_', $class);
     }
 }
