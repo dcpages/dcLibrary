@@ -54,6 +54,7 @@ $initConfig = $app['config']->load('init');
 
 if ($initConfig['debug']) {
     Symfony\Component\Debug\Debug::enable();
+    $app['debug'] = true;
 }
 
 // Register services
