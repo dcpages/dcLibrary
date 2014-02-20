@@ -7,6 +7,7 @@ $app['version'] = '0.1.0';
 $app->register(new Synapse\Provider\ConsoleServiceProvider());
 $app->register(new Synapse\Provider\ZendDbServiceProvider());
 $app->register(new Synapse\Provider\RestControllerServiceProvider());
+$app->register(new Synapse\Provider\MigrationUpgradeServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 
 $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, array(
@@ -30,24 +31,4 @@ $app['rest.controller'] = $app->share(function () use ($app) {
 // Register CLI commands
 $app['test.command'] = $app->share(function () use ($app) {
     return new \Application\Command\TestCommand;
-});
-
-$app['upgrade.create'] = $app->share(function () use ($app) {
-    return new Synapse\Command\Upgrade\Create(
-        new Synapse\View\Upgrade\Create($app['mustache'])
-    );
-});
-
-$app['upgrade.run'] = $app->share(function () use ($app) {
-    return new Synapse\Command\Upgrade\Run;
-});
-
-$app['migrations.create'] = $app->share(function () use ($app) {
-    return new Synapse\Command\Migrations\Create(
-        new Synapse\View\Migration\Create($app['mustache'])
-    );
-});
-
-$app['migrations.run'] = $app->share(function () use ($app) {
-    return new Synapse\Command\Migrations\Run;
 });
