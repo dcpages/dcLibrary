@@ -33,7 +33,9 @@ $app['test.command'] = $app->share(function () use ($app) {
 });
 
 $app['upgrade.create'] = $app->share(function () use ($app) {
-    return new Synapse\Command\Upgrade\Create;
+    return new Synapse\Command\Upgrade\Create(
+        new Synapse\View\Upgrade\Create($app['mustache'])
+    );
 });
 
 $app['upgrade.run'] = $app->share(function () use ($app) {

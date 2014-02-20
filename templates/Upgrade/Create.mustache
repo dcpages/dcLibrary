@@ -1,0 +1,25 @@
+<?php
+
+namespace Application\Upgrades;
+
+use Synapse\Migration\AbstractUpgrade;
+
+/**
+ * Upgrade application to version {{version}}
+ */
+class {{classname}} extends AbstractUpgrade
+{
+    /**
+     * Version that this upgrade expects the database to be in order to run
+     * @var string
+     */
+    protected $expectedVersion = '{{expectedVersion}}';
+
+    /**
+     * Run database queries to apply this upgrade
+     */
+    public function execute()
+    {
+        // $this->db->query();
+    }
+}
