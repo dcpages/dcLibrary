@@ -41,7 +41,9 @@ $app['upgrade.run'] = $app->share(function () use ($app) {
 });
 
 $app['migrations.create'] = $app->share(function () use ($app) {
-    return new Synapse\Command\Migrations\Create;
+    return new Synapse\Command\Migrations\Create(
+        new Synapse\View\Migration\Create($app['mustache'])
+    );
 });
 
 $app['migrations.run'] = $app->share(function () use ($app) {

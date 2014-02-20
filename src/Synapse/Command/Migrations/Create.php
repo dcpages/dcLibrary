@@ -10,6 +10,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Create extends Command
 {
+    protected $newMigrationView;
+
+    public function __construct($newMigrationView)
+    {
+        $this->newMigrationView = $newMigrationView;
+
+        parent::__construct();
+    }
+
     protected function configure()
     {
         $this->setName('migrations:create')
@@ -18,29 +27,33 @@ class Create extends Command
                 'description',
                 InputArgument::REQUIRED,
                 'Enter a short description of the migration: '
-            )
-            ->addOption(
-                'group',
-                InputOption::VALUE_REQUIRED,
-                'The migration group in which to create this migration. (Defaults to \'default\')',
-                'default'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $time  = date('YmdHis');
-        $group = $input->getOption('group');
-        $class = $this->classname($group, $time);
-        $file  = $this->filename($time);
+        $description = $input->getArgument('description');
+        $time        = date('YmdHis');
+        $classname   = $this->classname($time, $description);
+        $filepath    = APPDIR.'/src/Application/Migrations/'.$classname.'.php';
+
+        if (! is_dir(dirname($filepath))) {
+            mkdir(dirname($filepath), 0775, true);
+        }
+
+        $view = $this->newMigrationView;
+
+        $view->description($description);
+        $view->classname($classname);
+
+        file_put_contents($filepath, (string) $view);
     }
 
-    protected function classname($group, $time)
+    protected function classname($time, $description)
     {
-        $class = ucwords(str_replace('/', ' ', $group));
-
-        $class .= '_'.$time;
-
-        return 'Migration_'.preg_replace('~[^a-zA-Z0-9]+~', '_', $class);
+        $description = substr(strtolower($description), 0, 30);
+        $description = ucwords($description);
+        $description = preg_replace('/[^a-zA-Z]+/', '', $description);
+        return $description.$time;
     }
 }
