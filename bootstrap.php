@@ -22,6 +22,14 @@ spl_autoload_register(function ($className) {
     }
 });
 
+/**
+ * Set the default time zone.
+ *
+ * @see  http://docs.kohanaphp.com/about.configuration
+ * @see  http://php.net/timezones
+ */
+date_default_timezone_set('UTC');
+
 // Create the application object
 $app = new Synapse\Application;
 

@@ -41,9 +41,9 @@ abstract class AbstractView
     protected function template()
     {
         $reflector = new \ReflectionClass(get_class($this));
-        $className = $reflector->getName();
+        $classname = $reflector->getName();
 
-        $template = str_replace('Application\View\\', '', $className);
+        $template = preg_replace('/(Application|Synapse)\\\View\\\/', '', $classname);
         $template = str_replace('\\', '/', $template);
 
         return $template;
