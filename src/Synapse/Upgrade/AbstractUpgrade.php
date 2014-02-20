@@ -1,11 +1,11 @@
 <?php
 
-namespace Synapse\Migration;
+namespace Synapse\Upgrade;
 
 /**
- * Abstract migration class to be extended by all migrations
+ * Abstract upgrade class to be extended by all upgrades
  */
-abstract class AbstractMigration
+abstract class AbstractUpgrade
 {
     /**
      * Database connection
@@ -14,7 +14,7 @@ abstract class AbstractMigration
     protected $db;
 
     /**
-     * Construct the migration
+     * Construct the upgrade
      * @param \Zend\Db\Adapter\Adapter $db Database adapter
      */
     public function __construct($db)
@@ -23,7 +23,7 @@ abstract class AbstractMigration
     }
 
     /**
-     * Execute the migration
+     * Execute the upgrade
      */
     abstract public function execute();
 }
