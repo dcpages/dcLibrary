@@ -35,7 +35,8 @@ class Create extends Command
             )
             ->addOption(
                 'expected-version',
-                OptionArgument::REQUIRED,
+                InputOption::VALUE_REQUIRED,
+                null,
                 'Database version to which this upgrade applies'
             );
     }
@@ -84,7 +85,7 @@ class Create extends Command
     protected function classname($version)
     {
         $version = preg_replace('/[^0-9.]+/', '', $version);
-        $version = str_replace(('.', '_', $version);
+        $version = str_replace('.', '_', $version);
 
         return 'Upgrade_'.$version;
     }
