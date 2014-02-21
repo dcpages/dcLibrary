@@ -80,11 +80,11 @@ class Run extends Command
         $migrations = [];
         foreach ($dir as $file) {
             // Only run migration files in the root migrations folder
-            if (! $file->isFile()) {
+            if (! $file->isFile() or substr($file->getBasename(), 0, 1) === '.') {
                 continue;
             }
 
-            $migrations[] = $file->getBasename();
+            $migrations[] = $file->getBasename('.php');
         }
 
         // Determine which migrations have already been run
