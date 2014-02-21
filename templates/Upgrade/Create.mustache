@@ -2,7 +2,8 @@
 
 namespace Application\Upgrades;
 
-use Synapse\Migration\AbstractUpgrade;
+use Synapse\Upgrade\AbstractUpgrade;
+use Zend\Db\Adapter\Adapter as DbAdapter;
 
 /**
  * Upgrade application to version {{version}}
@@ -20,6 +21,32 @@ class {{classname}} extends AbstractUpgrade
      */
     public function execute(DbAdapter $db)
     {
-        // $db->query();
+        // Simple query example:
+        // $db->query(
+        //     'CREATE TABLE ... ',
+        //     DbAdapter::QUERY_MODE_EXECUTE
+        // );
+
+        /**
+         * Example for rolling back transactions on failure.
+         * (Useful when upgrade involves multiple statements.)
+         */
+        // $connection = $db->getDriver()->getConnection();
+
+        // $connection->beginTransaction();
+
+        // $db->createStatement(
+        //     'ALTER TABLE ... '
+        // )->execute();
+
+        // $db->createStatement(
+        //     'ALTER TABLE ... '
+        // )->execute();
+
+        // try {
+        //     $connection->commit();
+        // } catch (\Exception $e) {
+        //     $connection->rollBack();
+        // }
     }
 }

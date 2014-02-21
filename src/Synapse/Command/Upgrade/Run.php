@@ -86,13 +86,19 @@ class Run extends Command
 
         // Run all migrations
 
-        if (! $upgradeFile = $this->currentUpgrade($databaseVersion)) {
-            $output->writeln('No upgrade file exists. Exiting.');
-
+        if ($databaseVersion === $this->appVersion) {
+            $output->writeln('The database is up-to-date. Exiting.');
             return;
         }
 
-        $class = 'Application\\Upgrades\\'.$upgradeFile->getBasename();
+        $upgradeFile = $this->currentUpgrade($this->appVersion);
+
+        if ($upgradeFile === false) {
+            $output->writeln('No upgrade file exists. Exiting.');
+            return;
+        }
+
+        $class = 'Application\\Upgrades\\'.$upgradeFile->getBasename('.php');
 
         $upgrade = new $class;
 
@@ -111,7 +117,11 @@ class Run extends Command
         $file = 'Upgrade_'.str_replace('.', '_', $version).'.php';
 
         if (file_exists($path.$file)) {
-            return new SplFileObject($path.$file);
+            $file = new SplFileObject($path.$file);
+
+            require $file->getPathname();
+
+            return $file;
         }
 
         return false;
