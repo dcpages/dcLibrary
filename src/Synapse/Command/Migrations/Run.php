@@ -55,14 +55,7 @@ class Run extends Command
 
             $migration = new $class;
 
-            try {
-                $migration->execute($this->db);
-            } catch (Exception $e) {
-                // Roll back the migration; failed migrations shouldn't be committed
-                $this->db->rollBack();
-
-                throw $e;
-            }
+            $migration->execute($this->db);
         }
     }
 
