@@ -22,16 +22,11 @@ spl_autoload_register(function ($className) {
     }
 });
 
-/**
- * Set the default time zone.
- *
- * @see  http://docs.kohanaphp.com/about.configuration
- * @see  http://php.net/timezones
- */
-date_default_timezone_set('UTC');
-
 // Create the application object
 $app = new Synapse\Application;
+
+// Store application version
+$app['version'] = '0.1.0';
 
 // Define acceptable environments
 $environments = array(
@@ -69,5 +64,13 @@ require_once APPDIR.'/services.php';
 
 // Create routes
 require_once APPDIR.'/routes.php';
+
+/**
+ * Set the default time zone.
+ *
+ * @see  http://docs.kohanaphp.com/about.configuration
+ * @see  http://php.net/timezones
+ */
+date_default_timezone_set('UTC');
 
 $app->run();

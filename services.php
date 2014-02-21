@@ -1,8 +1,5 @@
 <?php
 
-// Store application version
-$app['version'] = '0.1.0';
-
 // Register service providers
 $app->register(new Synapse\Provider\ConsoleServiceProvider());
 $app->register(new Synapse\Provider\ZendDbServiceProvider());
