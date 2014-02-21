@@ -18,8 +18,8 @@ class {{classname}} extends AbstractUpgrade
     /**
      * Run database queries to apply this upgrade
      */
-    public function execute()
+    public function execute(DbAdapter $db)
     {
-        // $this->db->query();
+        // $db->query();
     }
 }
