@@ -103,6 +103,8 @@ class Run extends Command
         $upgrade = new $class;
 
         $upgrade->execute($this->db);
+
+        $this->recordUpgrade($this->appVersion);
     }
 
     /**
@@ -146,10 +148,18 @@ class Run extends Command
         );
 
         $version = $this->db->query(
-            'SELECT `version` FROM `app_versions` ORDER BY `timestamp` LIMIT 1',
+            'SELECT `version` FROM `app_versions` ORDER BY `timestamp` DESC LIMIT 1',
             DbAdapter::QUERY_MODE_EXECUTE
         )->current();
 
-        return $version;
+        return $version['version'];
+    }
+
+    protected function recordUpgrade($version)
+    {
+        $query = 'INSERT INTO `app_versions` (`version`, `timestamp`) VALUES ("%s", "%s")';
+        $query = sprintf($query, $version, time());
+
+        $this->db->query($query, DbAdapter::QUERY_MODE_EXECUTE);
     }
 }
