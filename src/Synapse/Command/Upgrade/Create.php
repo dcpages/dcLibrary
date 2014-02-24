@@ -3,6 +3,7 @@
 namespace Synapse\Command\Upgrade;
 
 use Synapse\Command\Upgrade\AbstractUpgradeCommand;
+use Synapse\View\Upgrade\Create as CreateUpgradeView;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,7 +29,7 @@ class Create extends AbstractUpgradeCommand
      *
      * @param Synapse\View\Upgrade\Create $newUpgradeView
      */
-    public function __construct($newUpgradeView)
+    public function __construct(CreateUpgradeView $newUpgradeView)
     {
         $this->newUpgradeView = $newUpgradeView;
 

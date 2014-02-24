@@ -22,6 +22,13 @@ use SplFileObject;
 class Run extends AbstractUpgradeCommand
 {
     /**
+     * Root namespace of upgrade classes
+     *
+     * @var string
+     */
+    protected $upgradeNamespace = 'Application\Upgrades\\';
+
+    /**
      * Current version of the application
      *
      * @var string
@@ -34,6 +41,16 @@ class Run extends AbstractUpgradeCommand
      * @var Symfony\Component\Console\Command\Command
      */
     protected $runMigrationsCommand;
+
+    /**
+     * Inject the root namespace of upgrade classes
+     *
+     * @param string $upgradeNamespace
+     */
+    public function setUpgradeNamespace($upgradeNamespace)
+    {
+        $this->upgradeNamespace = $upgradeNamespace;
+    }
 
     /**
      * Set the current app version
@@ -110,7 +127,7 @@ class Run extends AbstractUpgradeCommand
             return;
         }
 
-        $class = 'Application\\Upgrades\\'.$upgradeFile->getBasename('.php');
+        $class = $this->upgradeNamespace.$upgradeFile->getBasename('.php');
 
         $upgrade = new $class;
 
@@ -129,7 +146,7 @@ class Run extends AbstractUpgradeCommand
      */
     protected function currentUpgrade($version)
     {
-        $path = APPDIR.'/src/Application/Upgrades/';
+        $path = APPDIR.'/src/'.str_replace('\\', '/', $this->upgradeNamespace);
         $file = 'Upgrade_'.str_replace('.', '_', $version).'.php';
 
         if (file_exists($path.$file)) {
@@ -152,8 +169,7 @@ class Run extends AbstractUpgradeCommand
             'CREATE TABLE IF NOT EXISTS `app_versions` (
             `version` VARCHAR(50) NOT NULL,
             `timestamp` VARCHAR(14) NOT NULL,
-            KEY `timestamp` (`timestamp`)
-            )ENGINE=InnoDB DEFAULT CHARSET=utf8',
+            KEY `timestamp` (`timestamp`))',
             DbAdapter::QUERY_MODE_EXECUTE
         );
     }

@@ -19,6 +19,23 @@ use ArrayObject;
 class Run extends AbstractDatabaseCommand
 {
     /**
+     * Root namespace of migration classes
+     *
+     * @var string
+     */
+    protected $migrationNamespace = 'Application\Migrations\\';
+
+    /**
+     * Inject the root namespace of migration classes
+     *
+     * @param string $migrationNamespace
+     */
+    public function setMigrationNamespace($migrationNamespace)
+    {
+        $this->migrationNamespace = $migrationNamespace;
+    }
+
+    /**
      * Set the console command's name and description
      */
     protected function configure()
@@ -38,8 +55,6 @@ class Run extends AbstractDatabaseCommand
         $this->createAppMigrationsTable();
 
         $migrations = $this->migrationsToRun();
-
-        // print_r($migrations);die();
 
         $count = 0;
         foreach ($migrations as $migration) {
@@ -73,8 +88,7 @@ class Run extends AbstractDatabaseCommand
         $this->db->query(
             'CREATE TABLE IF NOT EXISTS `app_migrations` (
             `timestamp` VARCHAR(14) NOT NULL,
-            `description` VARCHAR(100) NOT NULL
-            )ENGINE=InnoDB DEFAULT CHARSET=utf8',
+            `description` VARCHAR(100) NOT NULL)',
             DbAdapter::QUERY_MODE_EXECUTE
         );
     }
@@ -87,7 +101,7 @@ class Run extends AbstractDatabaseCommand
     protected function migrationsToRun()
     {
         // Get all migration files
-        $path = APPDIR.'/src/Application/Migrations';
+        $path = APPDIR.'/src/'.str_replace('\\', '/', $this->migrationNamespace);
 
         if (! is_dir($path)) {
             return [];
@@ -102,7 +116,7 @@ class Run extends AbstractDatabaseCommand
                 continue;
             }
 
-            $class = 'Application\\Migrations\\'.$file->getBasename('.php');
+            $class = $this->migrationNamespace.$file->getBasename('.php');
 
             $migrations[] = new $class;
         }

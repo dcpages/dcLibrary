@@ -2,6 +2,7 @@
 
 namespace Synapse\Command\Migrations;
 
+use Synapse\View\Migration\Create as CreateMigrationView;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +29,7 @@ class Create extends Command
      *
      * @param Synapse\View\Migration\Create $newMigrationView
      */
-    public function __construct($newMigrationView)
+    public function __construct(CreateMigrationView $newMigrationView)
     {
         $this->newMigrationView = $newMigrationView;
 

@@ -22,6 +22,8 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
+        $initConfig = $app['config']->load('init');
+
         $app['upgrade.create'] = $app->share(function () use ($app) {
             $command = new \Synapse\Command\Upgrade\Create(
                 new \Synapse\View\Upgrade\Create($app['mustache'])
@@ -32,13 +34,12 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
             return $command;
         });
 
-        $app['upgrade.run'] = $app->share(function () use ($app) {
+        $app['upgrade.run'] = $app->share(function () use ($app, $initConfig) {
             $command = new \Synapse\Command\Upgrade\Run;
 
             $command->setDatabaseAdapter($app['db']);
-
             $command->setAppVersion($app['version']);
-
+            $command->setUpgradeNamespace($initConfig['upgrades']);
             $command->setRunMigrationsCommand($app['migrations.run']);
 
             return $command;
@@ -50,13 +51,20 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
             );
         });
 
-        $app['migrations.run'] = $app->share(function () use ($app) {
+        $app['migrations.run'] = $app->share(function () use ($app, $initConfig) {
             $command = new \Synapse\Command\Migrations\Run;
 
             $command->setDatabaseAdapter($app['db']);
+            $command->setMigrationNamespace($initConfig['migrations']);
 
             return $command;
         });
+
+        // Register command routes
+        $app->command('upgrade.run');
+        $app->command('upgrade.create');
+        $app->command('migrations.run');
+        $app->command('migrations.create');
     }
 
     /**
