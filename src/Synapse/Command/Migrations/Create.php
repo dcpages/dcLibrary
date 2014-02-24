@@ -16,6 +16,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Create extends Command
 {
+    /**
+     * View for new migration files
+     *
+     * @var Synapse\View\Migration\Create
+     */
     protected $newMigrationView;
 
     /**

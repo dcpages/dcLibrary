@@ -16,6 +16,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Create extends AbstractUpgradeCommand
 {
+    /**
+     * View for new upgrade files
+     *
+     * @var Synapse\View\Upgrade\Create
+     */
     protected $newUpgradeView;
 
     /**
