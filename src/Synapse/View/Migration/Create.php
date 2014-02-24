@@ -11,15 +11,24 @@ class Create extends AbstractView
 {
     /**
      * Description of the migration
+     *
      * @var string
      */
     protected $description;
 
     /**
      * Name of the migration class
+     *
      * @var string
      */
     protected $classname;
+
+    /**
+     * Timestamp of when this migration was created
+     *
+     * @var string
+     */
+    protected $timestamp;
 
     /**
      * Set or get the description of the migration
@@ -47,5 +56,19 @@ class Create extends AbstractView
             return $this->classname;
 
         $this->classname = $classname;
+    }
+
+    /**
+     * Set or get the timestamp when this migration was created
+     *
+     * @param  string $timestamp Timestamp when migration was created. If omitted, acts as a getter.
+     * @return string
+     */
+    public function timestamp($timestamp = null)
+    {
+        if ($timestamp === null)
+            return $this->timestamp;
+
+        $this->timestamp = $timestamp;
     }
 }

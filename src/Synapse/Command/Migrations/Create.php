@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * CLI command for creating migrations
+ * CLI command for creating database migrations. Based on Kohana Minion task-migrations.
  *
  * Example usage:
  *     ./console migrations:create 'Add email field to users table'
@@ -31,7 +31,7 @@ class Create extends Command
     }
 
     /**
-     * Set description and arguments for this console command
+     * Set name, description, arguments, and options for this console command
      */
     protected function configure()
     {
@@ -65,8 +65,11 @@ class Create extends Command
 
         $view->description($description);
         $view->classname($classname);
+        $view->timestamp($time);
 
         file_put_contents($filepath, (string) $view);
+
+        $output->writeln('Created migration file '.$filepath);
     }
 
     /**

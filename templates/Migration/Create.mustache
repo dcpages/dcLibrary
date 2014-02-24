@@ -11,7 +11,23 @@ use Zend\Db\Adapter\Adapter as DbAdapter;
 class {{classname}} extends AbstractMigration
 {
     /**
+     * Description of this migration, to record in the database when it is run
+     *
+     * @var string
+     */
+    protected $description = '{{description}}';
+
+    /**
+     * Timestamp of when this migration was created
+     *
+     * @var string
+     */
+    protected $timestamp = '{{timestamp}}';
+
+    /**
      * Run database queries to apply this migration
+     *
+     * @param  DbAdapter $db
      */
     public function execute(DbAdapter $db)
     {

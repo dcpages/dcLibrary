@@ -2,15 +2,19 @@
 
 namespace Synapse\Command\Migrations;
 
+use Synapse\Migration\AbstractMigration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use DirectoryIterator;
 use Exception;
+use ArrayObject;
 
 /**
- * Console command to run all new migrations on the database
+ * Console command to run all new migrations on the database. Based on Kohana Minion task-migrations.
+ *
+ * Uses the app_migrations table to record which migrations have already been run.
  */
 class Run extends Command
 {
@@ -48,15 +52,46 @@ class Run extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->createAppMigrationsTable();
+
         $migrations = $this->migrationsToRun();
 
+        // print_r($migrations);die();
+
+        $count = 0;
         foreach ($migrations as $migration) {
-            $class = 'Application\\Migrations\\'.$migration;
-
-            $migration = new $class;
-
             $migration->execute($this->db);
+
+            $output->writeln(sprintf(
+                '  * DONE *  %s (%s)',
+                $migration->getDescription(),
+                $migration->getTimestamp()
+            ));
+
+            $this->recordMigration($migration);
+
+            $count++;
         }
+
+        if ($count === 0) {
+            $output->writeln('No new migrations to run.');
+        } else {
+            $output->writeln(sprintf('Executed %d migrations', $count));
+        }
+    }
+
+    /**
+     * Create the app_migrations table if it does not exist
+     */
+    protected function createAppMigrationsTable()
+    {
+        $this->db->query(
+            'CREATE TABLE IF NOT EXISTS `app_migrations` (
+            `timestamp` VARCHAR(14) NOT NULL,
+            `description` VARCHAR(100) NOT NULL
+            )ENGINE=InnoDB DEFAULT CHARSET=utf8',
+            DbAdapter::QUERY_MODE_EXECUTE
+        );
     }
 
     /**
@@ -66,23 +101,71 @@ class Run extends Command
      */
     protected function migrationsToRun()
     {
-        // Get all migrations
+        // Get all migration files
         $path = APPDIR.'/src/Application/Migrations';
-        $dir  = new DirectoryIterator($path);
+
+        if (! is_dir($path)) {
+            return [];
+        }
+
+        $dir = new DirectoryIterator($path);
 
         $migrations = [];
         foreach ($dir as $file) {
-            // Only run migration files in the root migrations folder
+            // Ignore directories and dotfiles (e.g. .DS_Store)
             if (! $file->isFile() or substr($file->getBasename(), 0, 1) === '.') {
                 continue;
             }
 
-            $migrations[] = $file->getBasename('.php');
+            $class = 'Application\\Migrations\\'.$file->getBasename('.php');
+
+            $migrations[] = new $class;
         }
 
-        // Determine which migrations have already been run
-        $oldMigrations = [];
+        $alreadyExecutedMigrations = $this->alreadyExecutedMigrations();
 
-        return array_diff($migrations, $oldMigrations);
+        $migrationsToRun = [];
+        foreach ($migrations as $migration) {
+            $compare = new ArrayObject([
+                'description' => $migration->getDescription(),
+                'timestamp'   => $migration->getTimestamp(),
+            ]);
+
+            if (in_array($compare, $alreadyExecutedMigrations)) {
+                continue;
+            }
+
+            $migrationsToRun[] = $migration;
+        }
+
+        return $migrationsToRun;
+    }
+
+    /**
+     * Insert a record into app_migrations to record that this migration was run
+     *
+     * @param  AbstractMigration $migration
+     */
+    protected function recordMigration(AbstractMigration $migration)
+    {
+        $query = 'INSERT INTO `app_migrations` (`timestamp`, `description`) VALUES ("%s", "%s")';
+        $query = sprintf($query, $migration->getTimestamp(), $migration->getDescription());
+
+        $this->db->query($query, DbAdapter::QUERY_MODE_EXECUTE);
+    }
+
+    /**
+     * Return array of already executed migrations.
+     *
+     * @return array
+     */
+    protected function alreadyExecutedMigrations()
+    {
+        $results = $this->db->query(
+            'SELECT * FROM `app_migrations`',
+            DbAdapter::QUERY_MODE_EXECUTE
+        );
+
+        return (array) iterator_to_array($results, true);
     }
 }
