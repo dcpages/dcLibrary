@@ -3,6 +3,7 @@
 namespace Synapse\Command\Upgrade;
 
 use Synapse\Command\AbstractDatabaseCommand;
+use Zend\Db\Adapter\Adapter as DbAdapter;
 
 abstract class AbstractUpgradeCommand extends AbstractDatabaseCommand
 {

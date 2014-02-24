@@ -103,7 +103,10 @@ class Run extends AbstractUpgradeCommand
         $upgradeFile = $this->currentUpgrade($this->appVersion);
 
         if ($upgradeFile === false) {
-            $output->write(['  No upgrade file exists. Exiting.', ''], true);
+            $message = sprintf('  No upgrade file exists for current app version %s. Exiting.', $this->appVersion);
+
+            $output->write([$message, ''], true);
+
             return;
         }
 
@@ -115,7 +118,7 @@ class Run extends AbstractUpgradeCommand
 
         $this->recordUpgrade($this->appVersion);
 
-        $output->write(['  Upgrade to .', ''], true);
+        $output->write([sprintf('  Upgraded to version %s!', $this->appVersion), ''], true);
     }
 
     /**

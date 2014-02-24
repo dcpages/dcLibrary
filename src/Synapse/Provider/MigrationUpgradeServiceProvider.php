@@ -15,9 +15,13 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['upgrade.create'] = $app->share(function () use ($app) {
-            return new \Synapse\Command\Upgrade\Create(
+            $command = new \Synapse\Command\Upgrade\Create(
                 new \Synapse\View\Upgrade\Create($app['mustache'])
             );
+
+            $command->setDatabaseAdapter($app['db']);
+
+            return $command;
         });
 
         $app['upgrade.run'] = $app->share(function () use ($app) {
