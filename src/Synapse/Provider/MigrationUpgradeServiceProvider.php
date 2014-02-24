@@ -10,8 +10,16 @@ use Symfony\Component\Console\Application as ConsoleApplication;
 use Synapse\Config\Config;
 use Synapse\Config\FileReader;
 
+/**
+ * Service provider for migration and upgrade console commands
+ */
 class MigrationUpgradeServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * Register console commands as services
+     *
+     * @param  Silex\Application $app
+     */
     public function register(Application $app)
     {
         $app['upgrade.create'] = $app->share(function () use ($app) {
@@ -51,6 +59,11 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
         });
     }
 
+    /**
+     * Perform chores on boot. (None required here.)
+     *
+     * @param  Application $app
+     */
     public function boot(Application $app)
     {
         // noop

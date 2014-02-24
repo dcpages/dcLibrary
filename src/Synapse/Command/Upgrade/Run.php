@@ -143,6 +143,9 @@ class Run extends AbstractUpgradeCommand
         return false;
     }
 
+    /**
+     * Create app_versions table if not exists
+     */
     protected function createAppVersionsTable()
     {
         $this->db->query(
