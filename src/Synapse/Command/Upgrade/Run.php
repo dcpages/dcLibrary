@@ -96,7 +96,7 @@ class Run extends AbstractUpgradeCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Console message heading padded by a newline
-        $output->write(['', '  -- APP UPGRADE --'], true);
+        $output->write(['', '  -- APP UPGRADE --', '  Executing new migrations before upgrading'], true);
 
         // Run all migrations
         $this->runMigrationsCommand->execute($input, $output);
@@ -131,11 +131,13 @@ class Run extends AbstractUpgradeCommand
 
         $upgrade = new $class;
 
+        $output->writeln(sprintf('  Upgrading to version %s...', $this->appVersion));
+
         $upgrade->execute($this->db);
 
         $this->recordUpgrade($this->appVersion);
 
-        $output->write([sprintf('  Upgraded to version %s!', $this->appVersion), ''], true);
+        $output->write([sprintf('  Done!', $this->appVersion), ''], true);
     }
 
     /**

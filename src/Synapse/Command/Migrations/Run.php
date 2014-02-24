@@ -77,7 +77,7 @@ class Run extends AbstractDatabaseCommand
             $message = sprintf('  Executed %d migrations', $count);
         }
 
-        $output->writeln(['', $message, ''], true);
+        $output->writeln([$message, ''], true);
     }
 
     /**
