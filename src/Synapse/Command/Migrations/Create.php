@@ -69,7 +69,10 @@ class Create extends Command
 
         file_put_contents($filepath, (string) $view);
 
-        $output->writeln('Created migration file '.$filepath);
+        $message = '  Created migration file '.$filepath;
+
+        // Output message padded by newlines
+        $output->write(['', $message, ''], true);
     }
 
     /**

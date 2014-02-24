@@ -74,10 +74,12 @@ class Run extends Command
         }
 
         if ($count === 0) {
-            $output->writeln('No new migrations to run.');
+            $message = '  No new migrations to run';
         } else {
-            $output->writeln(sprintf('Executed %d migrations', $count));
+            $message = sprintf('  Executed %d migrations', $count);
         }
+
+        $output->writeln(['', $message, ''], true);
     }
 
     /**
