@@ -3,6 +3,7 @@
 namespace Synapse\Command\Upgrade;
 
 use Symfony\Component\Console\Command\Command;
+use Synapse\Command\Upgrade\AbstractUpgradeCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -11,20 +12,15 @@ use Zend\Db\Adapter\Adapter as DbAdapter;
 use SplFileObject;
 
 /**
- * Console command to run the current database upgrade.
+ * Console command to run the current database upgrade. Based on Kohana Minion task-migrations.
  *
  * Runs the upgrade that matches the version of the current codebase, if such an
  * upgrade is actually found and it has not yet been run.
+ *
+ * Uses the app_versions table to record which version upgrades have been run.
  */
-class Run extends Command
+class Run extends AbstractUpgradeCommand
 {
-    /**
-     * Database adapter
-     *
-     * @var Zend\Db\Adapter\Adapter
-     */
-    protected $db;
-
     /**
      * Current version of the application
      *
@@ -33,14 +29,11 @@ class Run extends Command
     protected $appVersion;
 
     /**
-     * Set the database adapter
+     * Run migrations console command object
      *
-     * @param \Zend\Db\Adapter\Adapter $db
+     * @var Symfony\Component\Console\Command\Command
      */
-    public function setDatabaseAdapter(DbAdapter $db)
-    {
-        $this->db = $db;
-    }
+    protected $runMigrationsCommand;
 
     /**
      * Set the current app version
@@ -50,6 +43,16 @@ class Run extends Command
     public function setAppVersion($version)
     {
         $this->appVersion = $version;
+    }
+
+    /**
+     * Set the run migrations console command
+     *
+     * @param Symfony\Component\Console\Command\Command
+     */
+    public function setRunMigrationsCommand(Command $command)
+    {
+        $this->runMigrationsCommand = $command;
     }
 
     /**
@@ -75,7 +78,15 @@ class Run extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $databaseVersion = $this->databaseVersion();
+        // Console message heading padded by a newline
+        $output->write(['', '  -- APP UPGRADE --'], true);
+
+        // Run all migrations
+        $this->runMigrationsCommand->execute($input, $output);
+
+        $this->createAppVersionsTable();
+
+        $databaseVersion = $this->currentDatabaseVersion();
 
         if (version_compare($databaseVersion, $this->appVersion, '>')) {
             $message = 'Database version (%s) is newer than codebase (%s). Exiting.';
@@ -84,17 +95,15 @@ class Run extends Command
             throw new \Exception($message);
         }
 
-        // Run all migrations
-
         if ($databaseVersion === $this->appVersion) {
-            $output->writeln('The database is up-to-date. Exiting.');
+            $output->write(['  The database is up-to-date. Exiting.', ''], true);
             return;
         }
 
         $upgradeFile = $this->currentUpgrade($this->appVersion);
 
         if ($upgradeFile === false) {
-            $output->writeln('No upgrade file exists. Exiting.');
+            $output->write(['  No upgrade file exists. Exiting.', ''], true);
             return;
         }
 
@@ -105,6 +114,8 @@ class Run extends Command
         $upgrade->execute($this->db);
 
         $this->recordUpgrade($this->appVersion);
+
+        $output->write(['  Upgrade to .', ''], true);
     }
 
     /**
@@ -129,14 +140,7 @@ class Run extends Command
         return false;
     }
 
-    /**
-     * Returns the current database version.
-     * Assumes that the most recent upgrade is the current database version.
-     * (You should always construct and apply upgrades in numerical versioning order.)
-     *
-     * @return string
-     */
-    protected function databaseVersion()
+    protected function createAppVersionsTable()
     {
         $this->db->query(
             'CREATE TABLE IF NOT EXISTS `app_versions` (
@@ -146,15 +150,13 @@ class Run extends Command
             )ENGINE=InnoDB DEFAULT CHARSET=utf8',
             DbAdapter::QUERY_MODE_EXECUTE
         );
-
-        $version = $this->db->query(
-            'SELECT `version` FROM `app_versions` ORDER BY `timestamp` DESC LIMIT 1',
-            DbAdapter::QUERY_MODE_EXECUTE
-        )->current();
-
-        return $version['version'];
     }
 
+    /**
+     * Records the upgrade in the app_versions table.
+     *
+     * @param  string $version
+     */
     protected function recordUpgrade($version)
     {
         $query = 'INSERT INTO `app_versions` (`version`, `timestamp`) VALUES ("%s", "%s")';

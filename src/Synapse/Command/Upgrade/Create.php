@@ -2,13 +2,19 @@
 
 namespace Synapse\Command\Upgrade;
 
-use Symfony\Component\Console\Command\Command;
+use Synapse\Command\Upgrade\AbstractUpgradeCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Create extends Command
+/**
+ * CLI command for creating database upgrades. Based on Kohana Minion task-migrations.
+ *
+ * Example usage:
+ *     ./console upgrade:create 1.4.1 --expected-version="1.4.0"
+ */
+class Create extends AbstractUpgradeCommand
 {
     protected $newUpgradeView;
 
@@ -24,6 +30,9 @@ class Create extends Command
         parent::__construct();
     }
 
+    /**
+     * Set name, description, arguments, and options for this console command
+     */
     protected function configure()
     {
         $this->setName('upgrade:create')
@@ -32,12 +41,6 @@ class Create extends Command
                 'version',
                 InputArgument::REQUIRED,
                 'Upgrade version'
-            )
-            ->addOption(
-                'expected-version',
-                InputOption::VALUE_REQUIRED,
-                null,
-                'Database version to which this upgrade applies'
             );
     }
 
@@ -50,7 +53,7 @@ class Create extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $version         = $input->getArgument('version');
-        $expectedVersion = $input->getOption('expected-version');
+        $expectedVersion = $this->currentDatabaseVersion();
         $classname       = $this->classname($version);
         $filepath        = APPDIR.'/src/Application/Upgrades/'.$classname.'.php';
 
@@ -65,6 +68,8 @@ class Create extends Command
         $view->expectedVersion($expectedVersion);
 
         file_put_contents($filepath, (string) $view);
+
+        $output->writeln('Created upgrade file '.$filepath);
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace Synapse\Command\Migrations;
 
 use Synapse\Migration\AbstractMigration;
-use Symfony\Component\Console\Command\Command;
+use Synapse\Command\AbstractDatabaseCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zend\Db\Adapter\Adapter as DbAdapter;
@@ -16,25 +16,8 @@ use ArrayObject;
  *
  * Uses the app_migrations table to record which migrations have already been run.
  */
-class Run extends Command
+class Run extends AbstractDatabaseCommand
 {
-    /**
-     * Database adapter
-     *
-     * @var Zend\Db\Adapter\Adapter
-     */
-    protected $db;
-
-    /**
-     * Set the database adapter
-     *
-     * @param \Zend\Db\Adapter\Adapter $db
-     */
-    public function setDatabaseAdapter(DbAdapter $db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * Set the console command's name and description
      */
