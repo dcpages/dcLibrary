@@ -4,6 +4,7 @@
 $app->register(new Synapse\Provider\ConsoleServiceProvider());
 $app->register(new Synapse\Provider\ZendDbServiceProvider());
 $app->register(new Synapse\Provider\RestControllerServiceProvider());
+$app->register(new Synapse\Provider\MigrationUpgradeServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 
 $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, array(
@@ -15,13 +16,16 @@ $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, array(
 
 // Register controllers and other shared services
 $app['index.controller'] = $app->share(function () use ($app) {
-    return new \Application\Controller\IndexController;
+    return new \Application\Controller\IndexController(
+        new \Application\View\Test($app['mustache'])
+    );
 });
 
 $app['rest.controller'] = $app->share(function () use ($app) {
     return new \Application\Controller\RestController;
 });
 
+// Register CLI commands
 $app['test.command'] = $app->share(function () use ($app) {
     return new \Application\Command\TestCommand;
 });

@@ -1,5 +1,7 @@
 <?php
 
 return [
-    'debug' => false,
+    'debug'      => false,
+    'migrations' => 'Application\Migrations\\',
+    'upgrades'   => 'Application\Upgrades\\',
 ];
