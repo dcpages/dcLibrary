@@ -1,6 +1,6 @@
 <?php
 
-return array(
-    'driver' => 'Mysqli',
+return [
+    'driver' => 'Pdo_Mysql',
     'chaset' => 'utf-8',
-);
+];

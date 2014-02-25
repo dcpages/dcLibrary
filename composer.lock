@@ -3,36 +3,29 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "77c62b5d1b1119c5d1c8a804691ffd35",
+    "hash": "a97ff4cea3ecc2db8105d6d5cb7d8636",
     "packages": [
         {
-            "name": "league/oauth2-server",
-            "version": "dev-develop",
+            "name": "bshaffer/oauth2-server-httpfoundation-bridge",
+            "version": "v1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thephpleague/oauth2-server.git",
-                "reference": "8556f616d3336097ea8810e219861266eb6d4581"
+                "url": "https://github.com/bshaffer/oauth2-server-httpfoundation-bridge.git",
+                "reference": "d84669c9fb3df6f33e607dad4b984087e1ec2528"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/8556f616d3336097ea8810e219861266eb6d4581",
-                "reference": "8556f616d3336097ea8810e219861266eb6d4581",
+                "url": "https://api.github.com/repos/bshaffer/oauth2-server-httpfoundation-bridge/zipball/d84669c9fb3df6f33e607dad4b984087e1ec2528",
+                "reference": "d84669c9fb3df6f33e607dad4b984087e1ec2528",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
-            },
-            "replace": {
-                "lncd/oauth2": "*"
-            },
-            "require-dev": {
-                "league/phpunit-coverage-listener": "~1.0",
-                "mockery/mockery": ">=0.7.2"
+                "php": ">=5.3.0"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "League\\OAuth2\\Server": "src/"
+                    "OAuth2\\HttpFoundationBridge": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -41,26 +34,63 @@
             ],
             "authors": [
                 {
-                    "name": "Alex Bilbie",
-                    "email": "hello@alexbilbie.com",
-                    "homepage": "http://www.alexbilbie.com",
-                    "role": "Developer"
+                    "name": "العاب",
+                    "email": "bshafs@gmail.com",
+                    "homepage": "http://astaza.com"
                 }
             ],
-            "description": "A lightweight and powerful OAuth 2.0 authorization and resource server library with support for all the core specification grants. This library will allow you to secure your API with OAuth and allow your applications users to approve apps that want to access their data from your API.",
+            "description": "A bridge to HttpFoundation for oauth2-server-php",
+            "homepage": "http://github.com/bshaffer/oauth2-server-httpfoundation-bridge",
             "keywords": [
-                "Authentication",
-                "api",
                 "auth",
-                "authorization",
+                "httpfoundation",
                 "oauth",
-                "oauth2",
-                "protect",
-                "resource",
-                "secure",
-                "server"
+                "oauth2"
             ],
-            "time": "2014-02-11 17:27:35"
+            "time": "2013-09-06 19:06:02"
+        },
+        {
+            "name": "bshaffer/oauth2-server-php",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bshaffer/oauth2-server-php.git",
+                "reference": "7abe692c57d8f11026556036ee59575f8b0d328e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bshaffer/oauth2-server-php/zipball/7abe692c57d8f11026556036ee59575f8b0d328e",
+                "reference": "7abe692c57d8f11026556036ee59575f8b0d328e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "OAuth2": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brent Shaffer",
+                    "email": "bshafs@gmail.com",
+                    "homepage": "http://brentertainment.com"
+                }
+            ],
+            "description": "OAuth2 Server for PHP",
+            "homepage": "http://github.com/bshaffer/oauth2-server-php",
+            "keywords": [
+                "auth",
+                "oauth",
+                "oauth2"
+            ],
+            "time": "2013-08-12 16:35:58"
         },
         {
             "name": "mustache/mustache",
@@ -1136,9 +1166,9 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "league/oauth2-server": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": [
 
     ],
