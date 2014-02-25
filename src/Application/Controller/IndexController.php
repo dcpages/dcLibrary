@@ -9,12 +9,19 @@ class IndexController
 {
     use \Synapse\Controller\OAuthControllerTrait;
 
+    protected $testView;
+
+    public function __construct($testView)
+    {
+        $this->testView = $testView;
+    }
+
     public function indexAction(Request $request)
     {
         if ($this->isAuthenticated($request)) {
             return new Response('You are authenticated!');
         }
 
-        return new Response('hello');
+        return new Response($this->testView);
     }
 }
