@@ -1,13 +1,10 @@
 <?php
 
-namespace Synapse\Command\Upgrade;
+namespace Synapse\Command\Install;
 
-use Synapse\View\Upgrade\Create as CreateUpgradeView;
 use Synapse\Stdlib\Arr;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -33,6 +30,13 @@ class Generate extends Command
     protected $dbConfig;
 
     /**
+     * Install config
+     *
+     * @var array
+     */
+    protected $installConfig;
+
+    /**
      * Root namespace of upgrade classes
      *
      * @var string
@@ -47,6 +51,16 @@ class Generate extends Command
     public function setDbConfig(array $dbConfig)
     {
         $this->dbConfig = $dbConfig;
+    }
+
+    /**
+     * Set install config property
+     *
+     * @param array $installConfig
+     */
+    public function setInstallConfig(array $installConfig)
+    {
+        $this->installConfig = $installConfig;
     }
 
     /**
@@ -132,7 +146,7 @@ class Generate extends Command
      */
     protected function dumpData($outputPath)
     {
-        $tables = array_map('escapeshellarg', Arr::get($this->dbConfig, 'data_tables', []));
+        $tables = array_map('escapeshellarg', Arr::get($this->installConfig, 'dataTables', []));
 
         $command = sprintf(
             'mysqldump %s %s -u %s -p%s --no-create-info > %s',

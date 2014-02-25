@@ -3,9 +3,9 @@
 namespace Synapse\Command\Upgrade;
 
 use Synapse\Command\Upgrade\AbstractUpgradeCommand;
+use Synapse\Command\Install\Generate;
 use Synapse\Upgrade\AbstractUpgrade;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;

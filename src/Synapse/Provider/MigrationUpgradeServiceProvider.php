@@ -41,15 +41,16 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
             $command->setAppVersion($app['version']);
             $command->setUpgradeNamespace($initConfig['upgrades']);
             $command->setRunMigrationsCommand($app['migrations.run']);
-            $command->setGenerateInstallCommand($app['upgrade.generate']);
+            $command->setGenerateInstallCommand($app['install.generate']);
 
             return $command;
         });
 
-        $app['upgrade.generate'] = $app->share(function () use ($app, $initConfig) {
-            $command = new \Synapse\Command\Upgrade\Generate;
+        $app['install.generate'] = $app->share(function () use ($app, $initConfig) {
+            $command = new \Synapse\Command\Install\Generate;
 
             $command->setDbConfig($app['config']->load('db'));
+            $command->setInstallConfig($app['config']->load('install'));
             $command->setUpgradeNamespace($initConfig['upgrades']);
 
             return $command;
@@ -73,7 +74,7 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
         // Register command routes
         $app->command('upgrade.run');
         $app->command('upgrade.create');
-        $app->command('upgrade.generate');
+        $app->command('install.generate');
         $app->command('migrations.run');
         $app->command('migrations.create');
     }
