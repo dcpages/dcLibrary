@@ -2,9 +2,10 @@
 
 namespace Synapse\Command\Upgrade;
 
-use Symfony\Component\Console\Command\Command;
 use Synapse\Command\Upgrade\AbstractUpgradeCommand;
-use Symfony\Component\Console\Input\InputArgument;
+use Synapse\Command\Install\Generate;
+use Synapse\Upgrade\AbstractUpgrade;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,7 +13,7 @@ use Zend\Db\Adapter\Adapter as DbAdapter;
 use SplFileObject;
 
 /**
- * Console command to run the current database upgrade. Based on Kohana Minion task-migrations.
+ * Console command to run the current database upgrade. Based on Kohana Minion task-upgrade.
  *
  * Runs the upgrade that matches the version of the current codebase, if such an
  * upgrade is actually found and it has not yet been run.
@@ -41,6 +42,13 @@ class Run extends AbstractUpgradeCommand
      * @var Symfony\Component\Console\Command\Command
      */
     protected $runMigrationsCommand;
+
+    /**
+     * Generate install file console command object
+     *
+     * @var Symfony\Component\Console\Command\Command
+     */
+    protected $generateInstallCommand;
 
     /**
      * Inject the root namespace of upgrade classes
@@ -73,12 +81,22 @@ class Run extends AbstractUpgradeCommand
     }
 
     /**
+     * Set the generate install file console command
+     *
+     * @param Symfony\Component\Console\Command\Command
+     */
+    public function setGenerateInstallCommand(Command $command)
+    {
+        $this->generateInstallCommand = $command;
+    }
+
+    /**
      * Configure this console command
      */
     protected function configure()
     {
         $this->setName('upgrade:run')
-            ->setDescription('Run database upgrade')
+            ->setDescription('Run database upgrade for current app version')
             ->addOption(
                 'drop-tables',
                 null,
@@ -90,20 +108,46 @@ class Run extends AbstractUpgradeCommand
     /**
      * Execute this console command
      *
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param  InputInterface  $input  Command line input interface
+     * @param  OutputInterface $output Command line output interface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Console message heading padded by a newline
-        $output->write(['', '  -- APP UPGRADE --', '  Executing new migrations before upgrading'], true);
+        $output->write(['', '  -- APP UPGRADE --', ''], true);
 
-        // Run all migrations
-        $this->runMigrationsCommand->execute($input, $output);
+        if ($input->getOption('drop-tables')) {
+            $output->write(['  Dropping tables', ''], true);
+            $this->dropTables();
+        }
 
         $this->createAppVersionsTable();
 
-        $databaseVersion = $this->currentDatabaseVersion();
+        if (! $databaseVersion = $this->currentDatabaseVersion()) {
+            // Ensure that install class exists
+            $upgradeNamespace = $this->generateInstallCommand->getUpgradeNamespace();
+            $installClass     = $upgradeNamespace.'Install';
+
+            if (! class_exists($installClass)) {
+                $output->writeln(
+                    sprintf('No install class found at %s. Nothing to do.', $installClass)
+                );
+
+                return;
+            }
+
+            $this->install(
+                new $installClass,
+                $output
+            );
+
+            // Refresh database version
+            $databaseVersion = $this->currentDatabaseVersion();
+        }
+
+        // Run all migrations
+        $output->writeln('  Executing new migrations before upgrading');
+        $this->runMigrationsCommand->execute($input, $output);
 
         if (version_compare($databaseVersion, $this->appVersion, '>')) {
             $message = 'Database version (%s) is newer than codebase (%s). Exiting.';
@@ -113,7 +157,13 @@ class Run extends AbstractUpgradeCommand
         }
 
         if ($databaseVersion === $this->appVersion) {
-            $output->write(['  The database is up-to-date. Exiting.', ''], true);
+            $message = sprintf(
+                '  Database version and codebase version are the same (%s). Nothing to upgrade.',
+                $databaseVersion
+            );
+
+            $output->write([$message, ''], true);
+
             return;
         }
 
@@ -131,13 +181,112 @@ class Run extends AbstractUpgradeCommand
 
         $upgrade = new $class;
 
-        $output->writeln(sprintf('  Upgrading to version %s...', $this->appVersion));
+        $output->writeln(sprintf(
+            '  Upgrading from version %s to version %s',
+            $databaseVersion ?: '(empty)',
+            $this->appVersion
+        ));
 
         $upgrade->execute($this->db);
 
         $this->recordUpgrade($this->appVersion);
 
         $output->write([sprintf('  Done!', $this->appVersion), ''], true);
+    }
+
+    /**
+     * Drop all tables from the database
+     */
+    protected function dropTables()
+    {
+        $tables = $this->db->query('SHOW TABLES', DbAdapter::QUERY_MODE_EXECUTE);
+
+        foreach ($tables as $table) {
+            $this->db->query(
+                'DROP TABLE '.reset($table),
+                DbAdapter::QUERY_MODE_EXECUTE
+            );
+        }
+    }
+
+    /**
+     * Create app_versions table if not exists
+     */
+    protected function createAppVersionsTable()
+    {
+        $this->db->query(
+            'CREATE TABLE IF NOT EXISTS `app_versions` (
+            `version` VARCHAR(50) NOT NULL,
+            `timestamp` VARCHAR(14) NOT NULL,
+            KEY `timestamp` (`timestamp`))',
+            DbAdapter::QUERY_MODE_EXECUTE
+        );
+    }
+
+    /**
+     * Install fresh version of the database from db_structure and db_data files
+     *
+     * @param  Synapse\Upgrade\AbstractUpgrade $installScript
+     * @param  OutputInterface                 $output        Command line output interface
+     */
+    protected function install(AbstractUpgrade $installScript, OutputInterface $output)
+    {
+        $upgradePath = $this->generateInstallCommand->upgradePath();
+
+        $output->writeln('  Installing App...');
+
+        // Install the database structure
+        $this->runSql(
+            $upgradePath.DIRECTORY_SEPARATOR.Generate::STRUCTURE_FILE,
+            '  Creating initial database schema',
+            sprintf('  Database schema file %s not found', Generate::STRUCTURE_FILE),
+            $output
+        );
+
+        // Install the database data
+        $this->runSql(
+            $upgradePath.DIRECTORY_SEPARATOR.Generate::DATA_FILE,
+            '  Inserting initial data',
+            sprintf('  Database data file %s not found', Generate::DATA_FILE),
+            $output
+        );
+
+        $output->writeln('  Running install script');
+
+        $installScript->execute($this->db);
+
+        $output->write(['  Install completed!', ''], true);
+    }
+
+    /**
+     * Given a filepath to a SQL file, load it and run the SQL statements inside
+     *
+     * @param  string $file            Path to SQL file
+     * @param  string $message         Message to output to the console if the file exists
+     * @param  string $notFoundMessage Message to output to the console if the file does not exist
+     */
+    protected function runSql($file, $message, $notFoundMessage, $output)
+    {
+        if (! is_file($file)) {
+            $output->writeln($notFoundMessage);
+
+            return;
+        }
+
+        $output->writeln($message);
+
+        $dataSql = file_get_contents($file);
+
+        // Split the sql file on new lines and insert into the database one line at a time
+        foreach (preg_split('/;\s*\n/', $dataSql) as $command) {
+            try {
+                $query = $this->db->query($command, DbAdapter::QUERY_MODE_EXECUTE);
+            } catch (Database_Exception $e) {
+                if ($e->getCode() !== 1065) { // empty query
+                    throw $e;
+                }
+            }
+        }
     }
 
     /**
@@ -160,20 +309,6 @@ class Run extends AbstractUpgradeCommand
         }
 
         return false;
-    }
-
-    /**
-     * Create app_versions table if not exists
-     */
-    protected function createAppVersionsTable()
-    {
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `app_versions` (
-            `version` VARCHAR(50) NOT NULL,
-            `timestamp` VARCHAR(14) NOT NULL,
-            KEY `timestamp` (`timestamp`))',
-            DbAdapter::QUERY_MODE_EXECUTE
-        );
     }
 
     /**
