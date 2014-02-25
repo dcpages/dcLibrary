@@ -1,9 +1,8 @@
 <?php
 
-return array(
-    'username' => 'development',
-    'database' => 'project_vm',
+return [
+    'database' => 'database_vm',
     'username' => 'root',
     'password' => 'synapse1',
     'hostname' => 'localhost',
-);
+];

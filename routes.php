@@ -11,6 +11,8 @@ $app->error(function (\Synapse\Rest\Exception\MethodNotImplementedException $e, 
     return $response;
 });
 
-$app->error(function (\Exception $e, $code) {
-    return new Symfony\Component\HttpFoundation\Response('Something went wrong with your request');
-});
+if ($app['debug'] === false) {
+    $app->error(function (\Exception $e, $code) {
+        return new Symfony\Component\HttpFoundation\Response('Something went wrong with your request');
+    });
+}
