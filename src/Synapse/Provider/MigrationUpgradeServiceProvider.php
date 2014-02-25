@@ -41,6 +41,7 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
             $command->setAppVersion($app['version']);
             $command->setUpgradeNamespace($initConfig['upgrades']);
             $command->setRunMigrationsCommand($app['migrations.run']);
+            $command->setGenerateInstallCommand($app['upgrade.generate']);
 
             return $command;
         });

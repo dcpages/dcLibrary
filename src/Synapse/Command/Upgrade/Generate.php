@@ -18,12 +18,12 @@ class Generate extends Command
     /**
      * Filename of the database structure install file
      */
-    const DATA_STRUCTURE_NAME = 'DbStructure.sql';
+    const STRUCTURE_FILE = 'DbStructure.sql';
 
     /**
      * Filename of the database data install file
      */
-    const DATA_FILE_NAME = 'DbData.sql';
+    const DATA_FILE = 'DbData.sql';
 
     /**
      * Database config
@@ -65,7 +65,7 @@ class Generate extends Command
     protected function configure()
     {
         $this->setName('upgrade:generate')
-            ->setDescription('Create database install files for current database version');
+            ->setDescription('Generate database install files to match the current database');
     }
 
     /**
@@ -76,13 +76,23 @@ class Generate extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $outputPath = APPDIR.'/src/'.str_replace('\\', '/', $this->upgradeNamespace);
+        $outputPath = $this->upgradePath();
 
         $this->dumpStructure($outputPath);
         $output->writeln('  Exported DB structure');
 
         $this->dumpData($outputPath);
         $output->writeln('  Exported DB data');
+    }
+
+    /**
+     * Return the path to upgrade files based on the upgrade namespace provided
+     *
+     * @return string
+     */
+    public function upgradePath()
+    {
+        return APPDIR.'/src/'.str_replace('\\', '/', $this->upgradeNamespace);
     }
 
     /**
@@ -97,7 +107,7 @@ class Generate extends Command
             escapeshellarg($this->dbConfig['database']),
             escapeshellarg($this->dbConfig['username']),
             escapeshellarg($this->dbConfig['password']),
-            escapeshellarg($outputPath.Generate::DATA_STRUCTURE_NAME)
+            escapeshellarg($outputPath.Generate::STRUCTURE_FILE)
         );
 
         return shell_exec($command);
@@ -118,7 +128,7 @@ class Generate extends Command
             implode(' ', $tables),
             escapeshellarg($this->dbConfig['username']),
             escapeshellarg($this->dbConfig['password']),
-            escapeshellarg($outputPath.Generate::DATA_FILE_NAME)
+            escapeshellarg($outputPath.Generate::DATA_FILE)
         );
 
         return shell_exec($command);

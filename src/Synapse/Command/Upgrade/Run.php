@@ -2,8 +2,8 @@
 
 namespace Synapse\Command\Upgrade;
 
-use Symfony\Component\Console\Command\Command;
 use Synapse\Command\Upgrade\AbstractUpgradeCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -43,6 +43,13 @@ class Run extends AbstractUpgradeCommand
     protected $runMigrationsCommand;
 
     /**
+     * Generate install file console command object
+     *
+     * @var Symfony\Component\Console\Command\Command
+     */
+    protected $generateInstallCommand;
+
+    /**
      * Inject the root namespace of upgrade classes
      *
      * @param string $upgradeNamespace
@@ -73,12 +80,22 @@ class Run extends AbstractUpgradeCommand
     }
 
     /**
+     * Set the generate install file console command
+     *
+     * @param Symfony\Component\Console\Command\Command
+     */
+    public function setGenerateInstallCommand(Command $command)
+    {
+        $this->generateInstallCommand = $command;
+    }
+
+    /**
      * Configure this console command
      */
     protected function configure()
     {
         $this->setName('upgrade:run')
-            ->setDescription('Run database upgrade')
+            ->setDescription('Run database upgrade for current app version')
             ->addOption(
                 'drop-tables',
                 null,
@@ -90,8 +107,8 @@ class Run extends AbstractUpgradeCommand
     /**
      * Execute this console command
      *
-     * @param  InputInterface  $input
-     * @param  OutputInterface $output
+     * @param  InputInterface  $input  Command line input interface
+     * @param  OutputInterface $output Command line output interface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -111,7 +128,7 @@ class Run extends AbstractUpgradeCommand
         $databaseVersion = $this->currentDatabaseVersion();
 
         if (! $databaseVersion) {
-            $this->install();
+            $this->install($output);
         }
 
         if (version_compare($databaseVersion, $this->appVersion, '>')) {
@@ -156,8 +173,7 @@ class Run extends AbstractUpgradeCommand
     {
         $tables = $this->db->query('SHOW TABLES');
 
-        foreach ($tables as $table)
-        {
+        foreach ($tables as $table) {
             $this->db->query('DROP TABLE '.$table)->execute();
         }
     }
@@ -178,9 +194,70 @@ class Run extends AbstractUpgradeCommand
 
     /**
      * Install fresh version of the database from db_structure and db_data files
+     *
+     * @param  OutputInterface $output Command line output interface
      */
-    protected function install()
+    protected function install(OutputInterface $output)
     {
+        $upgradePath = $this->generateInstallCommand->upgradePath();
+
+        $installFile = true;
+
+        if (! $installFile) {
+            $output->writeln('No install file found. Nothing to do.');
+            return;
+        }
+
+        $output->writeln('  Installing App...');
+
+        // Install the database structure
+        $this->runSql(
+            $upgradePath.DIRECTORY_SEPARATOR.Generate::STRUCTURE_FILE,
+            '  Creating initial database schema',
+            sprintf('  Database schema file %s not found', Generate::STRUCTURE_FILE),
+            $output
+        );
+
+        // Install the database data
+        $this->runSql(
+            $upgradePath.DIRECTORY_SEPARATOR.Generate::DATA_FILE,
+            '  Inserting initial install data',
+            sprintf('  Database install data file %s not found', Generate::DATA_FILE),
+            $output
+        );
+
+        $output->writeln('  Running install script');
+    }
+
+    /**
+     * Given a filepath to a SQL file, load it and run the SQL statements inside
+     *
+     * @param  string $file            Path to SQL file
+     * @param  string $message         Message to output to the console if the file exists
+     * @param  string $notFoundMessage Message to output to the console if the file does not exist
+     */
+    protected function runSql($file, $message, $notFoundMessage, $output)
+    {
+        if (! is_file($file)) {
+            $output->writeln($notFoundMessage);
+
+            return;
+        }
+
+        $output->writeln($message);
+
+        $dataSql = file_get_contents($file);
+
+        // Split the sql file on new lines and insert into the database one line at a time
+        foreach (preg_split('/;\s*\n/', $dataSql) as $command) {
+            try {
+                $query = $this->db->query($command, DbAdapter::QUERY_MODE_EXECUTE);
+            } catch (Database_Exception $e) {
+                if ($e->getCode() !== 1065) { // empty query
+                    throw $e;
+                }
+            }
+        }
     }
 
     /**
