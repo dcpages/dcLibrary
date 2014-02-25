@@ -41,6 +41,11 @@ class Config
         $this->groups = [];
     }
 
+    public function getReaders()
+    {
+        return $this->readers;
+    }
+
     public function load($groupName)
     {
         if (! count($this->readers)) {
