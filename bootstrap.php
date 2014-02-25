@@ -26,7 +26,7 @@ spl_autoload_register(function ($className) {
 $app = new Synapse\Application;
 
 // Store application version
-$app['version'] = '0.1.0';
+$app['version'] = '0.0.0';
 
 // Define acceptable environments
 $environments = array(
@@ -65,12 +65,7 @@ require_once APPDIR.'/services.php';
 // Create routes
 require_once APPDIR.'/routes.php';
 
-/**
- * Set the default time zone.
- *
- * @see  http://docs.kohanaphp.com/about.configuration
- * @see  http://php.net/timezones
- */
+// Set the default time zone.
 date_default_timezone_set('UTC');
 
 $app->run();

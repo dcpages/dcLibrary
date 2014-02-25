@@ -12,7 +12,7 @@ use Zend\Db\Adapter\Adapter as DbAdapter;
 use SplFileObject;
 
 /**
- * Console command to run the current database upgrade. Based on Kohana Minion task-migrations.
+ * Console command to run the current database upgrade. Based on Kohana Minion task-upgrade.
  *
  * Runs the upgrade that matches the version of the current codebase, if such an
  * upgrade is actually found and it has not yet been run.
@@ -96,14 +96,23 @@ class Run extends AbstractUpgradeCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Console message heading padded by a newline
-        $output->write(['', '  -- APP UPGRADE --', '  Executing new migrations before upgrading'], true);
+        $output->write(['', '  -- APP UPGRADE --', ''], true);
+
+        if ($input->getOption('drop-tables')) {
+            $this->dropTables();
+        }
 
         // Run all migrations
+        $output->writeln('  Executing new migrations before upgrading');
         $this->runMigrationsCommand->execute($input, $output);
 
         $this->createAppVersionsTable();
 
         $databaseVersion = $this->currentDatabaseVersion();
+
+        if (! $databaseVersion) {
+            $this->install();
+        }
 
         if (version_compare($databaseVersion, $this->appVersion, '>')) {
             $message = 'Database version (%s) is newer than codebase (%s). Exiting.';
@@ -141,6 +150,40 @@ class Run extends AbstractUpgradeCommand
     }
 
     /**
+     * Drop all tables from the database
+     */
+    protected function dropTables()
+    {
+        $tables = $this->db->query('SHOW TABLES');
+
+        foreach ($tables as $table)
+        {
+            $this->db->query('DROP TABLE '.$table)->execute();
+        }
+    }
+
+    /**
+     * Create app_versions table if not exists
+     */
+    protected function createAppVersionsTable()
+    {
+        $this->db->query(
+            'CREATE TABLE IF NOT EXISTS `app_versions` (
+            `version` VARCHAR(50) NOT NULL,
+            `timestamp` VARCHAR(14) NOT NULL,
+            KEY `timestamp` (`timestamp`))',
+            DbAdapter::QUERY_MODE_EXECUTE
+        );
+    }
+
+    /**
+     * Install fresh version of the database from db_structure and db_data files
+     */
+    protected function install()
+    {
+    }
+
+    /**
      * Return an SplFileObject of the current upgrade file, or false if none exists
      *
      * @param  string             $version
@@ -160,20 +203,6 @@ class Run extends AbstractUpgradeCommand
         }
 
         return false;
-    }
-
-    /**
-     * Create app_versions table if not exists
-     */
-    protected function createAppVersionsTable()
-    {
-        $this->db->query(
-            'CREATE TABLE IF NOT EXISTS `app_versions` (
-            `version` VARCHAR(50) NOT NULL,
-            `timestamp` VARCHAR(14) NOT NULL,
-            KEY `timestamp` (`timestamp`))',
-            DbAdapter::QUERY_MODE_EXECUTE
-        );
     }
 
     /**

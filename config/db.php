@@ -2,5 +2,5 @@
 
 return array(
     'driver' => 'Mysqli',
-    'chaset' => 'utf-8',
+    'charset' => 'utf-8',
 );

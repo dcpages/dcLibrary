@@ -10,10 +10,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * CLI command for creating database upgrades. Based on Kohana Minion task-migrations.
+ * CLI command for creating database upgrades. Based on Kohana Minion task-upgrade.
  *
  * Example usage:
- *     ./console upgrade:create 1.4.1 --expected-version="1.4.0"
+ *     ./console upgrade:create 1.4.1
  */
 class Create extends AbstractUpgradeCommand
 {
