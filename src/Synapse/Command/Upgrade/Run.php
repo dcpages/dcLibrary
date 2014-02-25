@@ -117,6 +117,7 @@ class Run extends AbstractUpgradeCommand
         $output->write(['', '  -- APP UPGRADE --', ''], true);
 
         if ($input->getOption('drop-tables')) {
+            $output->write(['  Dropping tables', ''], true);
             $this->dropTables();
         }
 
@@ -156,7 +157,13 @@ class Run extends AbstractUpgradeCommand
         }
 
         if ($databaseVersion === $this->appVersion) {
-            $output->write(['  The database is up-to-date. Exiting.', ''], true);
+            $message = sprintf(
+                '  Database version and codebase version are the same (%s). Nothing to upgrade.',
+                $databaseVersion
+            );
+
+            $output->write([$message, ''], true);
+
             return;
         }
 
@@ -175,7 +182,7 @@ class Run extends AbstractUpgradeCommand
         $upgrade = new $class;
 
         $output->writeln(sprintf(
-            '  Upgrading from version %s to version %s...',
+            '  Upgrading from version %s to version %s',
             $databaseVersion ?: '(empty)',
             $this->appVersion
         ));
