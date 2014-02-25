@@ -8,6 +8,7 @@
         "bshaffer/oauth2-server-httpfoundation-bridge": "v1.0"
     },
     "require-dev": {
-        "silex/web-profiler": "~1.0"
+        "silex/web-profiler": "~1.0",
+        "phpunit/phpunit": "~3.7"
     }
 }
