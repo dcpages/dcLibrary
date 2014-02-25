@@ -3,6 +3,7 @@
 namespace Synapse\Command\Upgrade;
 
 use Synapse\Command\Upgrade\AbstractUpgradeCommand;
+use Synapse\Upgrade\AbstractUpgrade;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -119,17 +120,33 @@ class Run extends AbstractUpgradeCommand
             $this->dropTables();
         }
 
+        $this->createAppVersionsTable();
+
+        if (! $databaseVersion = $this->currentDatabaseVersion()) {
+            // Ensure that install class exists
+            $upgradeNamespace = $this->generateInstallCommand->getUpgradeNamespace();
+            $installClass     = $upgradeNamespace.'Install';
+
+            if (! class_exists($installClass)) {
+                $output->writeln(
+                    sprintf('No install class found at %s. Nothing to do.', $installClass)
+                );
+
+                return;
+            }
+
+            $this->install(
+                new $installClass,
+                $output
+            );
+
+            // Refresh database version
+            $databaseVersion = $this->currentDatabaseVersion();
+        }
+
         // Run all migrations
         $output->writeln('  Executing new migrations before upgrading');
         $this->runMigrationsCommand->execute($input, $output);
-
-        $this->createAppVersionsTable();
-
-        $databaseVersion = $this->currentDatabaseVersion();
-
-        if (! $databaseVersion) {
-            $this->install($output);
-        }
 
         if (version_compare($databaseVersion, $this->appVersion, '>')) {
             $message = 'Database version (%s) is newer than codebase (%s). Exiting.';
@@ -157,7 +174,11 @@ class Run extends AbstractUpgradeCommand
 
         $upgrade = new $class;
 
-        $output->writeln(sprintf('  Upgrading to version %s...', $this->appVersion));
+        $output->writeln(sprintf(
+            '  Upgrading from version %s to version %s...',
+            $databaseVersion ?: '(empty)',
+            $this->appVersion
+        ));
 
         $upgrade->execute($this->db);
 
@@ -171,10 +192,13 @@ class Run extends AbstractUpgradeCommand
      */
     protected function dropTables()
     {
-        $tables = $this->db->query('SHOW TABLES');
+        $tables = $this->db->query('SHOW TABLES', DbAdapter::QUERY_MODE_EXECUTE);
 
         foreach ($tables as $table) {
-            $this->db->query('DROP TABLE '.$table)->execute();
+            $this->db->query(
+                'DROP TABLE '.reset($table),
+                DbAdapter::QUERY_MODE_EXECUTE
+            );
         }
     }
 
@@ -195,18 +219,12 @@ class Run extends AbstractUpgradeCommand
     /**
      * Install fresh version of the database from db_structure and db_data files
      *
-     * @param  OutputInterface $output Command line output interface
+     * @param  Synapse\Upgrade\AbstractUpgrade $installScript
+     * @param  OutputInterface                 $output        Command line output interface
      */
-    protected function install(OutputInterface $output)
+    protected function install(AbstractUpgrade $installScript, OutputInterface $output)
     {
         $upgradePath = $this->generateInstallCommand->upgradePath();
-
-        $installFile = true;
-
-        if (! $installFile) {
-            $output->writeln('No install file found. Nothing to do.');
-            return;
-        }
 
         $output->writeln('  Installing App...');
 
@@ -221,12 +239,16 @@ class Run extends AbstractUpgradeCommand
         // Install the database data
         $this->runSql(
             $upgradePath.DIRECTORY_SEPARATOR.Generate::DATA_FILE,
-            '  Inserting initial install data',
-            sprintf('  Database install data file %s not found', Generate::DATA_FILE),
+            '  Inserting initial data',
+            sprintf('  Database data file %s not found', Generate::DATA_FILE),
             $output
         );
 
         $output->writeln('  Running install script');
+
+        $installScript->execute($this->db);
+
+        $output->write(['  Install completed!', ''], true);
     }
 
     /**

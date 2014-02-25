@@ -60,6 +60,16 @@ class Generate extends Command
     }
 
     /**
+     * Return the upgrade namespace
+     *
+     * @return string
+     */
+    public function getUpgradeNamespace()
+    {
+        return $this->upgradeNamespace;
+    }
+
+    /**
      * Set name, description, arguments, and options for this console command
      */
     protected function configure()
@@ -78,11 +88,13 @@ class Generate extends Command
     {
         $outputPath = $this->upgradePath();
 
+        $output->write(['', '  Generating install files...', ''], true);
+
         $this->dumpStructure($outputPath);
         $output->writeln('  Exported DB structure');
 
         $this->dumpData($outputPath);
-        $output->writeln('  Exported DB data');
+        $output->write(['  Exported DB data', ''], true);
     }
 
     /**
