@@ -88,7 +88,7 @@ class Generate extends Command
      */
     protected function configure()
     {
-        $this->setName('upgrade:generate')
+        $this->setName('install:generate')
             ->setDescription('Generate database install files to match the current database');
     }
 
@@ -147,6 +147,14 @@ class Generate extends Command
     protected function dumpData($outputPath)
     {
         $tables = array_map('escapeshellarg', Arr::get($this->installConfig, 'dataTables', []));
+
+        /**
+         *  Do not attempt to create an empty data install file if no tables are to be exported.
+         *  Otherwise all tables will be exported.
+         */
+        if (! $tables) {
+            return;
+        }
 
         $command = sprintf(
             'mysqldump %s %s -u %s -p%s --no-create-info > %s',
