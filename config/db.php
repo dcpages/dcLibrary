@@ -1,6 +1,7 @@
 <?php
 
 return [
-    'driver' => 'Pdo_Mysql',
-    'chaset' => 'utf-8',
+    'driver'  => 'Pdo_Mysql',
+    'charset' => 'utf-8',
+    'socket'  => false,
 ];
