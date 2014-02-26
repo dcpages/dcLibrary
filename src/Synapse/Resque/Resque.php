@@ -7,12 +7,7 @@ use Resque as ResqueLib;
 
 class Resque
 {
-    public static function factory($config = [])
-    {
-        return new Resque($config);
-    }
-
-    protected function __construct($config = [])
+    public function __construct($config = [])
     {
         ResqueLib::setBackend(Arr::get($config, 'host'));
     }
