@@ -15,13 +15,6 @@ abstract class AbstractEntity
     protected $object = [];
 
     /**
-     * Validation rules
-     *
-     * @var array
-     */
-    protected $rules = [];
-
-    /**
      * Handle magic getters and setters
      *
      * @param  string $method Name of the method called
@@ -130,29 +123,5 @@ abstract class AbstractEntity
     public function isNew()
     {
         return $this->getId() ? false : true;
-    }
-
-    /**
-     * Runs the class's set validation rules given a property name and a value
-     *
-     * @param  string $property The property name
-     * @param  mixed  $value    The value to check
-     * @return boolean
-     */
-    protected function processRules($property, $value)
-    {
-        if (! array_key_exists($property, $this->rules)) {
-            return true;
-        }
-
-        $rules = $this->rules[$property];
-
-        $validation = Validation::factory([
-            $property => $value
-        ]);
-
-        $validation->rules($property, $rules);
-
-        return $validation->check();
     }
 }
