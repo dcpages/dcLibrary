@@ -4,21 +4,21 @@ namespace Synapse\Mapper;
 
 use Synapse\Stdlib\Arr;
 use Synapse\Entity\AbstractEntity as AbstractEntity;
+use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Insert;
-use Zend\Db\Sql\Update;
-use Zend\Db\Sql\Delete;
 use Zend\Db\Sql\PreparableSqlInterface;
 
+/**
+ * An abstract class for mapping database records to entity objects
+ */
 abstract class AbstractMapper
 {
     /**
-     * Sql query builder
+     * Database adapter
      *
-     * @var Zend\Db\Sql\Sql
+     * @var DbAdapter
      */
-    protected $sql;
+    protected $dbAdapter;
 
     /**
      * Entity prototype used to return hydrated entities
@@ -37,13 +37,13 @@ abstract class AbstractMapper
     /**
      * Set injected objects as properties
      *
-     * @param Sql            $db        Query builder object
+     * @param DbAdapter      $db        Query builder object
      * @param AbstractEntity $prototype Entity prototype
      */
-    public function __construct(Sql $sql, AbstractEntity $prototype = null)
+    public function __construct(DbAdapter $dbAdapter, AbstractEntity $prototype = null)
     {
+        $this->dbAdapter = $dbAdapter;
         $this->prototype = $prototype;
-        $this->sql       = $sql;
     }
 
     /**
@@ -54,7 +54,7 @@ abstract class AbstractMapper
      */
     public function findBy(array $fields)
     {
-        $query = $this->select()->from($this->tableName);
+        $query = $this->sql()->select();
 
         foreach ($fields as $name => $value) {
             $query->where([$name => $value]);
@@ -89,7 +89,7 @@ abstract class AbstractMapper
      */
     public function findAllBy($fields, array $options = [])
     {
-        $query = $this->select()->from($this->tableName);
+        $query = $this->sql()->select();
 
         foreach ($fields as $name => $value) {
             $query->where([$name => $value]);
@@ -100,7 +100,6 @@ abstract class AbstractMapper
         $results = $this->execute($query);
 
         $entities = [];
-
         foreach ($results as $data) {
             if (! $data) {
                 $data = [];
@@ -163,10 +162,13 @@ abstract class AbstractMapper
      */
     public function delete(AbstractEntity $entity)
     {
-        $query = new Delete;
+        $condition = [
+            'id' => $entity->getId()
+        ];
 
-        $query->from($this->tableName)
-            ->where(['id' => $entity->getId()]);
+        $query = $this->sql()
+            ->delete()
+            ->where($condition);
 
         return $this->execute($query);
     }
@@ -183,9 +185,8 @@ abstract class AbstractMapper
 
         $columns = array_keys($values);
 
-        $query = new Insert;
-
-        $query->into($this->tableName)
+        $query = $this->sql()
+            ->insert()
             ->columns($columns)
             ->values($values);
 
@@ -208,11 +209,12 @@ abstract class AbstractMapper
 
         unset($dbValueArray['id']);
 
-        $query = new Update;
+        $condition = ['id' => $entity->getId()];
 
-        $query->table($this->tableName)
+        $query = $this->sql()
+            ->update()
             ->set($dbValueArray)
-            ->where(['id' => $entity->getId()]);
+            ->where($condition);
 
         $this->execute($query);
 
@@ -238,16 +240,6 @@ abstract class AbstractMapper
     {
         $this->prototype = $prototype;
         return $this;
-    }
-
-    /**
-     * Return new Zend Select object for easy method chaining
-     *
-     * @return Select
-     */
-    protected function select()
-    {
-        return new Select;
     }
 
     /**
@@ -288,8 +280,18 @@ abstract class AbstractMapper
      */
     protected function execute(PreparableSqlInterface $query)
     {
-        $statement = $this->sql->prepareStatementForSqlObject($query);
+        $statement = $this->sql()->prepareStatementForSqlObject($query);
 
         return $statement->execute();
+    }
+
+    /**
+     * Return a new Sql object with Zend Db Adapter and table name injected
+     *
+     * @return Sql
+     */
+    protected function sql()
+    {
+        return new Sql($this->dbAdapter, $this->tableName);
     }
 }
