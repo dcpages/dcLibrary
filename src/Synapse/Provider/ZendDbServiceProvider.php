@@ -2,10 +2,10 @@
 
 namespace Synapse\Provider;
 
-use Synapse\Db\TableGatewayFactory as TableGatewayFactory;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Sql\Sql;
 
 class ZendDbServiceProvider implements ServiceProviderInterface
 {
@@ -15,8 +15,8 @@ class ZendDbServiceProvider implements ServiceProviderInterface
             return new Adapter($app['config']->load('db'));
         });
 
-        $app['tableGatewayFactory'] = $app->share(function () use ($app) {
-            return new TableGatewayFactory($app['db']);
+        $app['sql'] = $app->share(function () use ($app) {
+            return new Sql($app['db']);
         });
     }
 
