@@ -46,6 +46,12 @@ abstract class AbstractMapper
         $this->sql       = $sql;
     }
 
+    /**
+     * Find a single entity by specific field values
+     *
+     * @param  array  $fields Associative array where key is field and value is the value
+     * @return AbstractEntity|bool
+     */
     public function findBy(array $fields)
     {
         $query = $this->select()->from($this->tableName);
@@ -63,11 +69,24 @@ abstract class AbstractMapper
         return $this->fromArray(clone $this->getPrototype(), $data);
     }
 
+    /**
+     * Find a single entity by ID
+     *
+     * @param  int|string $id Entity ID
+     * @return AbstractEntity|bool
+     */
     public function findById($id)
     {
         return $this->findBy(['id' => $id]);
     }
 
+    /**
+     * Find all entities matching specific field values
+     *
+     * @param  array $fields  Associative array where key is field and value is the value
+     * @param  array $options Array of options for this request
+     * @return array          Array of AbstractEntity objects
+     */
     public function findAllBy($fields, array $options = [])
     {
         $query = $this->select()->from($this->tableName);
@@ -93,11 +112,24 @@ abstract class AbstractMapper
         return $entities;
     }
 
+    /**
+     * Find all entities in this table
+     *
+     * @param  array $options Array of options for this request
+     * @return array          Array of AbstractEntity objects
+     */
     public function findAll(array $options = [])
     {
         return $this->findAllBy([], $options);
     }
 
+    /**
+     * Create a new entity of this type, populating its data from an array
+     *
+     * @param  AbstractEntity $entity
+     * @param  array          $data
+     * @return AbstractEntity
+     */
     public function fromArray($entity, array $data)
     {
         foreach ($data as $field => $value) {
@@ -108,15 +140,27 @@ abstract class AbstractMapper
         return $entity;
     }
 
+    /**
+     * Persist this entity, inserting it if new and otherwise updating it
+     *
+     * @param  AbstractEntity $entity
+     * @return AbstractEntity
+     */
     public function persist(AbstractEntity $entity)
     {
-        if ($entity->getId()) {
-            return $this->update($entity);
-        } else {
+        if ($entity->isNew()) {
             return $this->insert($entity);
         }
+
+        return $this->update($entity);
     }
 
+    /**
+     * Delete record corresponding to this entity
+     *
+     * @param  AbstractEntity $entity
+     * @return Result
+     */
     public function delete(AbstractEntity $entity)
     {
         $query = new Delete;
@@ -127,6 +171,12 @@ abstract class AbstractMapper
         return $this->execute($query);
     }
 
+    /**
+     * Insert the given entity into the database
+     *
+     * @param  AbstractEntity $entity
+     * @return AbstractEntity         Entity with ID populated
+     */
     public function insert(AbstractEntity $entity)
     {
         $values = $entity->getDbValues();
@@ -146,6 +196,12 @@ abstract class AbstractMapper
         return $entity;
     }
 
+    /**
+     * Update the given entity in the database
+     *
+     * @param  AbstractEntity $entity
+     * @return AbstractEntity
+     */
     public function update(AbstractEntity $entity)
     {
         $dbValueArray = $entity->getDbValues();
@@ -163,22 +219,43 @@ abstract class AbstractMapper
         return $entity;
     }
 
+    /**
+     * Return the entity prototype
+     *
+     * @return AbstractEntity
+     */
     public function getPrototype()
     {
         return $this->prototype;
     }
 
-    public function setPrototype($prototype)
+    /**
+     * Set the entity prototype for this mapper
+     *
+     * @param AbstractEntity $prototype
+     */
+    public function setPrototype(AbstractEntity $prototype)
     {
         $this->prototype = $prototype;
         return $this;
     }
 
+    /**
+     * Return new Zend Select object for easy method chaining
+     *
+     * @return Select
+     */
     protected function select()
     {
         return new Select;
     }
 
+    /**
+     * Set the order on the given query
+     *
+     * @param Select $query
+     * @param array  $options Array of options which may or may not include `order`
+     */
     protected function setOrder($query, $options)
     {
         if (! Arr::get($options, 'order')) {
@@ -203,6 +280,12 @@ abstract class AbstractMapper
         return $query;
     }
 
+    /**
+     * Execute a given query
+     *
+     * @param  PreparableSqlInterface $query Query to be executed
+     * @return Result
+     */
     protected function execute(PreparableSqlInterface $query)
     {
         $statement = $this->sql->prepareStatementForSqlObject($query);

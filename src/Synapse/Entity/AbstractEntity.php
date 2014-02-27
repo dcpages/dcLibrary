@@ -7,8 +7,18 @@ use Synapse\Stdlib\Arr;
 
 abstract class AbstractEntity
 {
+    /**
+     * Entity data
+     *
+     * @var array
+     */
     protected $object = [];
 
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
     protected $rules = [];
 
     /**
@@ -64,7 +74,7 @@ abstract class AbstractEntity
     /**
      * Get all columns of this entity
      *
-     * @return [type] [description]
+     * @return array
      */
     public function getColumns()
     {
@@ -84,11 +94,22 @@ abstract class AbstractEntity
         return Arr::extract($this->asArray(), $this->getColumns());
     }
 
+    /**
+     * Return this entity as an array
+     *
+     * @return array
+     */
     public function asArray()
     {
         return $this->object;
     }
 
+    /**
+     * Load object data in this entity from array
+     *
+     * @param  array  $values Entity data to be set
+     * @return AbstractEntity
+     */
     public function fromArray(array $values)
     {
         foreach ($this->object as $key => $value) {
@@ -101,6 +122,11 @@ abstract class AbstractEntity
         return $this;
     }
 
+    /**
+     * Determine if this entity is new (not yet persisted) by checking for existence of an ID
+     *
+     * @return boolean
+     */
     public function isNew()
     {
         return $this->getId() ? false : true;
@@ -109,8 +135,8 @@ abstract class AbstractEntity
     /**
      * Runs the class's set validation rules given a property name and a value
      *
-     * @param  string $property the property name
-     * @param  mixed  $value    the value to check
+     * @param  string $property The property name
+     * @param  mixed  $value    The value to check
      * @return boolean
      */
     protected function processRules($property, $value)
