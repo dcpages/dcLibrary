@@ -3,8 +3,9 @@
 namespace Synapse\Mapper;
 
 use Synapse\Stdlib\Arr;
-use Zend\Db\Adapter\Adapter as DbAdapter;
+use Synapse\Db\TableGatewayFactory;
 use Synapse\Entity\AbstractEntity as AbstractEntity;
+use Zend\Db\Adapter\Adapter as DbAdapter;
 
 abstract class AbstractMapper
 {
@@ -14,6 +15,13 @@ abstract class AbstractMapper
      * @var Zend\Db\Adapter\Adapter
      */
     protected $db;
+
+    /**
+     * Database table gateway
+     *
+     * @var Zend\Db\TableGateway\TableGateway
+     */
+    protected $tableGateway;
 
     /**
      * @var string
@@ -28,23 +36,23 @@ abstract class AbstractMapper
     /**
      * @var string
      */
-    protected $tableName = '';
+    protected $tableName;
 
     /**
      * Set injected objects as properties
      * @param DbAdapter      $db        Database adapter
      * @param AbstractEntity $prototype Entity prototype
      */
-    public function __construct(DbAdapter $db, AbstractEntity $prototype = null)
+    public function __construct(TableGatewayFactory $tableGatewayFactory, AbstractEntity $prototype = null)
     {
         $this->prototype = $prototype;
 
-        $this->db = $db;
+        $this->tableGateway = $tableGatewayFactory->factory($this->tableName);
     }
 
     public function findBy(array $fields)
     {
-        $query = DB::select()
+        $query = $this->tableGateway->select()
             ->from($this->_table_name);
 
         foreach ($fields as $name => $value) {
@@ -64,22 +72,20 @@ abstract class AbstractMapper
 
     public function findById($id)
     {
-        return $this->find_by(['id' => $id]);
+        return $this->findBy(['id' => $id]);
     }
 
     public function findAllBy($fields, array $options = [])
     {
-        $query = DB::select()
-            ->from($this->_table_name);
+        $query = $this->tableGateway->select();
 
         foreach ($fields as $name => $value) {
             $query->where($name, '=', $value);
         }
 
-        $this->_set_order($query, $options);
+        $this->setOrder($query, $options);
 
-        $results = $query
-            ->execute($this->_db);
+        $results = $query;
 
         $entities = [];
 
@@ -88,7 +94,7 @@ abstract class AbstractMapper
                 $data = [];
             }
 
-            $entities[] = $this->from_array(clone $this->get_prototype(), $data);
+            $entities[] = $this->fromArray(clone $this->getPrototype(), (array) $data);
         };
 
         return $entities;
@@ -96,13 +102,13 @@ abstract class AbstractMapper
 
     public function findAll(array $options = [])
     {
-        return $this->find_all_by([], $options);
+        return $this->findAllBy([], $options);
     }
 
     public function fromArray($entity, array $data)
     {
         foreach ($data as $field => $value) {
-            $setter = 'set_'.$field;
+            $setter = 'set'.ucfirst($field);
             $entity->$setter($value);
         }
 
@@ -120,29 +126,29 @@ abstract class AbstractMapper
 
     public function insert(AbstractEntity $entity)
     {
-        $db_value_array = $entity->get_db_values();
+        $db_value_array = $entity->getDbValues();
 
         $keys = array_keys($db_value_array);
         $values = array_values($db_value_array);
 
-        list($id, $_) = DB::insert($this->_table_name, $keys)
+        list($id, $_) = $this->tableGateway->insert($this->_table_name, $keys)
             ->values($values)
             ->execute($this->_db);
 
-        $entity->set_id($id);
+        $entity->setId($id);
 
         return $entity;
     }
 
     public function update(AbstractEntity $entity)
     {
-        $db_value_array = $entity->get_db_values();
+        $db_value_array = $entity->getDbValues();
 
         unset($db_value_array['id']);
 
-        DB::update($this->_table_name)
+        $this->tableGateway->update($this->_table_name)
             ->set($db_value_array)
-            ->where('id', '=', $entity->get_id())
+            ->where('id', '=', $entity->getId())
             ->execute($this->_db);
 
         return $entity;
@@ -161,24 +167,24 @@ abstract class AbstractMapper
 
     protected function setOrder($query, $options)
     {
-        if (! Arr::get($options, 'order_by')) {
+        if (! Arr::get($options, 'orderBy')) {
             return $query;
         }
 
         // Can specify order as [['column', 'direction'], ['column', 'direction']].
-        if (is_array($options['order_by'])) {
-            foreach ($options['order_by'] as $order_by) {
-                if (is_array($order_by)) {
-                    $query->order_by(
-                        Arr::get($order_by, 0),
-                        Arr::get($order_by, 1)
+        if (is_array($options['orderBy'])) {
+            foreach ($options['orderBy'] as $orderBy) {
+                if (is_array($orderBy)) {
+                    $query->orderBy(
+                        Arr::get($orderBy, 0),
+                        Arr::get($orderBy, 1)
                     );
                 } else {
-                    $query->order_by($order_by);
+                    $query->orderBy($orderBy);
                 }
             }
         } else { // Also support just a single ascending value
-            return $query->order_by($options['order_by']);
+            return $query->orderBy($options['orderBy']);
         }
 
         return $query;
