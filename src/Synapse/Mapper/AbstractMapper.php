@@ -8,6 +8,8 @@ use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Update;
+use Zend\Db\Sql\Delete;
+use Zend\Db\Sql\PreparableSqlInterface;
 
 abstract class AbstractMapper
 {
@@ -52,9 +54,7 @@ abstract class AbstractMapper
             $query->where([$name => $value]);
         }
 
-        $data = $this->sql->prepareStatementForSqlObject($query)
-            ->execute()
-            ->current();
+        $data = $this->execute($query)->current();
 
         if (! $data) {
             return false;
@@ -78,7 +78,7 @@ abstract class AbstractMapper
 
         $this->setOrder($query, $options);
 
-        $results = $this->sql->prepareStatementForSqlObject($query)->execute();
+        $results = $this->execute($query);
 
         $entities = [];
 
@@ -117,6 +117,16 @@ abstract class AbstractMapper
         }
     }
 
+    public function delete(AbstractEntity $entity)
+    {
+        $query = new Delete;
+
+        $query->from($this->tableName)
+            ->where(['id' => $entity->getId()]);
+
+        return $this->execute($query);
+    }
+
     public function insert(AbstractEntity $entity)
     {
         $values = $entity->getDbValues();
@@ -129,8 +139,7 @@ abstract class AbstractMapper
             ->columns($columns)
             ->values($values);
 
-        $result = $this->sql->prepareStatementForSqlObject($query)
-            ->execute();
+        $result = $this->execute($query);
 
         $entity->setId($result->getGeneratedValue());
 
@@ -149,8 +158,7 @@ abstract class AbstractMapper
             ->set($dbValueArray)
             ->where(['id' => $entity->getId()]);
 
-        $result = $this->sql->prepareStatementForSqlObject($query)
-            ->execute();
+        $this->execute($query);
 
         return $entity;
     }
@@ -193,5 +201,12 @@ abstract class AbstractMapper
         }
 
         return $query;
+    }
+
+    protected function execute(PreparableSqlInterface $query)
+    {
+        $statement = $this->sql->prepareStatementForSqlObject($query);
+
+        return $statement->execute();
     }
 }
