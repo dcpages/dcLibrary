@@ -5,6 +5,9 @@ namespace Synapse\Entity;
 use InvalidArgumentException;
 use Synapse\Stdlib\Arr;
 
+/**
+ * An abstract class for representing database records as entity objects
+ */
 abstract class AbstractEntity
 {
     /**
@@ -48,14 +51,6 @@ abstract class AbstractEntity
             // Return the property
             return $this->object[$property];
         } elseif ($type === 'set') {
-            // Check the rules
-            if (array_key_exists($property, $this->rules)) {
-                // Run the rules
-                if (! $this->processRules($property, $args[0])) {
-                    throw new InvalidArgumentException('Invalid value for '.$property);
-                }
-            }
-
             // Set the property
             $this->object[$property] = $args[0];
 
