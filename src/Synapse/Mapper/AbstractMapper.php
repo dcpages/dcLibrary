@@ -6,6 +6,8 @@ use Synapse\Stdlib\Arr;
 use Synapse\Entity\AbstractEntity as AbstractEntity;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Insert;
+use Zend\Db\Sql\Update;
 
 abstract class AbstractMapper
 {
@@ -117,16 +119,20 @@ abstract class AbstractMapper
 
     public function insert(AbstractEntity $entity)
     {
-        $dbValueArray = $entity->getDbValues();
+        $values = $entity->getDbValues();
 
-        $keys = array_keys($dbValueArray);
-        $values = array_values($dbValueArray);
+        $columns = array_keys($values);
 
-        list($id, $_) = $this->sql->insert($this->tableName, $keys)
-            ->values($values)
-            ->execute($this->_db);
+        $query = new Insert;
 
-        $entity->setId($id);
+        $query->into($this->tableName)
+            ->columns($columns)
+            ->values($values);
+
+        $result = $this->sql->prepareStatementForSqlObject($query)
+            ->execute();
+
+        $entity->setId($result->getGeneratedValue());
 
         return $entity;
     }
@@ -137,10 +143,14 @@ abstract class AbstractMapper
 
         unset($dbValueArray['id']);
 
-        $this->sql->update($this->tableName)
+        $query = new Update;
+
+        $query->table($this->tableName)
             ->set($dbValueArray)
-            ->where('id', '=', $entity->getId())
-            ->execute($this->_db);
+            ->where(['id' => $entity->getId()]);
+
+        $result = $this->sql->prepareStatementForSqlObject($query)
+            ->execute();
 
         return $entity;
     }
