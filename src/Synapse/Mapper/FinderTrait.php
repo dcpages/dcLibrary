@@ -2,6 +2,8 @@
 
 namespace Synapse\Mapper;
 
+use Synapse\Stdlib\Arr;
+
 /**
  * Use this trait to add find functionality to AbstractMappers.
  */

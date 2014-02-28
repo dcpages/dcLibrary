@@ -23,9 +23,9 @@ class UserServiceProvider implements ServiceProviderInterface
             return new UserEntity;
         };
 
-        $app['user.mapper'] = function () {
-            return new UserMapper;
-        }
+        $app['user.mapper'] = $app->share(function () use ($app) {
+            return new UserMapper($app['db'], $app['user.entity']);
+        });
     }
 
     /**
@@ -33,7 +33,7 @@ class UserServiceProvider implements ServiceProviderInterface
      *
      * @param  Application $app
      */
-    public function boot()
+    public function boot(Application $app)
     {
         // noop
     }
