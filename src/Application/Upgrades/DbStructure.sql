@@ -30,6 +30,7 @@ DROP TABLE IF EXISTS `pvt_roles_users`;
 CREATE TABLE `pvt_roles_users` (
   `role_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`role_id`, `user_id`),
   KEY `fk_pvt_roles_users_role_id` (`role_id`),
   KEY `fk_pvt_roles_users_user_id` (`user_id`),
   CONSTRAINT `fk_pvt_roles_users_role_id` FOREIGN KEY (`role_id`) REFERENCES `user_roles` (`id`) ON DELETE CASCADE,
