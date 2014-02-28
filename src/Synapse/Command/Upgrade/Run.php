@@ -231,13 +231,13 @@ class Run extends AbstractUpgradeCommand
      */
     protected function install(AbstractUpgrade $installScript, OutputInterface $output)
     {
-        $upgradePath = $this->generateInstallCommand->upgradePath();
+        $dataPath = $this->generateInstallCommand->dataPath();
 
         $output->writeln('  Installing App...');
 
         // Install the database structure
         $this->runSql(
-            $upgradePath.DIRECTORY_SEPARATOR.Generate::STRUCTURE_FILE,
+            $dataPath.DIRECTORY_SEPARATOR.Generate::STRUCTURE_FILE,
             '  Creating initial database schema',
             sprintf('  Database schema file %s not found', Generate::STRUCTURE_FILE),
             $output
@@ -245,7 +245,7 @@ class Run extends AbstractUpgradeCommand
 
         // Install the database data
         $this->runSql(
-            $upgradePath.DIRECTORY_SEPARATOR.Generate::DATA_FILE,
+            $dataPath.DIRECTORY_SEPARATOR.Generate::DATA_FILE,
             '  Inserting initial data',
             sprintf('  Database data file %s not found', Generate::DATA_FILE),
             $output

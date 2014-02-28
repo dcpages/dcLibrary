@@ -100,7 +100,7 @@ class Generate extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $outputPath = $this->upgradePath();
+        $outputPath = $this->dataPath();
 
         $output->write(['', '  Generating install files...', ''], true);
 
@@ -116,9 +116,9 @@ class Generate extends Command
      *
      * @return string
      */
-    public function upgradePath()
+    public function dataPath()
     {
-        return APPDIR.'/src/'.str_replace('\\', '/', $this->upgradeNamespace);
+        return APPDIR.'/data/';
     }
 
     /**
