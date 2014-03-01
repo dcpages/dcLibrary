@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a6ccf76b36303451db98fba32b036ccc",
+    "hash": "ab85fa49eca6d9d198ae3dc4e948742e",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -34,9 +34,9 @@
             ],
             "authors": [
                 {
-                    "name": "Brent Shaffer",
+                    "name": "العاب",
                     "email": "bshafs@gmail.com",
-                    "homepage": "http://brentertainment.com"
+                    "homepage": "http://astaza.com"
                 }
             ],
             "description": "A bridge to HttpFoundation for oauth2-server-php",
@@ -800,6 +800,50 @@
                 "zf2"
             ],
             "time": "2013-10-20 06:00:13"
+        },
+        {
+            "name": "zendframework/zend-stdlib",
+            "version": "2.2.5",
+            "target-dir": "Zend/Stdlib",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/Component_ZendStdlib.git",
+                "reference": "f440ecfc828d61d620662a03987c8287e1e4801e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/f440ecfc828d61d620662a03987c8287e1e4801e",
+                "reference": "f440ecfc828d61d620662a03987c8287e1e4801e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "suggest": {
+                "zendframework/zend-eventmanager": "To support aggregate hydrator usage",
+                "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev",
+                    "dev-develop": "2.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Zend\\Stdlib\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "keywords": [
+                "stdlib",
+                "zf2"
+            ],
+            "time": "2013-10-20 06:00:20"
         }
     ],
     "packages-dev": [
