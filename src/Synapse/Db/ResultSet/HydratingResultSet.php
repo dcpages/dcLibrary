@@ -21,7 +21,7 @@ class HydratingResultSet extends ZendHydratingResultSet
      */
     public function toEntityArray()
     {
-        $return = array();
+        $return = [];
         foreach ($this as $row) {
             $return[] = $row;
         }
