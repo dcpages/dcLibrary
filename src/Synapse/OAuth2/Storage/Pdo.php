@@ -21,6 +21,20 @@ class Pdo extends BasePdoStorage
     }
 
     /**
+     * Get the user as an array
+     *
+     * @param  string $email the user's email address
+     * @return array
+     */
+    public function getUserDetails($email)
+    {
+        $user = $this->getUser($email);
+        return array(
+            'user_id' => $user->getId(),
+        );
+    }
+
+    /**
      * Get the user to check their credentials
      *
      * @param  string $email the user's email address
@@ -45,6 +59,6 @@ class Pdo extends BasePdoStorage
      */
     public function checkPassword($user, $password)
     {
-        return password_verify($user->getPassword(), $password);
+        return password_verify($password, $user->getPassword());
     }
 }

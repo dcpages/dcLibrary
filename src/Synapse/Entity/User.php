@@ -16,7 +16,7 @@ class User extends AbstractEntity
         'id'         => null,
         'email'      => null,
         'password'   => null,
-        'last_login' => null,
+        'lastLogin'  => null,
         'created'    => null,
         'enabled'    => null,
     ];
