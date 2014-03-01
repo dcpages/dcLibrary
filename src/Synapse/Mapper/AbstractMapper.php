@@ -45,6 +45,13 @@ abstract class AbstractMapper
     protected $tableName;
 
     /**
+     * The hydrator used to create entities from database results
+     *
+     * @var Zend\Stdlib\Hydrator\HydratorInterface
+     */
+    protected $hydrator;
+
+    /**
      * Set injected objects as properties
      *
      * @param DbAdapter      $db        Query builder object
@@ -98,8 +105,8 @@ abstract class AbstractMapper
             return;
         }
 
-        if (!is_object($this->entityPrototype)) {
-            $this->entityPrototype = new ArrayObject;
+        if (!is_object($this->prototype)) {
+            $this->prototype = new ArrayObject;
         }
 
         if (!$this->hydrator instanceof HydratorInterface) {
@@ -119,7 +126,7 @@ abstract class AbstractMapper
 
         $statement = $this->sql()->prepareStatementForSqlObject($query);
 
-        $resultSet = new HydratingResultSet($this->hydrator, $this->entityPrototype);
+        $resultSet = new HydratingResultSet($this->hydrator, $this->prototype);
         return $resultSet->initialize($statement->execute());
     }
 

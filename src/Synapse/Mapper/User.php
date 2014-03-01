@@ -21,4 +21,9 @@ class User extends AbstractMapper
      * @var string
      */
     protected $tableName = 'users';
+
+    public function findByEmail($email)
+    {
+        return $this->findBy(array('email' => $email));
+    }
 }
