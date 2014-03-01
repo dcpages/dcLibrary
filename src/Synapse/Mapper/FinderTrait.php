@@ -25,11 +25,11 @@ trait FinderTrait
 
         $data = $this->execute($query)->current();
 
-        if (! $data) {
+        if (! $data || count($data) === 0) {
             return false;
         }
 
-        return $this->fromArray(clone $this->getPrototype(), $data);
+        return $data[0];
     }
 
     /**
@@ -60,16 +60,8 @@ trait FinderTrait
 
         $this->setOrder($query, $options);
 
-        $results = $this->execute($query);
-
-        $entities = [];
-        foreach ($results as $data) {
-            if (! $data) {
-                $data = [];
-            }
-
-            $entities[] = $this->fromArray(clone $this->getPrototype(), (array) $data);
-        };
+        $entities = $this->execute($query)
+            ->toEntityArray();
 
         return $entities;
     }

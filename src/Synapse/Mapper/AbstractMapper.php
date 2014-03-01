@@ -4,15 +4,25 @@ namespace Synapse\Mapper;
 
 use Synapse\Stdlib\Arr;
 use Synapse\Entity\AbstractEntity as AbstractEntity;
+use Synapse\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\PreparableSqlInterface;
+use Zend\Stdlib\Hydrator\HydratorInterface;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 /**
  * An abstract class for mapping database records to entity objects
  */
 abstract class AbstractMapper
 {
+    /**
+     * Whether the object has been initialized yet
+     *
+     * @var boolean
+     */
+    protected $initialized = false;
+
     /**
      * Database adapter
      *
@@ -44,23 +54,6 @@ abstract class AbstractMapper
     {
         $this->dbAdapter = $dbAdapter;
         $this->prototype = $prototype;
-    }
-
-    /**
-     * Create a new entity of this type, populating its data from an array
-     *
-     * @param  AbstractEntity $entity
-     * @param  array          $data
-     * @return AbstractEntity
-     */
-    public function fromArray($entity, array $data)
-    {
-        foreach ($data as $field => $value) {
-            $setter = 'set'.ucfirst($field);
-            $entity->$setter($value);
-        }
-
-        return $entity;
     }
 
     /**
@@ -99,17 +92,35 @@ abstract class AbstractMapper
         return $this;
     }
 
+    protected function initialize()
+    {
+        if ($this->initialized) {
+            return;
+        }
+
+        if (!is_object($this->entityPrototype)) {
+            $this->entityPrototype = new ArrayObject;
+        }
+
+        if (!$this->hydrator instanceof HydratorInterface) {
+            $this->hydrator = new ClassMethods;
+        }
+    }
+
     /**
      * Execute a given query
      *
      * @param  PreparableSqlInterface $query Query to be executed
-     * @return Result
+     * @return HydratingResultSet
      */
     protected function execute(PreparableSqlInterface $query)
     {
+        $this->initialize();
+
         $statement = $this->sql()->prepareStatementForSqlObject($query);
 
-        return $statement->execute();
+        $resultSet = new HydratingResultSet($this->hydrator, $this->entityPrototype);
+        return $resultSet->initialize($statement->execute());
     }
 
     /**
