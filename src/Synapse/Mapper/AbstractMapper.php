@@ -2,6 +2,8 @@
 
 namespace Synapse\Mapper;
 
+use ArrayObject;
+
 use Synapse\Stdlib\Arr;
 use Synapse\Entity\AbstractEntity as AbstractEntity;
 use Synapse\Db\ResultSet\HydratingResultSet;
