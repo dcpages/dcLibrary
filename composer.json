@@ -8,7 +8,7 @@
         "bshaffer/oauth2-server-httpfoundation-bridge": "v1.0",
         "chrisboulton/php-resque": "v1.2",
         "psr/log": "v1.0.0",
-        "apache/log4php": "2.3.0"
+        "monolog/monolog": "~1.7"
     },
     "require-dev": {
         "silex/web-profiler": "~1.0",

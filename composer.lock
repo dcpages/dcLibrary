@@ -3,38 +3,8 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "9f4a494f34a0cee072110c0ad9ed93c0",
+    "hash": "cacbc2b8b23c3987119b365fa382192d",
     "packages": [
-        {
-            "name": "apache/log4php",
-            "version": "2.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://git-wip-us.apache.org/repos/asf/logging-log4php.git",
-                "reference": "8c6df2481cd68d0d211d38f700406c5f0a9de0c2"
-            },
-            "require": {
-                "php": ">=5.2.7"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/main/php/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "description": "A versatile logging framework for PHP",
-            "homepage": "http://logging.apache.org/log4php/",
-            "keywords": [
-                "log",
-                "logging",
-                "php"
-            ],
-            "time": "2012-10-26 09:13:25"
-        },
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
             "version": "v1.0",
@@ -64,9 +34,9 @@
             ],
             "authors": [
                 {
-                    "name": "Brent Shaffer",
+                    "name": "العاب",
                     "email": "bshafs@gmail.com",
-                    "homepage": "http://brentertainment.com"
+                    "homepage": "http://astaza.com"
                 }
             ],
             "description": "A bridge to HttpFoundation for oauth2-server-php",
@@ -164,6 +134,73 @@
                 "resque"
             ],
             "time": "2012-10-13 07:28:16"
+        },
+        {
+            "name": "monolog/monolog",
+            "version": "1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/6225b22de9dcf36546be3a0b2fa8e3d986153f57",
+                "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "psr/log": "~1.0"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "~2.4.8",
+                "doctrine/couchdb": "dev-master",
+                "mlehner/gelf-php": "1.0.*",
+                "phpunit/phpunit": "~3.7.0",
+                "raven/raven": "0.5.*",
+                "ruflin/elastica": "0.90.*"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-mongo": "Allow sending log messages to a MongoDB server",
+                "mlehner/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "raven/raven": "Allow sending log messages to a Sentry server",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.7.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Monolog": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "http://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "time": "2013-11-14 19:48:31"
         },
         {
             "name": "mustache/mustache",
@@ -1029,16 +1066,16 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "1.2.1",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "5220af2a7929aa35cf663d97c89ad3d50cf5fa3e"
+                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/5220af2a7929aa35cf663d97c89ad3d50cf5fa3e",
-                "reference": "5220af2a7929aa35cf663d97c89ad3d50cf5fa3e",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/ad4e1e23ae01b483c16f600ff1bebec184588e32",
+                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32",
                 "shasum": ""
             },
             "require": {
@@ -1075,7 +1112,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2013-09-13 04:58:23"
+            "time": "2014-03-03 05:10:30"
         },
         {
             "name": "phpunit/phpunit",
