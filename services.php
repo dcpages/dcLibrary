@@ -6,6 +6,7 @@ $app->register(new Synapse\Provider\ZendDbServiceProvider());
 $app->register(new Synapse\Provider\RestControllerServiceProvider());
 $app->register(new Synapse\Provider\OAuth2ServerServiceProvider());
 $app->register(new Synapse\Provider\ResqueServiceProvider());
+$app->register(new Synapse\Provider\LogServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 
 $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, [
