@@ -53,12 +53,11 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
     {
         $this->setup($app);
 
-        $app->post('/authorize', 'oauth.controller:authorize');
-        $app->post('/token', 'oauth.controller:token');
+        $app->post('/oauth/authorize', 'oauth.controller:authorize');
+        $app->post('/oauth/token', 'oauth.controller:token');
     }
 
     public function boot(Application $app)
     {
-        // no op
     }
 }

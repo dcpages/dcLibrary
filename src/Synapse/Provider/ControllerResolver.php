@@ -9,13 +9,14 @@ use Synapse\Controller\AbstractRestController;
 use Synapse\Rest\Exception\MethodNotImplementedException;
 
 /**
- * Enables name_of_service:rest syntax for declaring controllers.
+ * Enables name_of_service:rest, name_of_service:method_name syntax for
+ * declaring controllers.
  *
  * @link http://silex.sensiolabs.org/doc/providers/service_controller.html
  */
-class RestControllerResolver implements ControllerResolverInterface
+class ControllerResolver implements ControllerResolverInterface
 {
-    const SERVICE_PATTERN = "/[A-Za-z0-9\._\-]+:rest/";
+    const SERVICE_PATTERN = "/[A-Za-z0-9\._\-]+:[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/";
 
     protected $resolver;
     protected $app;
@@ -29,7 +30,7 @@ class RestControllerResolver implements ControllerResolverInterface
     public function __construct(ControllerResolverInterface $resolver, Application $app)
     {
         $this->resolver = $resolver;
-        $this->app = $app;
+        $this->app      = $app;
     }
 
     /**
@@ -43,18 +44,17 @@ class RestControllerResolver implements ControllerResolverInterface
             return $this->resolver->getController($request);
         }
 
-        $service = str_replace(':rest', '', $controller);
+        list($service, $method) = explode(':', $controller, 2);
 
         if (!isset($this->app[$service])) {
             throw new \InvalidArgumentException(sprintf('Service "%s" does not exist.', $service));
         }
 
-        // Bubble to the next resolver maybe?
-        if (!($this->app[$service] instanceof AbstractRestController)) {
-            return null;
+        if ($method === 'rest') {
+            return [$this->app[$service], 'execute'];
+        } else {
+            return [$this->app[$service], $method];
         }
-
-        return [$this->app[$service], 'execute'];
     }
 
     /**
