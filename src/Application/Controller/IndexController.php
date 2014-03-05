@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class IndexController
 {
-    use \Synapse\Controller\OAuthControllerTrait;
+    use \Silex\Application\SecurityTrait;
 
     protected $testView;
 
@@ -18,10 +18,6 @@ class IndexController
 
     public function indexAction(Request $request)
     {
-        if ($this->isAuthenticated($request)) {
-            return new Response('You are authenticated!');
-        }
-
         return new Response($this->testView);
     }
 }
