@@ -7,6 +7,7 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Monolog\Logger;
 use Monolog\Handler\LogglyHandler;
+use Synapse\Log\Handler\RollbarHandler;
 use Monolog\Handler\StreamHandler;
 use Synapse\Log\Formatter\ExceptionLineFormatter;
 use Synapse\Config\Exception as ConfigException;
@@ -26,13 +27,6 @@ class LogServiceProvider implements ServiceProviderInterface
     protected $config;
 
     /**
-     * Handlers to inject into logger. Different handlers will collect here depending on the environment.
-     *
-     * @var array
-     */
-    protected $handlers = [];
-
-    /**
      * Register logging related services
      *
      * @param  Application $app Silex application
@@ -41,17 +35,30 @@ class LogServiceProvider implements ServiceProviderInterface
     {
         $this->config = $app['config']->load('log');
 
-        $this->registerFileHandler($app);
-        $this->registerLogglyHandler($app);
-        $this->registerRollbarHandler($app);
+        $handlers = [];
+
+        // File Handler
+        $file = Arr::extract($this->config, ['file.path'])['file']['path'];
+
+        if ($file) {
+            $handlers[] = $this->fileHandler($file);
+        }
+
+        // Loggly Handler
+        $enableLoggly = Arr::extract($this->config, ['loggly.enable'])['loggly']['enable'];
+
+        if ($enableLoggly) {
+            $handlers[] = $this->logglyHandler();
+        }
+
+        // Rollbar Handler
+        $enableRollbar = Arr::extract($this->config, ['rollbar.enable'])['rollbar']['enable'];
+
+        if ($enableRollbar) {
+            $handlers[] = $this->rollbarHandler();
+        }
 
         $app['log'] = $app->share(function () use ($app) {
-            $handlers = [];
-
-            foreach ($this->handlers as $serviceName) {
-                $handlers[] = $app[$serviceName];
-            }
-
             return new Logger('main', $handlers);
         });
     }
@@ -67,67 +74,57 @@ class LogServiceProvider implements ServiceProviderInterface
     }
 
     /**
-     * Register log handler for files
+     * Log handler for files
      *
-     * @param  Application $app Silex application
+     * @param  string      $file Path of log file
+     * @return FileHandler
      */
-    protected function registerFileHandler(Application $app)
+    protected function fileHandler($file)
     {
-        $serviceName = 'stream.handler';
         $format      = '[%datetime%] %channel%.%level_name%: %message% %context.stacktrace%%extra%'.PHP_EOL;
 
-        $file = Arr::extract($this->config, ['file.path'])['file']['path'];
+        $handler = new StreamHandler($file, Logger::INFO);
+        $handler->setFormatter(new ExceptionLineFormatter($format));
 
-        $app[$serviceName] = $app->share(function () use ($app, $file, $format) {
-            $handler = new StreamHandler($file, Logger::INFO);
-
-            $handler->setFormatter(new ExceptionLineFormatter($format));
-
-            return $handler;
-        });
-
-        $this->handlers[] = $serviceName;
+        return $handler;
     }
 
     /**
-     * Register log handler for Loggly
+     * Log handler for Loggly
      *
-     * @param  Application $app Silex application
+     * @return LogglyHandler
      */
-    protected function registerLogglyHandler(Application $app)
+    protected function logglyHandler()
     {
-        $enableLoggly = Arr::extract($this->config, ['loggly.enable'])['loggly']['enable'];
-
-        if (! $enableLoggly) {
-            return;
-        }
-
-        if ($app['environment'] === 'development') {
-            return;
-        }
-
-        $serviceName = 'loggly.handler';
-
         $token = Arr::extract($this->config, ['loggly.token'])['loggly']['token'];
 
         if (! $token) {
             throw new ConfigException('Loggly is enabled but the token is not set.');
         }
 
-        $app[$serviceName] = $app->share(function () use ($app, $token) {
-            return new LogglyHandler($token, Logger::INFO);
-        });
-
-        $this->handlers[] = $serviceName;
+        return new LogglyHandler($token, Logger::INFO);
     }
 
     /**
      * Register log handler for Rollbar
      *
-     * @param  Application $app Silex application
+     * @return RollbarHandler
      */
-    protected function registerRollbarHandler(Application $app)
+    protected function rollbarHandler()
     {
+        $rollbarConfig = Arr::get($this->config, 'rollbar', []);
 
+        $token = Arr::get($rollbarConfig, 'post_server_item_access_token');
+
+        if (! $token) {
+            throw new ConfigException('Rollbar is enabled but the post server item access token is not set.');
+        }
+
+        return new RollbarHandler(
+            $token,
+            Arr::get($rollbarConfig, 'environment'),
+            Arr::get($rollbarConfig, 'root'),
+            Logger::ERROR
+        );
     }
 }
