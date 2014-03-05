@@ -57,7 +57,7 @@ class User extends AbstractEntity implements UserInterface
      */
     public function getUsername()
     {
-        return $this->entity->getUsername();
+        return $this->object['email'];
     }
 
     /**
