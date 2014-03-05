@@ -9,6 +9,7 @@ use Monolog\Logger;
 use Monolog\Handler\LogglyHandler;
 use Monolog\Handler\StreamHandler;
 use Synapse\Log\Formatter\ExceptionLineFormatter;
+use Synapse\Config\Exception as ConfigException;
 
 /**
  * Service provider for logging services.
@@ -95,6 +96,12 @@ class LogServiceProvider implements ServiceProviderInterface
      */
     protected function registerLogglyHandler(Application $app)
     {
+        $enableLoggly = Arr::extract($this->config, ['loggly.enable'])['loggly']['enable'];
+
+        if (! $enableLoggly) {
+            return;
+        }
+
         if ($app['environment'] === 'development') {
             return;
         }
@@ -104,7 +111,7 @@ class LogServiceProvider implements ServiceProviderInterface
         $token = Arr::extract($this->config, ['loggly.token'])['loggly']['token'];
 
         if (! $token) {
-            return;
+            throw new ConfigException('Loggly is enabled but the token is not set.');
         }
 
         $app[$serviceName] = $app->share(function () use ($app, $token) {

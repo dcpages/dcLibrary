@@ -2,7 +2,8 @@
 
 return [
     'loggly' => [
-        'token' => null,
+        'enable' => true,
+        'token'  => null,
     ],
     'file' => [
         'path' => APPDIR.'/app.log'
