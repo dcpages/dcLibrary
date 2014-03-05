@@ -24,8 +24,6 @@ $app['index.controller'] = $app->share(function () use ($app) {
         new \Application\View\Test($app['mustache'])
     );
 
-    $index->user = $app->user();
-
     return $index;
 });
 
@@ -38,16 +36,16 @@ $app['test.command'] = $app->share(function () use ($app) {
     return new \Application\Command\TestCommand;
 });
 
-$app->register(new Silex\Provider\SecurityServiceProvider(), array(
-    'security.firewalls' => array(
-        'unsecured' => array(
+$app->register(new Silex\Provider\SecurityServiceProvider(), [
+    'security.firewalls' => [
+        'unsecured' => [
             'pattern'   => '^/oauth',
             'anonymous' => true,
-        ),
-        'api' => array(
+        ],
+        'api' => [
             'pattern'   => '^/',
             'oauth'     => true,
             'stateless' => true,
-        ),
-    ),
-));
+        ],
+    ],
+]);

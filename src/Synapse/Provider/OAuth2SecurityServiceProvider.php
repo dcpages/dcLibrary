@@ -21,12 +21,12 @@ class OAuth2SecurityServiceProvider implements ServiceProviderInterface
                 return new OAuth2Listener($app['security'], $app['security.authentication_manager']);
             });
 
-            return array(
+            return [
                 'security.authentication_provider.'.$name.'.oauth',
                 'security.authentication_listener.'.$name.'.oauth',
                 null,
                 'pre_auth'
-            );
+            ];
         });
     }
 

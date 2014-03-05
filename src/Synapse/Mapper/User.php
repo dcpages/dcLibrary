@@ -34,7 +34,7 @@ class User extends AbstractMapper implements UserProviderInterface
 
     public function findByEmail($email)
     {
-        $entity = $this->findBy(array('email' => $email));
+        $entity = $this->findBy(['email' => $email]);
         return $entity;
     }
 
@@ -43,8 +43,8 @@ class User extends AbstractMapper implements UserProviderInterface
         $sql = new Sql($this->dbAdapter);
 
         $select = new Select('pvt_roles_users');
-        $select->columns(array())
-            ->join('user_roles', 'user_roles.id = pvt_roles_users.role_id', array('name'))
+        $select->columns([])
+            ->join('user_roles', 'user_roles.id = pvt_roles_users.role_id', ['name'])
             ->where(['user_id' => $user->getId()]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -54,7 +54,7 @@ class User extends AbstractMapper implements UserProviderInterface
 
         $results = $resultSet->toArray();
 
-        $return = array();
+        $return = [];
         foreach ($results as $row) {
             $return[] = $row['name'];
         }

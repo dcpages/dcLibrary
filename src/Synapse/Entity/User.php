@@ -9,7 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User extends AbstractEntity implements UserInterface
 {
-    protected $roles = array();
+    protected $roles = [];
 
     /**
      * Entity data
