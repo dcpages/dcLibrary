@@ -55,10 +55,10 @@ class LogServiceProvider implements ServiceProviderInterface
         $enableRollbar = Arr::extract($this->config, ['rollbar.enable'])['rollbar']['enable'];
 
         if ($enableRollbar) {
-            $handlers[] = $this->rollbarHandler();
+            $handlers[] = $this->rollbarHandler($app['environment']);
         }
 
-        $app['log'] = $app->share(function () use ($app) {
+        $app['log'] = $app->share(function () use ($app, $handlers) {
             return new Logger('main', $handlers);
         });
     }
@@ -110,7 +110,7 @@ class LogServiceProvider implements ServiceProviderInterface
      *
      * @return RollbarHandler
      */
-    protected function rollbarHandler()
+    protected function rollbarHandler($environment)
     {
         $rollbarConfig = Arr::get($this->config, 'rollbar', []);
 
@@ -122,7 +122,7 @@ class LogServiceProvider implements ServiceProviderInterface
 
         return new RollbarHandler(
             $token,
-            Arr::get($rollbarConfig, 'environment'),
+            $environment,
             Arr::get($rollbarConfig, 'root'),
             Logger::ERROR
         );
