@@ -5,7 +5,7 @@ namespace Application\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
-class IndexController
+class PrivateController
 {
     protected $testView;
 
@@ -14,8 +14,8 @@ class IndexController
         $this->testView = $testView;
     }
 
-    public function indexAction(Request $request)
+    public function adminAction(Request $request)
     {
-        return new Response($this->testView);
+        return new Response('You have access');
     }
 }
