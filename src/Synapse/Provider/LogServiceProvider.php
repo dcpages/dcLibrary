@@ -83,8 +83,10 @@ class LogServiceProvider implements ServiceProviderInterface
      */
     protected function fileHandler($file)
     {
+        $format = '[%datetime%] %channel%.%level_name%: %message% %extra%'.PHP_EOL;
+
         $handler = new StreamHandler($file, Logger::INFO);
-        $handler->setFormatter(new LineFormatter);
+        $handler->setFormatter(new LineFormatter($format));
 
         return $handler;
     }
@@ -97,7 +99,7 @@ class LogServiceProvider implements ServiceProviderInterface
      */
     protected function fileExceptionHandler($file)
     {
-        $format = '%context.stacktrace%';
+        $format = '%context.stacktrace%'.PHP_EOL;
 
         $handler = new StreamHandler($file, Logger::ERROR);
         $handler->setFormatter(new ExceptionLineFormatter($format));
