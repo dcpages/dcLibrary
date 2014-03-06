@@ -32,10 +32,10 @@ class RollbarHandler extends AbstractProcessingHandler
      * @param string   $token       post_server_item access token for the Rollbar project
      * @param string   $environment This can be set to any string
      * @param string   $root        Directory your code is in; used for linking stack traces
-     * @param integer  $level       [description]
-     * @param boolean  $bubble      [description]
+     * @param integer  $level       The minimum logging level at which this handler will be triggered
+     * @param boolean  $bubble      Whether the messages that are handled can bubble up the stack or not
      */
-    public function __construct($token, $environment = 'production', $root = null, $level = Logger::DEBUG, $bubble = true)
+    public function __construct($token, $environment = 'production', $root = null, $level = Logger::ERROR, $bubble = true)
     {
         $this->rollbarNotifier = new RollbarNotifier(array(
             'access_token' => $token,
@@ -51,13 +51,16 @@ class RollbarHandler extends AbstractProcessingHandler
         if (isset($record['context']) and isset($record['context']['exception'])) {
             $this->rollbarNotifier->report_exception($record['context']['exception']);
         } else {
-            return $this->rollbarNotifier->report_message(
-                $message,
-                'level',
+            $this->rollbarNotifier->report_message(
+                $record['message'],
+                $record['level_name'],
                 $record['extra']
             );
         }
+    }
 
+    public function __destruct()
+    {
         $this->rollbarNotifier->flush();
     }
 }
