@@ -39,9 +39,9 @@ $environments = array(
 
 // Detect the current application environment
 if (isset($_SERVER['APP_ENV']) && in_array($_SERVER['APP_ENV'], $environments)) {
-    $environment = $_SERVER['APP_ENV'];
+    $app['environment'] = $_SERVER['APP_ENV'];
 } else {
-    $environment = 'development';
+    $app['environment'] = 'development';
 }
 
 // Config is a bit of a special-case service provider and needs to be registered
@@ -49,7 +49,7 @@ if (isset($_SERVER['APP_ENV']) && in_array($_SERVER['APP_ENV'], $environments)) 
 $app->register(new Synapse\Provider\ConfigServiceProvider(), array(
     'config_dirs' => array(
         APPDIR.'/config/',
-        APPDIR.'/config/'.$environment.'/',
+        APPDIR.'/config/'.$app['environment'].'/',
     ),
 ));
 
