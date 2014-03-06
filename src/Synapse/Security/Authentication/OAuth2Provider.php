@@ -37,13 +37,17 @@ class OAuth2Provider implements AuthenticationProviderInterface
 
         $userData = $this->server->getAccessTokenData($oauthRequest);
 
+
         $user  = $this->userProvider->findById($userData['user_id']);
         $roles = $this->userProvider->findRolesByUser($user);
+
         $user->setRoles($roles);
 
-        $token->setUser($user);
+        $authenticatedToken = new OAuth2UserToken($roles);
+        $authenticatedToken->setUser($user);
+        $authenticatedToken->setAuthenticated(true);
 
-        return $token;
+        return $authenticatedToken;
     }
 
     public function supports(TokenInterface $token)
