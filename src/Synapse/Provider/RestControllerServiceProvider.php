@@ -14,6 +14,11 @@ class RestControllerServiceProvider implements ServiceProviderInterface
         }));
     }
 
+    /**
+     * Perform chores on boot. (None required here.)
+     *
+     * @param  Application $app
+     */
     public function boot(Application $app)
     {
         // noop
