@@ -12,6 +12,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
 use Synapse\Log\Formatter\ExceptionLineFormatter;
 use Synapse\Config\Exception as ConfigException;
+use RollbarNotifier;
 
 /**
  * Service provider for logging services.
@@ -138,10 +139,14 @@ class LogServiceProvider implements ServiceProviderInterface
             throw new ConfigException('Rollbar is enabled but the post server item access token is not set.');
         }
 
+        $rollbarNotifier = new RollbarNotifier([
+            'access_token' => $token,
+            'environment'  => $environment,
+            Arr::get($rollbarConfig, 'root')
+        ]);
+
         return new RollbarHandler(
-            $token,
-            $environment,
-            Arr::get($rollbarConfig, 'root'),
+            $rollbarNotifier,
             Logger::ERROR
         );
     }
