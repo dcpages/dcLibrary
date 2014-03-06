@@ -39,7 +39,7 @@ class LogServiceProvider implements ServiceProviderInterface
         $handlers = [];
 
         // File Handler
-        $file = Arr::extract($this->config, ['file.path'])['file']['path'];
+        $file = Arr::path($this->config, 'file.path');
 
         if ($file) {
             $handlers[] = $this->fileHandler($file);
@@ -47,14 +47,14 @@ class LogServiceProvider implements ServiceProviderInterface
         }
 
         // Loggly Handler
-        $enableLoggly = Arr::extract($this->config, ['loggly.enable'])['loggly']['enable'];
+        $enableLoggly = Arr::path($this->config, 'loggly.enable');
 
         if ($enableLoggly) {
             $handlers[] = $this->logglyHandler();
         }
 
         // Rollbar Handler
-        $enableRollbar = Arr::extract($this->config, ['rollbar.enable'])['rollbar']['enable'];
+        $enableRollbar = Arr::path($this->config, 'rollbar.enable');
 
         if ($enableRollbar) {
             $handlers[] = $this->rollbarHandler($app['environment']);
@@ -114,7 +114,7 @@ class LogServiceProvider implements ServiceProviderInterface
      */
     protected function logglyHandler()
     {
-        $token = Arr::extract($this->config, ['loggly.token'])['loggly']['token'];
+        $token = Arr::path($this->config, 'loggly.token');
 
         if (! $token) {
             throw new ConfigException('Loggly is enabled but the token is not set.');
