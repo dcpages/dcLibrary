@@ -27,6 +27,14 @@ $app['index.controller'] = $app->share(function () use ($app) {
     return $index;
 });
 
+$app['private.controller'] = $app->share(function () use ($app) {
+    $index = new \Application\Controller\PrivateController(
+        new \Application\View\Test($app['mustache'])
+    );
+
+    return $index;
+});
+
 $app['rest.controller'] = $app->share(function () use ($app) {
     return new \Application\Controller\RestController;
 });
