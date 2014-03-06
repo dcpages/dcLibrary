@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c0dbc67f86d7dbe692dfd5338c75dfcf",
+    "hash": "cb723e7a436c6eaecbf84c9c1762b823",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -910,25 +910,101 @@
             "time": "2014-02-11 13:52:09"
         },
         {
+            "name": "symfony/security",
+            "version": "v2.4.2",
+            "target-dir": "Symfony/Component/Security",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Security.git",
+                "reference": "ae020b9dc10e6438dc4033103c16bae7d46a4dd6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Security/zipball/ae020b9dc10e6438dc4033103c16bae7d46a4dd6",
+                "reference": "ae020b9dc10e6438dc4033103c16bae7d46a4dd6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/event-dispatcher": "~2.1",
+                "symfony/http-foundation": "~2.1",
+                "symfony/http-kernel": "~2.4"
+            },
+            "replace": {
+                "symfony/security-acl": "self.version",
+                "symfony/security-core": "self.version",
+                "symfony/security-csrf": "self.version",
+                "symfony/security-http": "self.version"
+            },
+            "require-dev": {
+                "doctrine/common": "~2.2",
+                "doctrine/dbal": "~2.2",
+                "ircmaxell/password-compat": "1.0.*",
+                "psr/log": "~1.0",
+                "symfony/expression-language": "~2.4",
+                "symfony/routing": "~2.2",
+                "symfony/validator": "~2.2"
+            },
+            "suggest": {
+                "doctrine/dbal": "For using the built-in ACL implementation",
+                "ircmaxell/password-compat": "For using the BCrypt password encoder in PHP <5.5",
+                "symfony/class-loader": "For using the ACL generateSql script",
+                "symfony/expression-language": "For using the expression voter",
+                "symfony/finder": "For using the ACL generateSql script",
+                "symfony/routing": "For using the HttpUtils class to create sub-requests, redirect the user, and match URLs",
+                "symfony/validator": "For using the user password constraint"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Security\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Security Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-02-11 13:52:09"
+        },
+        {
             "name": "zendframework/zend-db",
-            "version": "2.2.5",
+            "version": "2.2.6",
             "target-dir": "Zend/Db",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendDb.git",
-                "reference": "f17c80f27c0a071442b64716a46db5e2a047ceee"
+                "reference": "2b4ca5895e3291912039f6357b8e82882aebd2d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendDb/zipball/f17c80f27c0a071442b64716a46db5e2a047ceee",
-                "reference": "f17c80f27c0a071442b64716a46db5e2a047ceee",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendDb/zipball/2b4ca5895e3291912039f6357b8e82882aebd2d9",
+                "reference": "2b4ca5895e3291912039f6357b8e82882aebd2d9",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "suggest": {
-                "zendframework/zend-stdlib": "2.2.5"
+                "zendframework/zend-stdlib": "2.2.6"
             },
             "type": "library",
             "extra": {
@@ -950,21 +1026,21 @@
                 "db",
                 "zf2"
             ],
-            "time": "2013-10-20 06:00:13"
+            "time": "2014-03-04 17:00:12"
         },
         {
             "name": "zendframework/zend-stdlib",
-            "version": "2.2.5",
+            "version": "2.2.6",
             "target-dir": "Zend/Stdlib",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/Component_ZendStdlib.git",
-                "reference": "f440ecfc828d61d620662a03987c8287e1e4801e"
+                "reference": "e646729f2274f4552b6a92e38d8e458efe08ebc5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/f440ecfc828d61d620662a03987c8287e1e4801e",
-                "reference": "f440ecfc828d61d620662a03987c8287e1e4801e",
+                "url": "https://api.github.com/repos/zendframework/Component_ZendStdlib/zipball/e646729f2274f4552b6a92e38d8e458efe08ebc5",
+                "reference": "e646729f2274f4552b6a92e38d8e458efe08ebc5",
                 "shasum": ""
             },
             "require": {
@@ -994,7 +1070,7 @@
                 "stdlib",
                 "zf2"
             ],
-            "time": "2013-10-20 06:00:20"
+            "time": "2014-01-04 13:00:28"
         }
     ],
     "packages-dev": [
@@ -1409,126 +1485,6 @@
             "description": "A WebProfiler for Silex",
             "homepage": "http://silex.sensiolabs.org/",
             "time": "2013-12-05 21:22:21"
-        },
-        {
-            "name": "symfony/security-core",
-            "version": "v2.4.2",
-            "target-dir": "Symfony/Component/Security/Core",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/security-core.git",
-                "reference": "f89d3aaafadc65e150949082af1a3f9b1ea8a9c3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-core/zipball/f89d3aaafadc65e150949082af1a3f9b1ea8a9c3",
-                "reference": "f89d3aaafadc65e150949082af1a3f9b1ea8a9c3",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "ircmaxell/password-compat": "1.0.*",
-                "psr/log": "~1.0",
-                "symfony/event-dispatcher": "~2.1",
-                "symfony/expression-language": "~2.4",
-                "symfony/http-foundation": "~2.4",
-                "symfony/validator": "~2.2"
-            },
-            "suggest": {
-                "ircmaxell/password-compat": "For using the BCrypt password encoder in PHP <5.5",
-                "symfony/event-dispatcher": "",
-                "symfony/expression-language": "For using the expression voter",
-                "symfony/http-foundation": "",
-                "symfony/validator": "For using the user password constraint"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Security\\Core\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Security Component - Core Library",
-            "homepage": "http://symfony.com",
-            "time": "2014-02-11 13:52:09"
-        },
-        {
-            "name": "symfony/security-csrf",
-            "version": "v2.4.2",
-            "target-dir": "Symfony/Component/Security/Csrf",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/security-csrf.git",
-                "reference": "0bff29b92dd81f032c89a84178b558941fea0c41"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/security-csrf/zipball/0bff29b92dd81f032c89a84178b558941fea0c41",
-                "reference": "0bff29b92dd81f032c89a84178b558941fea0c41",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "symfony/security-core": "~2.4"
-            },
-            "require-dev": {
-                "symfony/http-foundation": "~2.1"
-            },
-            "suggest": {
-                "symfony/http-foundation": "For using the class SessionTokenStorage."
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\Security\\Csrf\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony Security Component - CSRF Library",
-            "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:29:32"
         },
         {
             "name": "symfony/stopwatch",
