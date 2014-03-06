@@ -6,7 +6,7 @@ $app->get('/', 'index.controller:indexAction');
 $app->match('/rest', 'rest.controller:rest');
 
 $app->get('/private', 'private.controller:adminAction')
-    ->secure(array('ROLE_ADMIN'));
+    ->secure(['ROLE_ADMIN']);
 
 $app->error(function (\Synapse\Rest\Exception\MethodNotImplementedException $e, $code) {
     $response = new Symfony\Component\HttpFoundation\Response('Method not implemented');
