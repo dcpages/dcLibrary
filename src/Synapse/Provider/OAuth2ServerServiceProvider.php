@@ -6,10 +6,10 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 
 use Synapse\Controller\OAuthController;
+use Synapse\OAuth2\Storage\Pdo as OAuth2Pdo;
 
 use OAuth2\HttpFoundationBridge\Response as BridgeResponse;
 use OAuth2\Server as OAuth2Server;
-use OAuth2\Storage\Pdo as OAuth2Pdo;
 use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\UserCredentials;
 
@@ -17,25 +17,32 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
 {
     public function setup(Application $app)
     {
-        // Get the PDO object from Zend\Db
-        $pdo = $app['db']->getDriver()->getConnection()->getResource();
+        $app['oauth.storage'] = $app->share(function () use ($app) {
+            // Get the PDO object from Zend\Db
+            $pdo = $app['db']->getDriver()->getConnection()->getResource();
 
-        // Create the storage object
-        $storage = new OAuth2Pdo($pdo);
+            // Create the storage object
+            $storage = new OAuth2Pdo($pdo);
+            $storage->setUserMapper($app['user.mapper']);
 
-        $grantTypes = [
-            // @todo may want to implement this so that tools like postman are
-            // easier to use
-            // 'authorization_code' => new AuthorizationCode($storage),
-            'user_credentials'   => new UserCredentials($storage),
-        ];
+            return $storage;
+        });
 
-        $server = new OAuth2Server($storage, [
-            'enforce_state'  => true,
-            'allow_implicit' => true,
-        ], $grantTypes);
+        $app['oauth_server'] = $app->share(function () use ($app) {
+            $storage = $app['oauth.storage'];
 
-        $app['oauth_server'] = $server;
+            $grantTypes = [
+                // @todo may want to implement this so that tools like postman are
+                // easier to use
+                // 'authorization_code' => new AuthorizationCode($storage),
+                'user_credentials'   => new UserCredentials($storage),
+            ];
+
+            return new OAuth2Server($storage, [
+                'enforce_state'  => true,
+                'allow_implicit' => true,
+            ], $grantTypes);
+        });
 
         $app['oauth.controller'] = $app->share(function () use ($app) {
             return new OAuthController($app['oauth_server']);

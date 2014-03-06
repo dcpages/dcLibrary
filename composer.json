@@ -9,7 +9,9 @@
         "chrisboulton/php-resque": "v1.2",
         "psr/log": "v1.0.0",
         "monolog/monolog": "~1.7",
-        "rollbar/rollbar": "0.6.3"
+        "rollbar/rollbar": "0.6.3",
+        "zendframework/zend-stdlib": "~2.2.5",
+        "ircmaxell/password-compat": "dev-master"
     },
     "require-dev": {
         "silex/web-profiler": "~1.0",
