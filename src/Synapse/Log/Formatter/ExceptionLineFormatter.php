@@ -5,8 +5,13 @@ namespace Synapse\Log\Formatter;
 use Monolog\Formatter\LineFormatter;
 use Exception;
 
+/**
+ * Line formatter modified to output stack trace of exceptions
+ */
 class ExceptionLineFormatter extends LineFormatter
 {
+    const STACKTRACE_PLACEHOLDER = '%context.stacktrace%';
+
     /**
      * {@inheritdoc}
      */
@@ -26,14 +31,20 @@ class ExceptionLineFormatter extends LineFormatter
                 $output = str_replace('%'.$var.'%', $this->convertToString($val), $output);
             }
 
-            if ($var === 'context') {
-                $output = str_replace('%context.stacktrace%', ($val['exception']), $output);
+            if ($var === 'context' && isset($val['exception'])) {
+                $output = str_replace(self::STACKTRACE_PLACEHOLDER, ($val['exception']), $output);
             }
         }
+
+        // If no stacktrace was provided, remove the placeholder
+        $output = str_replace(self::STACKTRACE_PLACEHOLDER, '', $output);
 
         return $output;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function normalize($data)
     {
         if ($data instanceof Exception) {
@@ -43,6 +54,9 @@ class ExceptionLineFormatter extends LineFormatter
         return parent::normalize($data);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function normalizeException(Exception $e)
     {
         return 'Stack Trace: '.$e->getTraceAsString().PHP_EOL;

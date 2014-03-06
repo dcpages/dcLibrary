@@ -9,6 +9,7 @@ use Monolog\Logger;
 use Monolog\Handler\LogglyHandler;
 use Synapse\Log\Handler\RollbarHandler;
 use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
 use Synapse\Log\Formatter\ExceptionLineFormatter;
 use Synapse\Config\Exception as ConfigException;
 
@@ -42,6 +43,7 @@ class LogServiceProvider implements ServiceProviderInterface
 
         if ($file) {
             $handlers[] = $this->fileHandler($file);
+            $handlers[] = $this->fileExceptionHandler($file);
         }
 
         // Loggly Handler
@@ -81,9 +83,23 @@ class LogServiceProvider implements ServiceProviderInterface
      */
     protected function fileHandler($file)
     {
-        $format      = '[%datetime%] %channel%.%level_name%: %message% %context.stacktrace%%extra%'.PHP_EOL;
-
         $handler = new StreamHandler($file, Logger::INFO);
+        $handler->setFormatter(new LineFormatter);
+
+        return $handler;
+    }
+
+    /**
+     * Exception log handler for files
+     *
+     * @param  string      $file Path of log file
+     * @return FileHandler
+     */
+    protected function fileExceptionHandler($file)
+    {
+        $format = '%context.stacktrace%';
+
+        $handler = new StreamHandler($file, Logger::ERROR);
         $handler->setFormatter(new ExceptionLineFormatter($format));
 
         return $handler;
