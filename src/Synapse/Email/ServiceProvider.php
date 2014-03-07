@@ -1,6 +1,6 @@
 <?php
 
-namespace Silex\Provider;
+namespace Synapse\Email;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -9,7 +9,7 @@ use Synapse\Email\Mapper\Email as EmailMapper;
 use Synapse\Email\MandrillSender;
 use Synapse\Stdlib\Arr;
 
-class EmailServiceProvider implements ServiceProviderInterface
+class ServiceProvider implements ServiceProviderInterface
 {
     /**
      * {@inheritDoc}
@@ -36,5 +36,13 @@ class EmailServiceProvider implements ServiceProviderInterface
                 $app['email.mapper']
             );
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function boot(Application $app)
+    {
+        // noop
     }
 }

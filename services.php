@@ -8,7 +8,7 @@ $app->register(new Synapse\Provider\OAuth2SecurityServiceProvider());
 $app->register(new Synapse\Provider\ResqueServiceProvider());
 $app->register(new Synapse\Provider\LogServiceProvider());
 $app->register(new Synapse\Provider\ControllerServiceProvider());
-$app->register(new Synapse\Provider\EmailServiceProvider());
+$app->register(new Synapse\Email\ServiceProvider());
 $app->register(new Synapse\User\ServiceProvider());
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());

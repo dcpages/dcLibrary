@@ -30,4 +30,16 @@ class Email extends AbstractEntity
         'date_created'    => null,
         'date_updated'    => null,
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function fromArray(array $values)
+    {
+        $entity = parent::fromArray($values);
+
+        $entity->setDateCreated(time());
+
+        return $entity;
+    }
 }
