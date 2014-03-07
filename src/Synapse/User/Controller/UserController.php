@@ -10,6 +10,19 @@ class UserController extends AbstractRestController
 {
     protected $userService;
 
+    public function get(Request $request)
+    {
+        $id = $request->attributes->get('id');
+
+        $user = $this->userService
+            ->findById($id)
+            ->getArrayCopy();
+
+        unset($user['password']);
+
+        return $user;
+    }
+
     public function post(Request $request)
     {
         $user = $this->content;

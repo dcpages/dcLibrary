@@ -9,6 +9,11 @@ class UserService
 {
     protected $userMapper;
 
+    public function findById($id)
+    {
+        return $this->userMapper->findById($id);
+    }
+
     public function register(array $userData)
     {
         $userEntity = new UserEntity;
