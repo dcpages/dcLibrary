@@ -2,6 +2,7 @@
 
 namespace Synapse\Entity;
 
+use BadMethodCallException;
 use InvalidArgumentException;
 use Synapse\Stdlib\Arr;
 
@@ -29,14 +30,14 @@ abstract class AbstractEntity
         // If the method name is less than or equal to four characters
         // then it's not a getter or a setter
         if (strlen($method) <= 4) {
-            throw new InvalidArgumentException('Method not found');
+            throw new BadMethodCallException('Method not found');
         }
 
         // Whether we are setting or getting
         $type = substr($method, 0, 3);
 
         if ($type !== 'get' and $type !== 'set') {
-            throw new InvalidArgumentException('Method not found');
+            throw new BadMethodCallException('Method not found');
         }
 
         // Get the property name
