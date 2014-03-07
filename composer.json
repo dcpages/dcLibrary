@@ -12,7 +12,8 @@
         "monolog/monolog": "~1.7",
         "rollbar/rollbar": "0.6.3",
         "zendframework/zend-stdlib": "~2.2.5",
-        "ircmaxell/password-compat": "dev-master"
+        "ircmaxell/password-compat": "dev-master",
+        "guzzle/guzzle": "~3.7"
     },
     "require-dev": {
         "silex/web-profiler": "~1.0",
