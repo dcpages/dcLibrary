@@ -19,6 +19,7 @@ class AbstractRestControllerTest extends PHPUnit_Framework_TestCase
     {
         $request = new Request;
         $request->setMethod('POST');
+        $request->headers->set('Content-Type', 'application/json');
 
         $this->controller->execute($request);
     }
@@ -27,6 +28,7 @@ class AbstractRestControllerTest extends PHPUnit_Framework_TestCase
     {
         $request = new Request;
         $request->setMethod('GET');
+        $request->headers->set('Content-Type', 'application/json');
 
         $response = $this->controller->execute($request);
 
@@ -38,6 +40,7 @@ class AbstractRestControllerTest extends PHPUnit_Framework_TestCase
     {
         $request = new Request;
         $request->setMethod('PUT');
+        $request->headers->set('Content-Type', 'application/json');
 
         $response = $this->controller->execute($request);
 
