@@ -40,9 +40,8 @@ class MandrillSender implements SenderInterface
 
         $message = $this->buildMessage($email);
 
-        $result = array_shift(
-            $this->mandrill->messages->send($message)
-        );
+        $result = $this->mandrill->messages->send($message);
+        $result = array_shift($result);
 
         $email->setStatus($result['status']);
         $email->setDateSent($time);
