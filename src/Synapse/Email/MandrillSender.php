@@ -8,7 +8,7 @@ use Mandrill;
 /**
  * Service to send emails
  */
-class Sender
+class MandrillSender implements SenderInterface
 {
     /**
      * @var Mandrill
@@ -24,10 +24,7 @@ class Sender
     }
 
     /**
-     * Send an email
-     *
-     * @param  Email  $email
-     * @return mixed         Result of attempt to send email
+     * {@inheritDoc}
      */
     public function send(Email $email)
     {
