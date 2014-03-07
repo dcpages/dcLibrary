@@ -5,6 +5,8 @@
          stopOnFailure="false"
          syntaxCheck="false"
          coverageHtml="./report"
+         strict="true"
+         verbose="true"
          bootstrap="tests/bootstrap.php">
     <testsuites>
         <testsuite name="Synapse">
