@@ -7,6 +7,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Role;
 
 use Synapse\Mapper\AbstractMapper;
+use Synapse\Mapper\InserterTrait;
+use Synapse\Mapper\FinderTrait;
+use Synapse\Mapper\UpdaterTrait;
+use Synapse\Mapper\DeleterTrait;
 use Synapse\User\Entity\User as UserEntity;
 
 use Zend\Db\Sql\Select;
