@@ -5,11 +5,12 @@ namespace Synapse\Entity;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Synapse\Stdlib\Arr;
+use Zend\Stdlib\ArraySerializableInterface;
 
 /**
  * An abstract class for representing database records as entity objects
  */
-abstract class AbstractEntity
+abstract class AbstractEntity implements ArraySerializableInterface
 {
     /**
      * Entity data
@@ -42,6 +43,14 @@ abstract class AbstractEntity
 
         // Get the property name
         $property = lcfirst(substr($method, 3));
+
+        $transform = function ($letters) {
+            $letter = array_shift($letters);
+
+            return '_' . strtolower($letter);
+        };
+
+        $property = preg_replace_callback('/([A-Z])/', $transform, $property);
 
         // Make sure the property
         if (! array_key_exists($property, $this->object)) {
@@ -119,5 +128,21 @@ abstract class AbstractEntity
     public function isNew()
     {
         return $this->getId() ? false : true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function exchangeArray(array $array)
+    {
+        return $this->fromArray($array);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getArrayCopy()
+    {
+        return $this->asArray();
     }
 }
