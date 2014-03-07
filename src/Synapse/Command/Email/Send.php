@@ -6,9 +6,41 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Synapse\Email\Entity\Email;
+use Synapse\Email\Mapper\Email as EmailMapper;
+use Synapse\Email\SenderInterface;
 
 class Send extends Command
 {
+    /**
+     * @var Synapse\Email\Mapper\Email
+     */
+    protected $emailMapper;
+
+    /**
+     * @var Synapse\Email\SenderInterface
+     */
+    protected $emailSender;
+
+    /**
+     * Set the email mapper
+     *
+     * @param EmailMapper $emailMapper
+     */
+    public function setEmailMapper(EmailMapper $emailMapper)
+    {
+        $this->emailMapper = $emailMapper;
+    }
+
+    /**
+     * Set the email sender
+     *
+     * @param SenderInterface $emailSender
+     */
+    public function setEmailSender(SenderInterface $emailSender)
+    {
+        $this->emailSender = $emailSender;
+    }
+
     /**
      * Set name, description, arguments, and options for this console command
      */

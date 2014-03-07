@@ -7,6 +7,7 @@ use Silex\ServiceProviderInterface;
 use Synapse\Email\Entity\Email as EmailEntity;
 use Synapse\Email\Mapper\Email as EmailMapper;
 use Synapse\Email\MandrillSender;
+use Synapse\Command\Email\Send as SendEmailCommand;
 use Synapse\Stdlib\Arr;
 
 class ServiceProvider implements ServiceProviderInterface
@@ -36,6 +37,17 @@ class ServiceProvider implements ServiceProviderInterface
                 $app['email.mapper']
             );
         });
+
+        $app['email.send'] = $app->share(function () use ($app) {
+            $command = new SendEmailCommand;
+
+            $command->setEmailMapper($app['email.mapper']);
+            $command->setEmailSender($app['email.sender']);
+
+            return $command;
+        });
+
+        $app->command('email.send');
     }
 
     /**
