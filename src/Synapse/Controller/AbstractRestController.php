@@ -5,7 +5,7 @@ namespace Synapse\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Synapse\Rest\Exception\MethodNotImplementedException;
 
-class AbstractRestController
+abstract class AbstractRestController
 {
     /**
      * Silex hooks into REST controllers here
