@@ -31,7 +31,7 @@ class ServiceProvider implements ServiceProviderInterface
             ->method('HEAD|POST')
             ->bind('user-collection');
 
-        $app->match('/user/{id}')
+        $app->match('/user/{id}', 'user.controller:rest')
             ->method('GET|PUT')
             ->bind('user-entity');
     }

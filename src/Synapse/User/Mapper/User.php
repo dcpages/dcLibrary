@@ -6,7 +6,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Role;
 
-use Synapse\Mapper\AbstractMapper;
+use Synapse\Mapper;
 use Synapse\User\Entity\User as UserEntity;
 
 use Zend\Db\Sql\Select;
@@ -16,15 +16,15 @@ use Zend\Db\ResultSet\ResultSet;
 /**
  * User mapper
  */
-class User extends AbstractMapper implements UserProviderInterface
+class User extends Mapper\AbstractMapper implements UserProviderInterface
 {
     /**
      * Use all mapper traits, making this a general purpose mapper
      */
-    use InserterTrait;
-    use FinderTrait;
-    use UpdaterTrait;
-    use DeleterTrait;
+    use Mapper\InserterTrait;
+    use Mapper\FinderTrait;
+    use Mapper\UpdaterTrait;
+    use Mapper\DeleterTrait;
 
     /**
      * Name of user table
