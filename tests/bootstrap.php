@@ -1,5 +1,7 @@
 <?php
 
+define('APPDIR', realpath(__DIR__.'/..'));
+
 // Autoload our application and tests
 spl_autoload_register(function ($className) {
     $className = ltrim($className, '\\');
