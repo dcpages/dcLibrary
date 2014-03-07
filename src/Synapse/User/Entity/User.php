@@ -13,9 +13,7 @@ class User extends AbstractEntity implements UserInterface
     protected $roles = [];
 
     /**
-     * Entity data
-     *
-     * @var array
+     * {@inheritDoc}
      */
     protected $object = [
         'id'         => null,
