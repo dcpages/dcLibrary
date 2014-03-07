@@ -12,8 +12,10 @@ class UserService
     public function register(array $userData)
     {
         $userEntity = new UserEntity;
-        $userEntity->setEmail($userData['email']);
-        $userEntity->setPassword($this->hashPassword($userData['password']));
+        $userEntity->setEmail($userData['email'])
+            ->setPassword($this->hashPassword($userData['password']))
+            ->setCreated(time())
+            ->setEnabled(true);
 
         return $this->userMapper->persist($userEntity);
     }

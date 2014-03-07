@@ -7,6 +7,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Role;
 
 use Synapse\Mapper;
+use Synapse\Entity\AbstractEntity;
 use Synapse\User\Entity\User as UserEntity;
 
 use Zend\Db\Sql\Select;

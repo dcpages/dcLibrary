@@ -18,9 +18,15 @@ class UserController extends AbstractRestController
             return $this->getSimpleResponse(422, 'Missing required field');
         }
 
-        $this->userService->register($user);
+        $newUser = $this->userService->register($user)
+            ->getArrayCopy();
 
-        return array('id' => 1);
+        unset($newUser['password']);
+
+        $newUser['_href'] = $this->url('user-entity', array('id' => $newUser['id']));
+
+        $response = $this->getSimpleResponse(201, json_encode($newUser));
+        return $response;
     }
 
     public function setUserService(UserService $service)

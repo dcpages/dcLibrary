@@ -8,9 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Synapse\Rest\Exception\MethodNotImplementedException;
 
-abstract class AbstractRestController
+abstract class AbstractRestController extends AbstractController
 {
-
     protected $content;
 
     /**
@@ -53,11 +52,11 @@ abstract class AbstractRestController
         }
     }
 
-    protected function getSimpleResponse($code = 500, $reason = 'Unknown error')
+    protected function getSimpleResponse($code = 500, $content = 'Unknown error')
     {
         $response = new Response;
         $response->setStatusCode($code)
-            ->setContent($reason);
+            ->setContent($content);
 
         return $response;
     }
