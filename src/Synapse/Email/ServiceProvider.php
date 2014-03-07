@@ -9,6 +9,7 @@ use Synapse\Email\Mapper\Email as EmailMapper;
 use Synapse\Email\MandrillSender;
 use Synapse\Command\Email\Send as SendEmailCommand;
 use Synapse\Stdlib\Arr;
+use Mandrill;
 
 class ServiceProvider implements ServiceProviderInterface
 {
@@ -25,7 +26,7 @@ class ServiceProvider implements ServiceProviderInterface
             return new EmailMapper($app['db'], $app['email.entity']);
         });
 
-        $app['email.sender'] = $app->share(function (Applictaion $app) {
+        $app['email.sender'] = $app->share(function (Application $app) {
             $emailConfig = $app['config']->load('email');
 
             if (! $apiKey = Arr::path($emailConfig, 'sender.mandrill.apiKey')) {
@@ -38,7 +39,7 @@ class ServiceProvider implements ServiceProviderInterface
             );
         });
 
-        $app['email.send'] = $app->share(function () use ($app) {
+        $app['email.send'] = $app->share(function (Application $app) {
             $command = new SendEmailCommand;
 
             $command->setEmailMapper($app['email.mapper']);

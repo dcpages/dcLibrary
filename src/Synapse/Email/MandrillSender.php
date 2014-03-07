@@ -2,8 +2,8 @@
 
 namespace Synapse\Email;
 
-use Synapse\Entity\Email;
-use Synapse\Mapper\Email as EmailMapper;
+use Synapse\Email\Entity\Email;
+use Synapse\Email\Mapper\Email as EmailMapper;
 use Mandrill;
 
 /**

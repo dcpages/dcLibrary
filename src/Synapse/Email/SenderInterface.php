@@ -2,7 +2,7 @@
 
 namespace Synapse\Email;
 
-use Synapse\Entity\Email;
+use Synapse\Email\Entity\Email;
 
 interface SenderInterface
 {
