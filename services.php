@@ -9,6 +9,7 @@ $app->register(new Synapse\Provider\ResqueServiceProvider());
 $app->register(new Synapse\Provider\LogServiceProvider());
 $app->register(new Synapse\Provider\UserServiceProvider());
 $app->register(new Synapse\Provider\ControllerServiceProvider());
+$app->register(new Synapse\Provider\EmailServiceProvider());
 
 $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, [
     'mustache.path' => APPDIR.'/templates',
