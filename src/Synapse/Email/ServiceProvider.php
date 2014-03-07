@@ -21,7 +21,7 @@ class ServiceProvider implements ServiceProviderInterface
         };
 
         $app['email.mapper'] = $app->share(function (Application $app) {
-            return new EmailMapper($app['email.entity']);
+            return new EmailMapper($app['db'], $app['email.entity']);
         });
 
         $app['email.sender'] = $app->share(function (Applictaion $app) {

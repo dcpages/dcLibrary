@@ -3,6 +3,10 @@
 namespace Synapse\Email\Mapper;
 
 use Synapse\Mapper\AbstractMapper;
+use Synapse\Mapper\InserterTrait;
+use Synapse\Mapper\FinderTrait;
+use Synapse\Mapper\UpdaterTrait;
+use Synapse\Mapper\DeleterTrait;
 
 /**
  * Email mapper
