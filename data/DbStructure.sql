@@ -169,7 +169,7 @@ CREATE TABLE `user_tokens` (
 DROP TABLE IF EXISTS `emails`;
 CREATE TABLE `emails` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `hash` char(40) NOT NULL,
+  `hash` char(40) DEFAULT NULL,
   `status` varchar(50) NOT NULL,
   `subject` varchar(255) NOT NULL,
   `recipient_email` varchar(255) NOT NULL,

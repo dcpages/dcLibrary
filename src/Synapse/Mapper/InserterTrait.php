@@ -26,7 +26,9 @@ trait InserterTrait
             ->columns($columns)
             ->values($values);
 
-        $result = $this->execute($query);
+        $statement = $this->sql()->prepareStatementForSqlObject($query);
+
+        $result = $statement->execute();
 
         $entity->setId($result->getGeneratedValue());
 

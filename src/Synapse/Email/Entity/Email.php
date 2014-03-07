@@ -10,6 +10,16 @@ use Synapse\Entity\AbstractEntity;
 class Email extends AbstractEntity
 {
     /**
+     * Possible values for the status field
+     */
+    const STATUS_PENDING  = 'pending';
+    const STATUS_QUEUED   = 'queued';
+    const STATUS_SENT     = 'sent';
+    const STATUS_REJECTED = 'rejected';
+    const STATUS_ERROR    = 'error';
+    const STATUS_UNKNOWN  = 'unknown';
+
+    /**
      * {@inheritDoc}
      */
     protected $object = [
@@ -39,6 +49,7 @@ class Email extends AbstractEntity
         $entity = parent::fromArray($values);
 
         $entity->setDateCreated(time());
+        $entity->setStatus(self::STATUS_PENDING);
 
         return $entity;
     }
