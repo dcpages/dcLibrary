@@ -3,11 +3,12 @@
 namespace Synapse\User\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use Synapse\Entity\AbstractEntity;
 
 /**
  * User entity
  */
-class UserEntity extends AbstractEntity implements UserInterface
+class User extends AbstractEntity implements UserInterface
 {
     protected $roles = [];
 
