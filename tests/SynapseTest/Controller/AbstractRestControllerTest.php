@@ -33,4 +33,15 @@ class AbstractRestControllerTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $response);
         $this->assertEquals('test', (string) $response->getContent());
     }
+
+    public function testPutReturnsResponse()
+    {
+        $request = new Request;
+        $request->setMethod('PUT');
+
+        $response = $this->controller->execute($request);
+
+        $this->assertInstanceOf('Symfony\\Component\\HttpFoundation\\Response', $response);
+        $this->assertEquals('{"test":"test"}', (string) $response->getContent());
+    }
 }

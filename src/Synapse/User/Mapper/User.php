@@ -1,12 +1,13 @@
 <?php
 
-namespace Synapse\Mapper;
+namespace Synapse\User\Mapper;
 
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Role;
 
-use Synapse\Entity\User as UserEntity;
+use Synapse\Mapper\AbstractMapper;
+use Synapse\User\Entity\User as UserEntity;
 
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;

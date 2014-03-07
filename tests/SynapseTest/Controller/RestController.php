@@ -13,4 +13,9 @@ class RestController extends AbstractRestController
     {
         return new Response('test');
     }
+
+    public function put()
+    {
+        return ['test' => 'test'];
+    }
 }

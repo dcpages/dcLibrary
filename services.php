@@ -7,9 +7,11 @@ $app->register(new Synapse\Provider\OAuth2ServerServiceProvider());
 $app->register(new Synapse\Provider\OAuth2SecurityServiceProvider());
 $app->register(new Synapse\Provider\ResqueServiceProvider());
 $app->register(new Synapse\Provider\LogServiceProvider());
-$app->register(new Synapse\Provider\UserServiceProvider());
 $app->register(new Synapse\Provider\ControllerServiceProvider());
 $app->register(new Synapse\Provider\EmailServiceProvider());
+$app->register(new Synapse\User\ServiceProvider());
+
+$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
 $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, [
     'mustache.path' => APPDIR.'/templates',
@@ -30,9 +32,7 @@ $app['index.controller'] = $app->share(function () use ($app) {
 });
 
 $app['private.controller'] = $app->share(function () use ($app) {
-    $index = new \Application\Controller\PrivateController(
-        new \Application\View\Test($app['mustache'])
-    );
+    $index = new \Application\Controller\PrivateController();
 
     return $index;
 });
