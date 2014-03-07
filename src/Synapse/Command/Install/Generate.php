@@ -41,7 +41,7 @@ class Generate extends Command
      *
      * @var string
      */
-    protected $upgradeNamespace = 'Application\Upgrades\\';
+    protected $upgradeNamespace = 'Application\\Upgrades\\';
 
     /**
      * Set database config property
@@ -122,21 +122,54 @@ class Generate extends Command
     }
 
     /**
+     * Returns the mysqldump command to run with escaped arguments
+     *
+     * @param  string $database   the database name
+     * @param  string $username   the database username
+     * @param  string $password   the database password
+     * @param  string $outputPath the resultant file location
+     * @return string             the command to run
+     */
+    public function getDumpStructureCommand($database, $username, $password, $outputPath)
+    {
+        return sprintf(
+            'mysqldump %s -u %s -p%s --no-data | sed "s/AUTO_INCREMENT=[0-9]*//" > %s',
+            escapeshellarg($database),
+            escapeshellarg($username),
+            escapeshellarg($password),
+            escapeshellarg($outputPath)
+        );
+    }
+
+    public function getDumpDataCommand($database, $username, $password, $outputPath, $tables = array())
+    {
+        $tables = array_map('escapeshellarg', $tables);
+
+        $command = sprintf(
+            'mysqldump %s %s -u %s -p%s --no-create-info > %s',
+            escapeshellarg($database),
+            implode(' ', $tables),
+            escapeshellarg($username),
+            escapeshellarg($password),
+            escapeshellarg($outputPath)
+        );
+
+        return $command;
+    }
+
+    /**
      * Export database structure to dbStructure install file
      *
      * @param  string $outputPath Path where file should be exported
      */
     protected function dumpStructure($outputPath)
     {
-        $command = sprintf(
-            'mysqldump %s -u %s -p%s --no-data | sed "s/AUTO_INCREMENT=[0-9]*//" > %s',
-            escapeshellarg($this->dbConfig['database']),
-            escapeshellarg($this->dbConfig['username']),
-            escapeshellarg($this->dbConfig['password']),
-            escapeshellarg($outputPath.Generate::STRUCTURE_FILE)
-        );
-
-        return shell_exec($command);
+        return shell_exec($this->getDumpStructureCommand(
+            $this->dbConfig['database'],
+            $this->dbConfig['username'],
+            $this->dbConfig['password'],
+            $outputPath.Generate::STRUCTURE_FILE
+        ));
     }
 
     /**
@@ -146,13 +179,13 @@ class Generate extends Command
      */
     protected function dumpData($outputPath)
     {
-        $tables = array_map('escapeshellarg', Arr::get($this->installConfig, 'dataTables', []));
+        $tables = Arr::get($this->installConfig, 'dataTables', []);
 
         /**
          *  Do not attempt to create an empty data install file if no tables are to be exported.
          *  Otherwise all tables will be exported.
          */
-        if (! $tables) {
+        if (! count($tables)) {
             return;
         }
 

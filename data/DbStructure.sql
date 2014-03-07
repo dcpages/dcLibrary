@@ -23,35 +23,6 @@ CREATE TABLE `app_versions` (
 );
 
 --
--- Table structure for table `emails`
---
-
-DROP TABLE IF EXISTS `emails`;
-CREATE TABLE `emails` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `hash` char(40) NOT NULL,
-  `status` varchar(50) NOT NULL,
-  `subject` varchar(255) NOT NULL,
-  `recipient_email` varchar(255) NOT NULL,
-  `recipient_name` varchar(255) DEFAULT NULL,
-  `sender` varchar(400) NOT NULL,
-  `template_name` varchar(200) DEFAULT NULL,
-  `template_data` text,
-  `message` text,
-  `bcc` varchar(255) DEFAULT NULL,
-  `attachments` text,
-  `headers` varchar(400) NOT NULL,
-  `date_sent` int(10) unsigned DEFAULT NULL,
-  `date_created` int(10) unsigned DEFAULT NULL,
-  `date_updated` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `hash` (`hash`),
-  KEY `recipient_email` (`recipient_email`),
-  KEY `status` (`status`),
-  KEY `subject` (`subject`)
-);
-
---
 -- Table structure for table `oauth_access_tokens`
 --
 
@@ -191,4 +162,33 @@ CREATE TABLE `users` (
   KEY `k_users_email_enabled` (`email`,`enabled`)
 );
 
--- Dump completed on 2014-03-06 22:36:32
+--
+-- Table structure for table `emails`
+--
+
+DROP TABLE IF EXISTS `emails`;
+CREATE TABLE `emails` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` char(40) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `recipient_email` varchar(255) NOT NULL,
+  `recipient_name` varchar(255) DEFAULT NULL,
+  `sender` varchar(400) NOT NULL,
+  `template_name` varchar(200) DEFAULT NULL,
+  `template_data` text,
+  `message` text,
+  `bcc` varchar(255) DEFAULT NULL,
+  `attachments` text,
+  `headers` varchar(400) NOT NULL,
+  `date_sent` int(10) unsigned DEFAULT NULL,
+  `date_created` int(10) unsigned DEFAULT NULL,
+  `date_updated` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `hash` (`hash`),
+  KEY `recipient_email` (`recipient_email`),
+  KEY `status` (`status`),
+  KEY `subject` (`subject`)
+);
+
+-- Dump completed on 2014-03-07 15:26:28

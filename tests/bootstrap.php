@@ -1,5 +1,7 @@
 <?php
 
+define('APPDIR', realpath(__DIR__.'/..'));
+
 // Autoload our application and tests
 spl_autoload_register(function ($className) {
     $className = ltrim($className, '\\');
@@ -19,6 +21,6 @@ spl_autoload_register(function ($className) {
     }
 
     if (file_exists(__DIR__.'/'.$fileName)) {
-        require '/tests/'.$fileName;
+        require 'tests/'.$fileName;
     }
 });
