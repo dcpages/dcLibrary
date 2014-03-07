@@ -31,7 +31,7 @@ class FileReader implements ReaderInterface
             throw new \InvalidArgumentException('No config namespace provided');
         }
 
-        $filename = $this->directory.$namespace.'.php';
+        $filename = realpath($this->directory).'/'.$namespace.'.php';
 
         if (! file_exists($filename)) {
             return [];
