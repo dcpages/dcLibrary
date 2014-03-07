@@ -4,9 +4,9 @@ namespace Silex\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Synapse\Entity\Email as EmailEntity;
-use Synapse\Mapper\Email as EmailMapper;
-use Synapse\Email\Sender;
+use Synapse\Email\Entity\Email as EmailEntity;
+use Synapse\Email\Mapper\Email as EmailMapper;
+use Synapse\Email\MandrillSender;
 use Synapse\Stdlib\Arr;
 
 class EmailServiceProvider implements ServiceProviderInterface
@@ -31,8 +31,9 @@ class EmailServiceProvider implements ServiceProviderInterface
                 return;
             }
 
-            return new Sender(
-                new Mandrill($apiKey)
+            return new MandrillSender(
+                new Mandrill($apiKey),
+                $app['email.mapper']
             );
         });
     }

@@ -1,6 +1,8 @@
 <?php
 
-namespace Synapse\Entity;
+namespace Synapse\Email\Entity;
+
+use Synapse\Entity\AbstractEntity;
 
 /**
  * Email entity
