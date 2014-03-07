@@ -53,11 +53,11 @@ class Config
         }
 
         if (! $groupName) {
-            throw new \IllegalArgumentException('No config group specified');
+            throw new \InvalidArgumentException('No config group specified');
         }
 
         if (! is_string($groupName)) {
-            throw new \IllegalArgumentException('Config group must be a string');
+            throw new \InvalidArgumentException('Config group must be a string');
         }
 
         if (isset($this->groups[$groupName])) {
