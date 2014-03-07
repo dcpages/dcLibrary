@@ -1,16 +1,16 @@
 <?php
 
-namespace Synapse\Provider;
+namespace Synapse\User;
 
-use Synapse\Entity\User as UserEntity;
-use Synapse\Mapper\User as UserMapper;
+use Synapse\User\Entity\User as UserEntity;
+use Synapse\User\Mapper\User as UserMapper;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
 /**
  * Service provider for user related services
  */
-class UserServiceProvider implements ServiceProviderInterface
+class ServiceProvider implements ServiceProviderInterface
 {
     /**
      * Register services related to Users
@@ -19,12 +19,8 @@ class UserServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-        $app['user.entity'] = function () {
-            return new UserEntity;
-        };
-
         $app['user.mapper'] = $app->share(function () use ($app) {
-            return new UserMapper($app['db'], $app['user.entity']);
+            return new UserMapper($app['db'], new UserEntity);
         });
     }
 
