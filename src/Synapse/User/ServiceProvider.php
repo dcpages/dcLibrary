@@ -22,6 +22,18 @@ class ServiceProvider implements ServiceProviderInterface
         $app['user.mapper'] = $app->share(function () use ($app) {
             return new UserMapper($app['db'], new UserEntity);
         });
+
+        $app['user.controller'] = $app->share(function () use ($app) {
+            return new UserController();
+        });
+
+        $app->match('/user', 'user.controller:rest')
+            ->method('HEAD|POST')
+            ->bind('user-collection');
+
+        $app->match('/user/{id}')
+            ->method('GET|PUT')
+            ->bind('user-entity');
     }
 
     /**
