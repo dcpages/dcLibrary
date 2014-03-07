@@ -3,7 +3,7 @@
 namespace SynapseTest\Entity;
 
 use PHPUnit_Framework_TestCase;
-use Synapse\Entity\User;
+use Synapse\User\Entity\User;
 
 class UserTest extends PHPUnit_Framework_TestCase
 {

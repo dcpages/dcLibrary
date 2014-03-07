@@ -1,8 +1,9 @@
 <?php
 
-namespace Synapse\Entity;
+namespace Synapse\User\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use Synapse\Entity\AbstractEntity;
 
 /**
  * User entity
