@@ -20,6 +20,6 @@ class FileReaderTest extends PHPUnit_Framework_TestCase
     public function testMissingFileReturnsEmptyArray()
     {
         $reader = new Config\FileReader(__DIR__.'/data');
-        $reader->load('fileNotFound');
+        $this->assertEmpty($reader->load('fileNotFound'));
     }
 }

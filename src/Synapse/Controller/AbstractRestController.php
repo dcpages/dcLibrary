@@ -3,6 +3,7 @@
 namespace Synapse\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Synapse\Rest\Exception\MethodNotImplementedException;
 
 abstract class AbstractRestController
@@ -26,6 +27,14 @@ abstract class AbstractRestController
             );
         }
 
-        return $this->{$method}($request);
+        $result = $this->{$method}($request);
+
+        if ($result instanceof Response) {
+            return $result;
+        } elseif (is_array($result)) {
+            return new Response(json_encode($result));
+        } else {
+            throw new RuntimeException('Unhandled response type from controller');
+        }
     }
 }
