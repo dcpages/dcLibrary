@@ -11,6 +11,6 @@ return [
         'root'                          => APPDIR,
     ],
     'file' => [
-        'path' => APPDIR.'/app.log'
+        'path' => APPDIR.'/logs/app.log'
     ],
 ];
