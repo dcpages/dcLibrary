@@ -21,6 +21,6 @@ spl_autoload_register(function ($className) {
     }
 
     if (file_exists(__DIR__.'/'.$fileName)) {
-        require '/tests/'.$fileName;
+        require 'tests/'.$fileName;
     }
 });
