@@ -78,8 +78,8 @@ class Send extends Command
 
         $email = $this->emailSender->send($email);
 
-        if (! $email->getStatus() === Email::STATUS_SENT) {
-            $output->writeln('Email did not send successfully.');
+        if ($email->getStatus() !== Email::STATUS_SENT) {
+            $output->writeln('Email did NOT send successfully.');
 
             return;
         }

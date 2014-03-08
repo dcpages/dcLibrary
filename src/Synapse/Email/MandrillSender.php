@@ -47,7 +47,9 @@ class MandrillSender implements SenderInterface
         $email->setDateSent($time);
         $email->setDateUpdated($time);
 
-        return $this->mapper->update($email);
+        $this->mapper->update($email);
+
+        return $email;
     }
 
     /**
