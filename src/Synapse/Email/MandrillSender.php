@@ -49,7 +49,7 @@ class MandrillSender implements SenderInterface
 
         $this->mapper->update($email);
 
-        return $email;
+        return [$email, $result];
     }
 
     /**

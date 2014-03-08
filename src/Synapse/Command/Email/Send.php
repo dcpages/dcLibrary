@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Synapse\Email\Entity\Email;
 use Synapse\Email\Mapper\Email as EmailMapper;
 use Synapse\Email\SenderInterface;
+use OutOfBoundsException;
 
 class Send extends Command
 {
@@ -71,17 +72,24 @@ class Send extends Command
         $email = $this->emailMapper->findById($emailId);
 
         if ($email->isNew()) {
-            throw new NotFoundException('Email not found.');
+            throw new OutOfBoundsException('Email not found.');
         }
 
         $output->writeln('Sending email');
 
-        $email = $this->emailSender->send($email);
+        list($email, $result) = $this->emailSender->send($email);
 
         if ($email->getStatus() !== Email::STATUS_SENT) {
-            $output->writeln('Email did NOT send successfully.');
+            $format = 'Email did NOT send successfully. Returned with status %s.';
+            $message = sprintf($format, $result['status']);
 
-            return;
+            if (isset($result['reject_reason'])) {
+                $message .= ' Reason rejected: '.$result['reject_reason'];
+            }
+
+            $output->writeln($message);
+
+            return 500;
         }
 
         $output->writeln('Email sent successfully!');

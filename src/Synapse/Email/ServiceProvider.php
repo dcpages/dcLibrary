@@ -18,12 +18,8 @@ class ServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-        $app['email.entity'] = function () {
-            return new EmailEntity;
-        };
-
         $app['email.mapper'] = $app->share(function (Application $app) {
-            return new EmailMapper($app['db'], $app['email.entity']);
+            return new EmailMapper($app['db'], new EmailEntity);
         });
 
         $app['email.sender'] = $app->share(function (Application $app) {
