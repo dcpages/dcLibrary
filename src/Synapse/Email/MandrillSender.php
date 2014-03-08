@@ -89,5 +89,7 @@ class MandrillSender implements SenderInterface
             'bcc_address'         => $email->getBcc(),
             'merge'               => true,
         ];
+
+        return $message;
     }
 }
