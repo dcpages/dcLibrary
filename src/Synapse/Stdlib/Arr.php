@@ -2,6 +2,8 @@
 
 namespace Synapse\Stdlib;
 
+use ArrayAccess;
+
 /**
  * A bundle of Array helper functions borrowed from Kohana Framework v3.3.
  */
@@ -56,7 +58,7 @@ class Arr
             return true;
         } else {
             // Possibly a Traversable object, functionally the same as an array
-            return (is_object($value) && $value instanceof Traversable);
+            return (is_object($value) && $value instanceof ArrayAccess);
         }
     }
 
