@@ -59,8 +59,6 @@ class ServiceProvider implements ServiceProviderInterface
 
             return $command;
         });
-
-        $app->command('email.send');
     }
 
     /**
@@ -68,6 +66,6 @@ class ServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        // noop
+        $app->command('email.send');
     }
 }
