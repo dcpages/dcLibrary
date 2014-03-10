@@ -2,8 +2,8 @@
 
 namespace Synapse\Email;
 
-use Synapse\Entity\Email;
-use Synapse\Mapper\Email as EmailMapper;
+use Synapse\Email\Entity\Email;
+use Synapse\Email\Mapper\Email as EmailMapper;
 use Mandrill;
 
 /**
@@ -40,15 +40,16 @@ class MandrillSender implements SenderInterface
 
         $message = $this->buildMessage($email);
 
-        $result = array_shift(
-            $this->mandrill->messages->send($message)
-        );
+        $result = $this->mandrill->messages->send($message);
+        $result = array_shift($result);
 
         $email->setStatus($result['status']);
         $email->setDateSent($time);
         $email->setDateUpdated($time);
 
-        return $this->mapper->update($email);
+        $this->mapper->update($email);
+
+        return [$email, $result];
     }
 
     /**
@@ -90,5 +91,7 @@ class MandrillSender implements SenderInterface
             'bcc_address'         => $email->getBcc(),
             'merge'               => true,
         ];
+
+        return $message;
     }
 }

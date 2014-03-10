@@ -43,6 +43,39 @@ CREATE TABLE `app_versions` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `emails`
+--
+
+DROP TABLE IF EXISTS `emails`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `emails` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `hash` char(40) DEFAULT NULL,
+  `status` varchar(50) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `recipient_email` varchar(255) NOT NULL,
+  `recipient_name` varchar(255) DEFAULT NULL,
+  `sender_email` varchar(255) DEFAULT NULL,
+  `sender_name` varchar(255) DEFAULT NULL,
+  `template_name` varchar(200) DEFAULT NULL,
+  `template_data` text,
+  `message` text,
+  `bcc` varchar(255) DEFAULT NULL,
+  `attachments` text,
+  `headers` varchar(400) NOT NULL,
+  `date_sent` int(10) unsigned DEFAULT NULL,
+  `date_created` int(10) unsigned DEFAULT NULL,
+  `date_updated` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `hash` (`hash`),
+  KEY `recipient_email` (`recipient_email`),
+  KEY `status` (`status`),
+  KEY `subject` (`subject`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `oauth_access_tokens`
 --
 
@@ -221,4 +254,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-03-07 23:08:20
+-- Dump completed on 2014-03-10 16:40:50
