@@ -4,7 +4,9 @@ namespace Synapse\User;
 
 use Synapse\User\Controller\UserController;
 use Synapse\User\Entity\User as UserEntity;
+use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\User\Mapper\User as UserMapper;
+use Synapse\User\Mapper\UserToken as UserTokenMapper;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -25,9 +27,16 @@ class ServiceProvider implements ServiceProviderInterface
             return new UserMapper($app['db'], new UserEntity);
         });
 
+        $app['user.token.mapper'] = $app->share(function () use ($app) {
+            return new UserTokenMapper($app['db'], new UserTokenEntity);
+        });
+
         $app['user.service'] = $app->share(function () use ($app) {
             $service = new UserService;
-            $service->setUserMapper($app['user.mapper']);
+            $service->setUserMapper($app['user.mapper'])
+                ->setUserTokenMapper($app['user.token.mapper'])
+                ->setEmailMapper($app['email.mapper']);
+
             return $service;
         });
 
