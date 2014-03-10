@@ -63,11 +63,15 @@ class UserService
             throw new OutOfBoundsException('Token not found.');
         }
 
-        if ($token->type !== UserToken::TYPE_VERIFY_REGISTRATION) {
+        if ($token->getType() !== UserTokenEntity::TYPE_VERIFY_REGISTRATION) {
             $format  = 'Token specified if of type %s. Expected %s.';
-            $message = sprintf($format, $token->type, UserToken::TYPE_VERIFY_REGISTRATION);
+            $message = sprintf($format, $token->getType(), UserTokenEntity::TYPE_VERIFY_REGISTRATION);
 
             throw new OutOfBoundsException($message);
+        }
+
+        if ($token->getExpires() < time()) {
+            throw new OutOfBoundsException('Token expired');
         }
 
         $user = $this->findById($token->getUserId());
@@ -116,7 +120,7 @@ class UserService
 
     protected function sendVerificationEmail(UserEntity $user, UserTokenEntity $userToken)
     {
-        $view = clone $this->verifyRegistrationView;
+        $view = $this->verifyRegistrationView;
 
         $view->setUserToken($userToken);
 

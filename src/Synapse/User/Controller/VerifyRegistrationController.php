@@ -22,14 +22,21 @@ class VerifyRegistrationController extends AbstractRestController
             'token'   => $token,
         ];
 
-        $token = $this->userService
-            ->findTokenBy($conditions);
+        $token = $this->userService->findTokenBy($conditions);
+
+        if (! $token) {
+            return $this->getSimpleResponse(404, 'Token not found.');
+        }
 
         try {
             $user = $this->userService->verifyRegistration($token);
         } catch (OutOfBoundsException $e) {
             return $this->getSimpleResponse(500, $e->getMessage());
         }
+
+        $user = $user->getArrayCopy();
+
+        unset($user['password']);
 
         return $user;
     }

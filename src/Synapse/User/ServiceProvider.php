@@ -3,6 +3,7 @@
 namespace Synapse\User;
 
 use Synapse\User\Controller\UserController;
+use Synapse\User\Controller\VerifyRegistrationController;
 use Synapse\User\Entity\User as UserEntity;
 use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\User\Mapper\User as UserMapper;
@@ -33,11 +34,14 @@ class ServiceProvider implements ServiceProviderInterface
         });
 
         $app['user.service'] = $app->share(function () use ($app) {
+            $verifyRegistrationView = new VerifyRegistrationView($app['mustache']);
+            $verifyRegistrationView->setUrlGenerator($app['url_generator']);
+
             $service = new UserService;
             $service->setUserMapper($app['user.mapper'])
                 ->setUserTokenMapper($app['user.token.mapper'])
                 ->setEmailService($app['email.service'])
-                ->setVerifyRegistrationView(new VerifyRegistrationView($app['mustache']));
+                ->setVerifyRegistrationView($verifyRegistrationView);
 
             return $service;
         });
@@ -49,7 +53,7 @@ class ServiceProvider implements ServiceProviderInterface
         });
 
         $app['verify-registration.controller'] = $app->share(function () use ($app) {
-            $controller = new UserController();
+            $controller = new VerifyRegistrationController();
             $controller->setUserService($app['user.service']);
             return $controller;
         });
