@@ -688,6 +688,7 @@ class ArrTest extends PHPUnit_Framework_TestCase
 	{
 		return array(
 			array(array('set' => array('one' => 'something'), 'two' => 'other'), array('one' => 'something', 'two' => 'other')),
+			array(array('set' => array('something'), 'two' => 'other'), array('something', 'two' => 'other')),
 		);
 	}
 
