@@ -10,7 +10,7 @@ use Synapse\Entity\AbstractEntity;
 class UserToken extends AbstractEntity
 {
     // Token types
-    const TYPE_REGISTRATION_VERIFICATION = 'Verify registration';
+    const TYPE_VERIFY_REGISTRATION = 'Verify registration';
 
     /**
      * {@inheritDoc}

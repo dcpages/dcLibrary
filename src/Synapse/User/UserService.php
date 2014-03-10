@@ -8,6 +8,7 @@ use Synapse\User\Entity\User as UserEntity;
 use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\View\Email\VerifyRegistration as VerifyRegistrationView;
 use Synapse\Email\Entity\Email;
+use OutOfBoundsException;
 
 class UserService
 {
@@ -17,6 +18,11 @@ class UserService
     public function findById($id)
     {
         return $this->userMapper->findById($id);
+    }
+
+    public function findTokenBy(array $where)
+    {
+        return $this->userTokenMapper->findBy($where);
     }
 
     public function register(array $userData)
@@ -33,7 +39,7 @@ class UserService
         $userToken = new UserTokenEntity;
         $userToken->setCreated(time())
             ->setExpires(strtotime('+1 day', time()))
-            ->setType(UserTokenEntity::TYPE_REGISTRATION_VERIFICATION)
+            ->setType(UserTokenEntity::TYPE_VERIFY_REGISTRATION)
             ->setUserId($user->getId())
             ->setToken($userToken->generateToken());
 
@@ -47,6 +53,39 @@ class UserService
     public function hashPassword($password)
     {
         return password_hash($password, PASSWORD_BCRYPT);
+    }
+
+    public function verifyRegistration(UserTokenEntity $token)
+    {
+        if ($token->isNew()) {
+            throw new OutOfBoundsException('Token not found.');
+        }
+
+        if ($token->type !== UserToken::TYPE_VERIFY_REGISTRATION) {
+            $format  = 'Token specified if of type %s. Expected %s.';
+            $message = sprintf($format, $token->type, UserToken::TYPE_VERIFY_REGISTRATION)
+
+            throw new OutOfBoundsException($message);
+        }
+
+        $user = $this->findById($token->getUserId());
+
+        if ($user->isNew()) {
+            throw new OutOfBoundsException('User not found.');
+        }
+
+        if ($user->getVerified()) {
+            throw new OutOfBoundsException('User already verified.');
+        }
+
+        // Token looks good; verify user and delete the token
+        $user->setVerified(true);
+
+        $this->userMapper->persist($user);
+
+        $this->userTokenMapper->delete($token);
+
+        return $user;
     }
 
     public function setUserMapper(UserMapper $mapper)
