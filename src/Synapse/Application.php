@@ -38,7 +38,7 @@ class Application extends SilexApp
         return $value;
     }
 
-    public function initialize($object)
+    protected function initialize($object)
     {
         foreach ($this->initializers as $initializer) {
             if ($object instanceof $initializer['class']) {
