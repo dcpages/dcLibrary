@@ -70,13 +70,6 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
 
             return $command;
         });
-
-        // Register command routes
-        $app->command('upgrade.run');
-        $app->command('upgrade.create');
-        $app->command('install.generate');
-        $app->command('migrations.run');
-        $app->command('migrations.create');
     }
 
     /**
@@ -86,6 +79,11 @@ class MigrationUpgradeServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        // noop
+        // Register command routes
+        $app->command('upgrade.run');
+        $app->command('upgrade.create');
+        $app->command('install.generate');
+        $app->command('migrations.run');
+        $app->command('migrations.create');
     }
 }
