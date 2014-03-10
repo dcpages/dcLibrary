@@ -22,14 +22,6 @@ $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, [
 
 $app->register(new Synapse\Provider\MigrationUpgradeServiceProvider());
 
-$app->on(Symfony\Component\HttpKernel\KernelEvents::CONTROLLER, function ($controllerEvent) use ($app) {
-    $controller = $controllerEvent->getController();
-
-    if (isset($controller[0]) && $controller[0] instanceof Synapse\Controller\AbstractController) {
-        $controller[0]->setUrlGenerator($app['url_generator']);
-    }
-});
-
 // Register controllers and other shared services
 $app['index.controller'] = $app->share(function () use ($app) {
     $index = new \Application\Controller\IndexController(

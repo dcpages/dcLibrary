@@ -12,6 +12,14 @@ class ControllerServiceProvider implements ServiceProviderInterface
         $app['resolver'] = $app->share($app->extend('resolver', function ($resolver, $app) {
             return new ControllerResolver($resolver, $app);
         }));
+
+        $app->initializer(
+            'Synapse\\Application\\UrlGeneratorAwareInterface',
+            function ($object) use ($app) {
+                $object->setUrlGenerator($app['url_generator']);
+                return $object;
+            }
+        );
     }
 
     /**
