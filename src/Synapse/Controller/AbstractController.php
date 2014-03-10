@@ -2,7 +2,10 @@
 
 namespace Synapse\Controller;
 
-abstract class AbstractController
+use Synapse\Application\UrlGeneratorAwareInterface;
+use Synapse\Application\UrlGeneratorAwareTrait;
+
+abstract class AbstractController implements UrlGeneratorAwareInterface
 {
-    use UrlGeneratorTrait;
+    use UrlGeneratorAwareTrait;
 }

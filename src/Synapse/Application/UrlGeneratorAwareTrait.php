@@ -1,10 +1,10 @@
 <?php
 
-namespace Synapse\Controller;
+namespace Synapse\Application;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-trait UrlGeneratorTrait
+trait UrlGeneratorAwareTrait
 {
     /**
      * @var UrlGeneratorInterface
@@ -12,7 +12,7 @@ trait UrlGeneratorTrait
     protected $urlGenerator;
 
     /**
-     * @param UrlGenerator $urlGenerator
+     * @param UrlGeneratorInterface $urlGenerator
      */
     public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
     {

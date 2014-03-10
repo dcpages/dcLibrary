@@ -12,6 +12,8 @@ class Application extends SilexApp
 {
     use SecurityTrait;
 
+    protected $initializers = array();
+
     public function __construct(array $values = array())
     {
         parent::__construct($values);
@@ -19,15 +21,72 @@ class Application extends SilexApp
         $this['route_class'] = 'Synapse\\Route';
     }
 
+    /**
+     * Override Pimple's offsetGet to add support for initializers
+     *
+     * @param  string $id The unique identifier for the parameter or object
+     * @return mixed      The value of the parameter or an object
+     */
+    public function offsetGet($id)
+    {
+        $value = parent::offsetGet($id);
+
+        if (is_object($value)) {
+            $this->initialize($value);
+        }
+
+        return $value;
+    }
+
+    protected function initialize($object)
+    {
+        foreach ($this->initializers as $initializer) {
+            if ($object instanceof $initializer['class']) {
+                $initializer['callable']($object);
+            }
+        }
+
+        return $object;
+    }
+
+    /**
+     * Add an initializer
+     * @param  string   $class    the initializer will apply to objects of this class
+     * @param  callable $callable the callable to run on objects
+     * @return object
+     */
+    public function initializer($class, callable $callable)
+    {
+        $this->initializers[] = array(
+            'class'    => $class,
+            'callable' => $callable,
+        );
+
+        return $this;
+    }
+
+    /**
+     * Overrides Silex's Application::run to handle console requests instead
+     * of HTTP requests if the PHP SAPI name is cli
+     *
+     * {@inheritDoc}
+     */
     public function run(Request $request = null)
     {
         if (php_sapi_name() !== 'cli') {
             return parent::run($request);
         }
 
+        if (!$this->booted) {
+            $this->boot();
+        }
+
         $this['console']->run();
     }
 
+    /**
+     * Add a command to $this['console'] (Symfony's console component)
+     */
     public function command($command)
     {
         if (! $command instanceof Command) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Synapse\Provider;
+namespace Synapse\Log;
 
 use Synapse\Stdlib\Arr;
 use Silex\Application;
@@ -19,7 +19,7 @@ use RollbarNotifier;
  *
  * Register application logger and injected log handlers.
  */
-class LogServiceProvider implements ServiceProviderInterface
+class ServiceProvider implements ServiceProviderInterface
 {
     /**
      * Log configuration
@@ -63,6 +63,11 @@ class LogServiceProvider implements ServiceProviderInterface
 
         $app['log'] = $app->share(function () use ($app, $handlers) {
             return new Logger('main', $handlers);
+        });
+
+        $app->initializer('Synapse\\Log\\LoggerAwareInterface', function ($object) use ($app) {
+            $object->setLogger($app['log']);
+            return $object;
         });
     }
 
