@@ -4,16 +4,18 @@ namespace Synapse\User;
 
 use Synapse\User\Mapper\User as UserMapper;
 use Synapse\User\Mapper\UserToken as UserTokenMapper;
+use Synapse\Email\EmailService;
 use Synapse\User\Entity\User as UserEntity;
 use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\View\Email\VerifyRegistration as VerifyRegistrationView;
-use Synapse\Email\Entity\Email;
 use OutOfBoundsException;
 
 class UserService
 {
     protected $userMapper;
     protected $userTokenMapper;
+    protected $emailMapper;
+    protected $verifyRegistrationView;
 
     public function findById($id)
     {
@@ -63,7 +65,7 @@ class UserService
 
         if ($token->type !== UserToken::TYPE_VERIFY_REGISTRATION) {
             $format  = 'Token specified if of type %s. Expected %s.';
-            $message = sprintf($format, $token->type, UserToken::TYPE_VERIFY_REGISTRATION)
+            $message = sprintf($format, $token->type, UserToken::TYPE_VERIFY_REGISTRATION);
 
             throw new OutOfBoundsException($message);
         }
@@ -100,24 +102,30 @@ class UserService
         return $this;
     }
 
-    public function setEmailMapper(EmailMapper $mapper)
+    public function setEmailService(EmailService $service)
     {
-        $this->emailMapper = $mapper;
+        $this->emailService = $service;
+        return $this;
+    }
+
+    public function setVerifyRegistrationView(VerifyRegistrationView $view)
+    {
+        $this->verifyRegistrationView = $view;
         return $this;
     }
 
     protected function sendVerificationEmail(UserEntity $user, UserTokenEntity $userToken)
     {
-        $view = new VerifyRegistrationView;
+        $view = clone $this->verifyRegistrationView;
 
         $view->setUserToken($userToken);
 
-        $email = new Email;
-        $email = $email->fromArray([
+        $email = $this->emailService->createFromArray([
             'recipient_email' => $user->getEmail(),
             'message'         => (string) $view,
+            'subject'         => 'Verify Your Account',
         ]);
 
-        $this->emailMapper->persist($email);
+        return $email;
     }
 }

@@ -7,6 +7,7 @@ use Synapse\User\Entity\User as UserEntity;
 use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\User\Mapper\User as UserMapper;
 use Synapse\User\Mapper\UserToken as UserTokenMapper;
+use Synapse\View\Email\VerifyRegistration as VerifyRegistrationView;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -35,7 +36,8 @@ class ServiceProvider implements ServiceProviderInterface
             $service = new UserService;
             $service->setUserMapper($app['user.mapper'])
                 ->setUserTokenMapper($app['user.token.mapper'])
-                ->setEmailMapper($app['email.mapper']);
+                ->setEmailService($app['email.service'])
+                ->setVerifyRegistrationView(new VerifyRegistrationView($app['mustache']));
 
             return $service;
         });
