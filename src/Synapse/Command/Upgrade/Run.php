@@ -141,6 +141,8 @@ class Run extends AbstractUpgradeCommand
                 $output
             );
 
+            $this->recordUpgrade($this->appVersion);
+
             // Refresh database version
             $databaseVersion = $this->currentDatabaseVersion();
         }

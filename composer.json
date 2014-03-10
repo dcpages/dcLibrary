@@ -8,6 +8,7 @@
         "bshaffer/oauth2-server-php": "v1.0",
         "bshaffer/oauth2-server-httpfoundation-bridge": "v1.0",
         "chrisboulton/php-resque": "v1.2",
+        "mandrill/mandrill": "1.0.52",
         "psr/log": "v1.0.0",
         "monolog/monolog": "~1.7",
         "rollbar/rollbar": "0.6.3",

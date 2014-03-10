@@ -2,7 +2,7 @@
 
 namespace Synapse\OAuth2\Storage;
 
-use Synapse\Mapper\User as UserMapper;
+use Synapse\User\Mapper\User as UserMapper;
 
 use OAuth2\Storage\Pdo as BasePdoStorage;
 
