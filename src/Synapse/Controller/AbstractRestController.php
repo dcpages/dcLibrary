@@ -2,12 +2,16 @@
 
 namespace Synapse\Controller;
 
+use RuntimeException;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Synapse\Rest\Exception\MethodNotImplementedException;
 
-abstract class AbstractRestController
+abstract class AbstractRestController extends AbstractController
 {
+    protected $content;
+
     /**
      * Silex hooks into REST controllers here
      *
@@ -27,6 +31,16 @@ abstract class AbstractRestController
             );
         }
 
+        if ($request->getContentType() === 'json') {
+            $this->content = json_decode($request->getContent(), true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return $this->getSimpleResponse(400, 'Could not parse json body');
+            }
+        } else {
+            return $this->getSimpleResponse(415, 'Content-Type must be application/json');
+        }
+
         $result = $this->{$method}($request);
 
         if ($result instanceof Response) {
@@ -36,5 +50,14 @@ abstract class AbstractRestController
         } else {
             throw new RuntimeException('Unhandled response type from controller');
         }
+    }
+
+    protected function getSimpleResponse($code = 500, $content = 'Unknown error')
+    {
+        $response = new Response;
+        $response->setStatusCode($code)
+            ->setContent($content);
+
+        return $response;
     }
 }

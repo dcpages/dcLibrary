@@ -39,7 +39,10 @@ class ServiceProvider implements ServiceProviderInterface
             $command = new SendEmailCommand;
 
             $command->setEmailMapper($app['email.mapper']);
-            $command->setEmailSender($app['email.sender']);
+
+            if ($app['email.sender']) {
+                $command->setEmailSender($app['email.sender']);
+            }
 
             return $command;
         });

@@ -72,7 +72,7 @@ class UserTest extends PHPUnit_Framework_TestCase
             'id',
             'email',
             'password',
-            'lastLogin',
+            'last_login',
             'created',
             'enabled',
         ];
@@ -87,7 +87,7 @@ class UserTest extends PHPUnit_Framework_TestCase
             'id'         => null,
             'email'      => null,
             'password'   => null,
-            'lastLogin'  => null,
+            'last_login' => null,
             'created'    => null,
             'enabled'    => null,
         ];

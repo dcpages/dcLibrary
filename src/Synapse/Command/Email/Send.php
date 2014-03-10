@@ -9,6 +9,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Synapse\Email\Entity\Email;
 use Synapse\Email\Mapper\Email as EmailMapper;
 use Synapse\Email\SenderInterface;
+
+use LogicException;
 use OutOfBoundsException;
 
 class Send extends Command
@@ -65,6 +67,10 @@ class Send extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (! $this->emailSender) {
+            throw new LogicException('No email sender configured (did you set the Mandrill API key?)');
+        }
+
         $output->writeln('Finding email by ID');
 
         $emailId = $input->getArgument('id');

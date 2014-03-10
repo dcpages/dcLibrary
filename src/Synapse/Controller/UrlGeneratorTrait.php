@@ -14,7 +14,7 @@ trait UrlGeneratorTrait
     /**
      * @param UrlGenerator $urlGenerator
      */
-    public function setUrlGenerator(UrlGenerator $urlGenerator)
+    public function setUrlGenerator(UrlGeneratorInterface $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;
         return $this;
