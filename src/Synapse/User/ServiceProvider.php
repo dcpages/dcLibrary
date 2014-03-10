@@ -46,6 +46,12 @@ class ServiceProvider implements ServiceProviderInterface
             return $controller;
         });
 
+        $app['verify-registration.controller'] = $app->share(function () use ($app) {
+            $controller = new UserController();
+            $controller->setUserService($app['user.service']);
+            return $controller;
+        });
+
         $app->match('/users', 'user.controller:rest')
             ->method('HEAD|POST')
             ->bind('user-collection');
@@ -53,6 +59,10 @@ class ServiceProvider implements ServiceProviderInterface
         $app->match('/users/{id}', 'user.controller:rest')
             ->method('GET|PUT')
             ->bind('user-entity');
+
+        $app->match('/users/{id}/verify-registration/{token}', 'verify-registration.controller:rest')
+            ->method('POST')
+            ->bind('verify-registration');
     }
 
     /**
