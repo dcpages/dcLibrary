@@ -11,7 +11,7 @@ use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\PreparableSqlInterface;
 use Zend\Stdlib\Hydrator\HydratorInterface;
-use Zend\Stdlib\Hydrator\ClassMethods;
+use Zend\Stdlib\Hydrator\ArraySerializable;
 
 /**
  * An abstract class for mapping database records to entity objects
@@ -112,7 +112,7 @@ abstract class AbstractMapper
         }
 
         if (!$this->hydrator instanceof HydratorInterface) {
-            $this->hydrator = new ClassMethods;
+            $this->hydrator = new ArraySerializable;
         }
     }
 
