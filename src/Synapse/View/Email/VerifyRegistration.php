@@ -7,23 +7,40 @@ use Synapse\User\Entity\User;
 use Synapse\User\Entity\UserToken;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
+/**
+ * View for email sent to users to verify their registration
+ */
 class VerifyRegistration extends AbstractView
 {
-    const VERIFY_REGISTRATION_ROUTE = 'verify-registration';
-
+    /**
+     * @var Synapse\User\Entity\UserToken
+     */
     protected $userToken;
+
+    /**
+     * @var Symfony\Component\Routing\Generator\UrlGenerator
+     */
     protected $urlGenerator;
 
+    /**
+     * @param UserToken $userToken
+     */
     public function setUserToken(UserToken $userToken)
     {
         $this->userToken = $userToken;
     }
 
+    /**
+     * @param UrlGenerator $urlGenerator
+     */
     public function setUrlGenerator(UrlGenerator $urlGenerator)
     {
         $this->urlGenerator = $urlGenerator;
     }
 
+    /**
+     * @return string
+     */
     public function url()
     {
         $parameters = [
@@ -32,7 +49,7 @@ class VerifyRegistration extends AbstractView
         ];
 
         $url = $this->urlGenerator->generate(
-            self::VERIFY_REGISTRATION_ROUTE,
+            'verify-registration',
             $parameters,
             UrlGenerator::ABSOLUTE_URL
         );

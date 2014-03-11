@@ -29,7 +29,7 @@ class ServiceProvider implements ServiceProviderInterface
             return new UserMapper($app['db'], new UserEntity);
         });
 
-        $app['user.token.mapper'] = $app->share(function () use ($app) {
+        $app['user-token.mapper'] = $app->share(function () use ($app) {
             return new UserTokenMapper($app['db'], new UserTokenEntity);
         });
 
@@ -39,7 +39,7 @@ class ServiceProvider implements ServiceProviderInterface
 
             $service = new UserService;
             $service->setUserMapper($app['user.mapper'])
-                ->setUserTokenMapper($app['user.token.mapper'])
+                ->setUserTokenMapper($app['user-token.mapper'])
                 ->setEmailService($app['email.service'])
                 ->setVerifyRegistrationView($verifyRegistrationView);
 
