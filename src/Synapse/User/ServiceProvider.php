@@ -4,6 +4,7 @@ namespace Synapse\User;
 
 use Synapse\User\Controller\UserController;
 use Synapse\User\Controller\VerifyRegistrationController;
+use Synapse\User\Controller\ResetPasswordController;
 use Synapse\User\Entity\User as UserEntity;
 use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\User\Mapper\User as UserMapper;
@@ -58,6 +59,12 @@ class ServiceProvider implements ServiceProviderInterface
             return $controller;
         });
 
+        $app['reset-password.controller'] = $app->share(function () use ($app) {
+            $controller = new ResetPasswordController();
+            $controller->setUserService($app['user.service']);
+            return $controller;
+        });
+
         $app->match('/users', 'user.controller:rest')
             ->method('HEAD|POST')
             ->bind('user-collection');
@@ -69,6 +76,10 @@ class ServiceProvider implements ServiceProviderInterface
         $app->match('/users/{id}/verify-registration', 'verify-registration.controller:rest')
             ->method('POST')
             ->bind('verify-registration');
+
+        $app->match('/account/reset-password', 'reset-password.controller:rest')
+            ->method('POST|PUT')
+            ->bind('reset-password');
     }
 
     /**
