@@ -66,7 +66,7 @@ class ServiceProvider implements ServiceProviderInterface
             ->method('GET|PUT')
             ->bind('user-entity');
 
-        $app->match('/users/{id}/verify-registration/{token}', 'verify-registration.controller:rest')
+        $app->match('/users/{id}/verify-registration', 'verify-registration.controller:rest')
             ->method('POST')
             ->bind('verify-registration');
     }

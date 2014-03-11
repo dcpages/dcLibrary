@@ -15,7 +15,7 @@ class VerifyRegistrationController extends AbstractRestController
     public function post(Request $request)
     {
         $id    = $request->attributes->get('id');
-        $token = $request->attributes->get('token');
+        $token = $request->request->get('token');
 
         $conditions = [
             'user_id' => $id,
