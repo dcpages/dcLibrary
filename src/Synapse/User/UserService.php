@@ -87,18 +87,61 @@ class UserService
 
         $user = $this->userMapper->persist($userEntity);
 
-        $userToken = new UserTokenEntity;
-        $userToken->setCreated(time())
-            ->setExpires(strtotime('+1 day', time()))
-            ->setType(UserTokenEntity::TYPE_VERIFY_REGISTRATION)
-            ->setUserId($user->getId())
-            ->setToken($userToken->generateToken());
+        $userToken = $this->createUserToken([
+            'type'    => UserTokenEntity::TYPE_VERIFY_REGISTRATION,
+            'user_id' => $user->getId(),
+        ]);
 
-        $userToken = $this->userTokenMapper->persist($userToken);
+        // Create the verify registration email
+        $this->verifyRegistrationView->setUserToken($userToken);
 
-        $this->sendVerificationEmail($user, $userToken);
+        $email = $this->emailService->createFromArray([
+            'recipient_email' => $user->getEmail(),
+            'subject'         => 'Verify Your Account',
+            'message'         => (string) $this->verifyRegistrationView,
+        ]);
 
         return $user;
+    }
+
+    /**
+     * Reset a user's password
+     *
+     * @param  Synapse\User\EntityUserEntity $user
+     * @return Synapse\User\EntityUserEntity
+     */
+    public function sendResetPasswordEmail(UserEntity $user)
+    {
+        $userToken = $this->createUserToken([
+            'type'    => UserTokenEntity::TYPE_RESET_PASSWORD,
+            'user_id' => $user->getId(),
+        ]);
+
+        $this->resetPasswordView->setUserToken($userToken);
+
+        $email = $this->emailService->createFromArray([
+            'recipient_email' => $user->getEmail(),
+            'subject'         => 'Reset Your Password'.
+            'message'         => (string) $this->resetPasswordView,
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * Change the password
+     *
+     * @param  UserEntity $user        The user whose password to change
+     * @param  string     $newPassword The new password
+     * @return UserEntity
+     */
+    public function resetPassword(UserEntity $user, $newPassword)
+    {
+        $hashedPassword = $this->hashPassword($newPassword);
+
+        $user->setPassword($hashedPassword);
+
+        return $this->userMapper->persist($user);
     }
 
     /**
@@ -185,24 +228,23 @@ class UserService
     }
 
     /**
-     * Send the verify registration email
+     * Create a user token and persist it in the database
      *
-     * @param  Synapse\User\Entity\User      $user
-     * @param  Synapse\User\Entity\UserToken $userToken
-     * @return Synapse\Email\Entity\Email
+     * @param  array  $data Data to populate the user token
+     * @return Synapse\User\Entity\UserToken
      */
-    protected function sendVerificationEmail(UserEntity $user, UserTokenEntity $userToken)
+    protected function createUserToken(array $data)
     {
-        $view = $this->verifyRegistrationView;
+        $userToken = new UserTokenEntity;
 
-        $view->setUserToken($userToken);
+        $defaults = [
+            'created' => time(),
+            'expires' => strtotime('+1 day', time()),
+            'token'   => $userToken->generateToken(),
+        ];
 
-        $email = $this->emailService->createFromArray([
-            'recipient_email' => $user->getEmail(),
-            'message'         => (string) $view,
-            'subject'         => 'Verify Your Account',
-        ]);
+        $userToken = $userToken->exchangeArray(array_merge($defaults, $data));
 
-        return $email;
+        return $this->userTokenMapper->persist($userToken);
     }
 }
