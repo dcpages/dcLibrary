@@ -7,7 +7,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 /**
  * Trait for inserting the security context as a property and returning the current user
  */
-class SecurityAwareTrait implements SecurityAwareInterface
+trait SecurityAwareTrait
 {
     /**
      * @var SecurityContext

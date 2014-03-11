@@ -9,7 +9,7 @@ interface SecurityAwareInterface
     /**
      * @param SecurityContext $security
      */
-    public function setSecurityContext(SecurityContext $urlGenerator);
+    public function setSecurityContext(SecurityContext $security);
 
     /**
      * Gets a user from the Security Context.

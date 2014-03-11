@@ -7,14 +7,32 @@ use Synapse\Controller\AbstractRestController;
 use Synapse\User\UserService;
 use Synapse\User\Entity\UserToken;
 use Synapse\Stdlib\Arr;
+use Synapse\Application\SecurityAwareInterface;
+use Synapse\Application\SecurityAwareTrait;
 use OutOfBoundsException;
 
-class VerifyRegistrationController extends AbstractRestController
+/**
+ * Verify user registration
+ */
+class VerifyRegistrationController extends AbstractRestController implements SecurityAwareInterface
 {
+    use SecurityAwareTrait;
+
+    /**
+     * @var UserService
+     */
     protected $userService;
 
+    /**
+     * Verify user registration with token and user id
+     *
+     * @param  Request $request
+     * @return array
+     */
     public function post(Request $request)
     {
+        $user = $this->user();
+
         $id    = $request->attributes->get('id');
         $token = Arr::get($this->content, 'token');
 
@@ -47,6 +65,9 @@ class VerifyRegistrationController extends AbstractRestController
         return $user;
     }
 
+    /**
+     * @param UserService $service
+     */
     public function setUserService(UserService $service)
     {
         $this->userService = $service;
