@@ -12,6 +12,10 @@ use OutOfBoundsException;
 
 class UserService
 {
+    const HTTP_CODE_INCORRECT_TOKEN_TYPE = 422;
+    const HTTP_CODE_TOKEN_EXPIRED        = 410;
+    const HTTP_CODE_TOKEN_NOT_FOUND      = 404;
+
     protected $userMapper;
     protected $userTokenMapper;
     protected $emailMapper;
@@ -60,29 +64,21 @@ class UserService
     public function verifyRegistration(UserTokenEntity $token)
     {
         if ($token->isNew()) {
-            throw new OutOfBoundsException('Token not found.');
+            throw new OutOfBoundsException('Token not found.', self::HTTP_CODE_TOKEN_NOT_FOUND);
         }
 
         if ($token->getType() !== UserTokenEntity::TYPE_VERIFY_REGISTRATION) {
             $format  = 'Token specified if of type %s. Expected %s.';
             $message = sprintf($format, $token->getType(), UserTokenEntity::TYPE_VERIFY_REGISTRATION);
 
-            throw new OutOfBoundsException($message);
+            throw new OutOfBoundsException($message, self::HTTP_CODE_INCORRECT_TOKEN_TYPE);
         }
 
         if ($token->getExpires() < time()) {
-            throw new OutOfBoundsException('Token expired');
+            throw new OutOfBoundsException('Token expired', self::HTTP_CODE_TOKEN_EXPIRED);
         }
 
         $user = $this->findById($token->getUserId());
-
-        if ($user->isNew()) {
-            throw new OutOfBoundsException('User not found.');
-        }
-
-        if ($user->getVerified()) {
-            throw new OutOfBoundsException('User already verified.');
-        }
 
         // Token looks good; verify user and delete the token
         $user->setVerified(true);

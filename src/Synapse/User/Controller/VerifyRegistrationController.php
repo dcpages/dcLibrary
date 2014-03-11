@@ -31,7 +31,7 @@ class VerifyRegistrationController extends AbstractRestController
         try {
             $user = $this->userService->verifyRegistration($token);
         } catch (OutOfBoundsException $e) {
-            return $this->getSimpleResponse(500, $e->getMessage());
+            return $this->getSimpleResponse($e->getCode(), $e->getMessage());
         }
 
         $user = $user->getArrayCopy();
