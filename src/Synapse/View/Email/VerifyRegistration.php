@@ -39,6 +39,9 @@ class VerifyRegistration extends AbstractView
     }
 
     /**
+     * @todo Change this URL to a route in the javascript app that will perform
+     *       the API request since the API expects the token as a POST parameter
+     *
      * @return string
      */
     public function url()

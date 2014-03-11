@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Synapse\Controller\AbstractRestController;
 use Synapse\User\UserService;
 use Synapse\User\Entity\UserToken;
+use Synapse\Stdlib\Arr;
 use OutOfBoundsException;
 
 class VerifyRegistrationController extends AbstractRestController
@@ -15,7 +16,11 @@ class VerifyRegistrationController extends AbstractRestController
     public function post(Request $request)
     {
         $id    = $request->attributes->get('id');
-        $token = $request->request->get('token');
+        $token = Arr::get($this->content, 'token');
+
+        if (! $token) {
+            return $this->getSimpleResponse(400, 'Token not specified.');
+        }
 
         $conditions = [
             'user_id' => $id,
