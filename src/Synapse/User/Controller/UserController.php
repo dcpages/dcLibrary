@@ -8,7 +8,6 @@ use Synapse\User\Entity\User;
 use Synapse\User\UserService;
 use Synapse\Application\SecurityAwareInterface;
 use Synapse\Application\SecurityAwareTrait;
-use Synapse\Stdlib\Arr;
 
 class UserController extends AbstractRestController implements SecurityAwareInterface
 {
@@ -73,42 +72,16 @@ class UserController extends AbstractRestController implements SecurityAwareInte
             return $this->getSimpleResponse(403, 'Access denied');
         }
 
-        $changes = $this->content;
+        try {
+            $user = $this->userService->update($user, $this->content);
+        } catch (OutOfBoundsException $e) {
+            $httpCodes = [
+                UserService::CURRENT_PASSWORD_REQUIRED => 403,
+                UserService::FIELD_CANNOT_BE_EMPTY     => 422,
+            ];
 
-        $verifyCurrentPassword = (isset($changes['email']) or isset($changes['password']));
-
-        if ($verifyCurrentPassword) {
-            $currentPassword = Arr::get($this->content, 'current_password');
-
-            if (! password_verify($currentPassword, $user->getPassword())) {
-                return $this->getSimpleResponse(403, 'Current password missing or incorrect');
-            }
+            return $this->getSimpleResponse($httpCodes[$e->getCode()], $e->getMessage());
         }
-
-        $update = [];
-
-        // Update email
-        if (isset($changes['email'])) {
-            $update['email'] = $changes['email'];
-        }
-
-        // Update password
-        if (isset($changes['password'])) {
-            $password        = Arr::get($this->content, 'password');
-
-            if (! $password) {
-                return $this->getSimpleResponse(422, 'Password cannot be empty');
-            }
-
-            $update['password'] = $this->userService->hashPassword($changes['password']);
-        }
-
-        if (! $update) {
-            return $this->userArrayWithoutPassword($user);
-        }
-
-        $user = $user->exchangeArray($update);
-        $user = $this->userService->update($user);
 
         return $this->userArrayWithoutPassword($user);
     }
