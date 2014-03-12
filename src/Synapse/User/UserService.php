@@ -17,11 +17,11 @@ use OutOfBoundsException;
 class UserService
 {
     /**
-     * HTTP codes to return for specific exceptions
+     * Error codes to return for specific exceptions
      */
-    const HTTP_CODE_INCORRECT_TOKEN_TYPE = 422;
-    const HTTP_CODE_TOKEN_EXPIRED        = 410;
-    const HTTP_CODE_TOKEN_NOT_FOUND      = 404;
+    const INCORRECT_TOKEN_TYPE = 1;
+    const TOKEN_EXPIRED        = 2;
+    const TOKEN_NOT_FOUND      = 3;
 
     /**
      * @var Synapse\User\Mapper\User
@@ -171,18 +171,18 @@ class UserService
     public function verifyRegistration(UserTokenEntity $token)
     {
         if ($token->isNew()) {
-            throw new OutOfBoundsException('Token not found.', self::HTTP_CODE_TOKEN_NOT_FOUND);
+            throw new OutOfBoundsException('Token not found.', self::TOKEN_NOT_FOUND);
         }
 
         if ($token->getType() !== UserTokenEntity::TYPE_VERIFY_REGISTRATION) {
             $format  = 'Token specified if of type %s. Expected %s.';
             $message = sprintf($format, $token->getType(), UserTokenEntity::TYPE_VERIFY_REGISTRATION);
 
-            throw new OutOfBoundsException($message, self::HTTP_CODE_INCORRECT_TOKEN_TYPE);
+            throw new OutOfBoundsException($message, self::INCORRECT_TOKEN_TYPE);
         }
 
         if ($token->getExpires() < time()) {
-            throw new OutOfBoundsException('Token expired', self::HTTP_CODE_TOKEN_EXPIRED);
+            throw new OutOfBoundsException('Token expired', self::TOKEN_EXPIRED);
         }
 
         $user = $this->findById($token->getUserId());

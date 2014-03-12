@@ -31,8 +31,6 @@ class VerifyRegistrationController extends AbstractRestController implements Sec
      */
     public function post(Request $request)
     {
-        $user = $this->user();
-
         $id    = $request->attributes->get('id');
         $token = Arr::get($this->content, 'token');
 
@@ -55,7 +53,13 @@ class VerifyRegistrationController extends AbstractRestController implements Sec
         try {
             $user = $this->userService->verifyRegistration($token);
         } catch (OutOfBoundsException $e) {
-            return $this->getSimpleResponse($e->getCode(), $e->getMessage());
+            $httpCodes = [
+                UserService::INCORRECT_TOKEN_TYPE => 422,
+                UserService::TOKEN_EXPIRED        => 410,
+                UserService::TOKEN_NOT_FOUND      => 404,
+            ];
+
+            return $this->getSimpleResponse($httpCodes[$e->getCode()], $e->getMessage());
         }
 
         $user = $user->getArrayCopy();
