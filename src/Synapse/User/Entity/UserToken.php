@@ -11,6 +11,7 @@ class UserToken extends AbstractEntity
 {
     // Token types
     const TYPE_VERIFY_REGISTRATION = 'Verify registration';
+    const TYPE_RESET_PASSWORD      = 'Reset password';
 
     /**
      * {@inheritDoc}

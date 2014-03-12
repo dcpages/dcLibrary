@@ -8,6 +8,7 @@ use Synapse\Email\EmailService;
 use Synapse\User\Entity\User as UserEntity;
 use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\View\Email\VerifyRegistration as VerifyRegistrationView;
+use Synapse\View\Email\ResetPassword as ResetPasswordView;
 use OutOfBoundsException;
 
 /**
@@ -16,11 +17,11 @@ use OutOfBoundsException;
 class UserService
 {
     /**
-     * HTTP codes to return for specific exceptions
+     * Error codes to return for specific exceptions
      */
-    const HTTP_CODE_INCORRECT_TOKEN_TYPE = 422;
-    const HTTP_CODE_TOKEN_EXPIRED        = 410;
-    const HTTP_CODE_TOKEN_NOT_FOUND      = 404;
+    const INCORRECT_TOKEN_TYPE = 1;
+    const TOKEN_EXPIRED        = 2;
+    const TOKEN_NOT_FOUND      = 3;
 
     /**
      * @var Synapse\User\Mapper\User
@@ -41,6 +42,11 @@ class UserService
      * @var Synapse\View\Email\VerifyRegistration
      */
     protected $verifyRegistrationView;
+
+    /**
+     * @var Synapse\View\Email\ResetPassword
+     */
+    protected $resetPasswordView;
 
     /**
      * Find a user by id
@@ -71,9 +77,20 @@ class UserService
     }
 
     /**
+     * Delete a user token
+     *
+     * @param  UserToken $token
+     * @return Zend\Db\ResultSet\ResultSet
+     */
+    public function deleteToken(UserTokenEntity $token)
+    {
+        return $this->userTokenMapper->delete($token);
+    }
+
+    /**
      * Register a user
      *
-     * @param  array                    $userData Data with which to populate the user
+     * @param  array $userData Data with which to populate the user
      * @return Synapse\User\Entity\User
      */
     public function register(array $userData)
@@ -87,18 +104,61 @@ class UserService
 
         $user = $this->userMapper->persist($userEntity);
 
-        $userToken = new UserTokenEntity;
-        $userToken->setCreated(time())
-            ->setExpires(strtotime('+1 day', time()))
-            ->setType(UserTokenEntity::TYPE_VERIFY_REGISTRATION)
-            ->setUserId($user->getId())
-            ->setToken($userToken->generateToken());
+        $userToken = $this->createUserToken([
+            'type'    => UserTokenEntity::TYPE_VERIFY_REGISTRATION,
+            'user_id' => $user->getId(),
+        ]);
 
-        $userToken = $this->userTokenMapper->persist($userToken);
+        // Create the verify registration email
+        $this->verifyRegistrationView->setUserToken($userToken);
 
-        $this->sendVerificationEmail($user, $userToken);
+        $email = $this->emailService->createFromArray([
+            'recipient_email' => $user->getEmail(),
+            'subject'         => 'Verify Your Account',
+            'message'         => (string) $this->verifyRegistrationView,
+        ]);
 
         return $user;
+    }
+
+    /**
+     * Reset a user's password
+     *
+     * @param  Synapse\User\EntityUserEntity $user
+     * @return Synapse\User\EntityUserEntity
+     */
+    public function sendResetPasswordEmail(UserEntity $user)
+    {
+        $userToken = $this->createUserToken([
+            'type'    => UserTokenEntity::TYPE_RESET_PASSWORD,
+            'user_id' => $user->getId(),
+        ]);
+
+        $this->resetPasswordView->setUserToken($userToken);
+
+        $email = $this->emailService->createFromArray([
+            'recipient_email' => $user->getEmail(),
+            'subject'         => 'Reset Your Password',
+            'message'         => (string) $this->resetPasswordView,
+        ]);
+
+        return $user;
+    }
+
+    /**
+     * Change the password
+     *
+     * @param  UserEntity $user        The user whose password to change
+     * @param  string     $newPassword The new password
+     * @return UserEntity
+     */
+    public function resetPassword(UserEntity $user, $newPassword)
+    {
+        $hashedPassword = $this->hashPassword($newPassword);
+
+        $user->setPassword($hashedPassword);
+
+        return $this->userMapper->persist($user);
     }
 
     /**
@@ -122,18 +182,18 @@ class UserService
     public function verifyRegistration(UserTokenEntity $token)
     {
         if ($token->isNew()) {
-            throw new OutOfBoundsException('Token not found.', self::HTTP_CODE_TOKEN_NOT_FOUND);
+            throw new OutOfBoundsException('Token not found.', self::TOKEN_NOT_FOUND);
         }
 
         if ($token->getType() !== UserTokenEntity::TYPE_VERIFY_REGISTRATION) {
             $format  = 'Token specified if of type %s. Expected %s.';
             $message = sprintf($format, $token->getType(), UserTokenEntity::TYPE_VERIFY_REGISTRATION);
 
-            throw new OutOfBoundsException($message, self::HTTP_CODE_INCORRECT_TOKEN_TYPE);
+            throw new OutOfBoundsException($message, self::INCORRECT_TOKEN_TYPE);
         }
 
         if ($token->getExpires() < time()) {
-            throw new OutOfBoundsException('Token expired', self::HTTP_CODE_TOKEN_EXPIRED);
+            throw new OutOfBoundsException('Token expired', self::TOKEN_EXPIRED);
         }
 
         $user = $this->findById($token->getUserId());
@@ -185,24 +245,32 @@ class UserService
     }
 
     /**
-     * Send the verify registration email
-     *
-     * @param  Synapse\User\Entity\User      $user
-     * @param  Synapse\User\Entity\UserToken $userToken
-     * @return Synapse\Email\Entity\Email
+     * @param Synapse\View\Email\ResetPassword $view
      */
-    protected function sendVerificationEmail(UserEntity $user, UserTokenEntity $userToken)
+    public function setResetPasswordView(ResetPasswordView $view)
     {
-        $view = $this->verifyRegistrationView;
+        $this->resetPasswordView = $view;
+        return $this;
+    }
 
-        $view->setUserToken($userToken);
+    /**
+     * Create a user token and persist it in the database
+     *
+     * @param  array  $data Data to populate the user token
+     * @return Synapse\User\Entity\UserToken
+     */
+    protected function createUserToken(array $data)
+    {
+        $userToken = new UserTokenEntity;
 
-        $email = $this->emailService->createFromArray([
-            'recipient_email' => $user->getEmail(),
-            'message'         => (string) $view,
-            'subject'         => 'Verify Your Account',
-        ]);
+        $defaults = [
+            'created' => time(),
+            'expires' => strtotime('+1 day', time()),
+            'token'   => $userToken->generateToken(),
+        ];
 
-        return $email;
+        $userToken = $userToken->exchangeArray(array_merge($defaults, $data));
+
+        return $this->userTokenMapper->persist($userToken);
     }
 }
