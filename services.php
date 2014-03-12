@@ -10,6 +10,7 @@ $app->register(new Synapse\Provider\ControllerServiceProvider());
 $app->register(new Synapse\Log\ServiceProvider());
 $app->register(new Synapse\Email\ServiceProvider());
 $app->register(new Synapse\User\ServiceProvider());
+$app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider());
 
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
