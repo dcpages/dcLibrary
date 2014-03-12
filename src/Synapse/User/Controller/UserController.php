@@ -95,16 +95,6 @@ class UserController extends AbstractRestController implements SecurityAwareInte
         // Update password
         if (isset($changes['password'])) {
             $password        = Arr::get($this->content, 'password');
-            $passwordVerify  = Arr::get($this->content, 'password_verify');
-
-            // Ensure user input is valid
-            if (! ($password and $passwordVerify)) {
-                return $this->getSimpleResponse(422, 'Missing required field');
-            }
-
-            if ($password !== $passwordVerify) {
-                return $this->getSimpleResponse(422, 'Passwords do not match');
-            }
 
             if (! $password) {
                 return $this->getSimpleResponse(422, 'Password cannot be empty');
