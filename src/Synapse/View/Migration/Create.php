@@ -38,8 +38,9 @@ class Create extends AbstractView
      */
     public function description($description = null)
     {
-        if ($description === null)
+        if ($description === null) {
             return $this->description;
+        }
 
         $this->description = $description;
     }
@@ -52,8 +53,9 @@ class Create extends AbstractView
      */
     public function classname($classname = null)
     {
-        if ($classname === null)
+        if ($classname === null) {
             return $this->classname;
+        }
 
         $this->classname = $classname;
     }
@@ -66,8 +68,9 @@ class Create extends AbstractView
      */
     public function timestamp($timestamp = null)
     {
-        if ($timestamp === null)
+        if ($timestamp === null) {
             return $this->timestamp;
+        }
 
         $this->timestamp = $timestamp;
     }

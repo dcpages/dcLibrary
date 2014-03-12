@@ -75,6 +75,7 @@ class UserTest extends PHPUnit_Framework_TestCase
             'last_login',
             'created',
             'enabled',
+            'verified',
         ];
 
         $user = new User;
@@ -90,6 +91,7 @@ class UserTest extends PHPUnit_Framework_TestCase
             'last_login' => null,
             'created'    => null,
             'enabled'    => null,
+            'verified'   => null,
         ];
 
         $user = new User;

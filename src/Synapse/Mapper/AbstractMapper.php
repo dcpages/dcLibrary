@@ -120,7 +120,7 @@ abstract class AbstractMapper
      * Execute a given query
      *
      * @param  PreparableSqlInterface $query Query to be executed
-     * @return HydratingResultSet
+     * @return Zend\Db\ResultSet\ResultSet
      */
     protected function execute(PreparableSqlInterface $query)
     {

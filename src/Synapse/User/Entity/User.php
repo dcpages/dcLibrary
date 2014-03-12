@@ -22,6 +22,7 @@ class User extends AbstractEntity implements UserInterface
         'last_login' => null,
         'created'    => null,
         'enabled'    => null,
+        'verified'   => null,
     ];
 
     /**

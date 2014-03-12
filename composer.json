@@ -19,7 +19,6 @@
         "lusitanian/oauth": "~0.2"
     },
     "require-dev": {
-        "silex/web-profiler": "~1.0",
         "phpunit/phpunit": "~4.0"
     }
 }
