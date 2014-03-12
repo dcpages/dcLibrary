@@ -17,3 +17,7 @@ before_script:
 script:
   - vendor/bin/phpunit --configuration phpunit.travis.xml
   - phpcs --standard=PSR2 src/*
+
+matrix:
+  allow_failures:
+    - php: hhvm
