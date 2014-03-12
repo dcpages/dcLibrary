@@ -35,8 +35,9 @@ class Create extends AbstractView
      */
     public function version($version = null)
     {
-        if ($version === null)
+        if ($version === null) {
             return $this->version;
+        }
 
         $this->version = $version;
     }
@@ -49,8 +50,9 @@ class Create extends AbstractView
      */
     public function expectedVersion($expectedVersion = null)
     {
-        if ($expectedVersion === null)
+        if ($expectedVersion === null) {
             return $this->expectedVersion;
+        }
 
         $this->expectedVersion = $expectedVersion;
     }
@@ -63,8 +65,9 @@ class Create extends AbstractView
      */
     public function classname($classname = null)
     {
-        if ($classname === null)
+        if ($classname === null) {
             return $this->classname;
+        }
 
         $this->classname = $classname;
     }
