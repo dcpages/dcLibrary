@@ -7,6 +7,7 @@ use Silex\ServiceProviderInterface;
 
 use Synapse\Controller\OAuthController;
 use Synapse\OAuth2\Storage\Pdo as OAuth2Pdo;
+use Synapse\OAuth2\ResponseType\AccessToken;
 
 use OAuth2\HttpFoundationBridge\Response as BridgeResponse;
 use OAuth2\Server as OAuth2Server;
@@ -38,10 +39,19 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
                 'user_credentials'   => new UserCredentials($storage),
             ];
 
-            return new OAuth2Server($storage, [
-                'enforce_state'  => true,
-                'allow_implicit' => true,
-            ], $grantTypes);
+            $accessTokenResponseType = new AccessToken($storage, $storage);
+
+            return new OAuth2Server(
+                $storage,
+                [
+                    'enforce_state'  => true,
+                    'allow_implicit' => true,
+                ],
+                $grantTypes,
+                [
+                    'token' => $accessTokenResponseType,
+                ]
+            );
         });
 
         $app['oauth.controller'] = $app->share(function () use ($app) {
