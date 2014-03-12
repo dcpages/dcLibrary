@@ -53,6 +53,11 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), [
             'pattern'   => '^/oauth',
             'anonymous' => true,
         ],
+        'api-users' => [
+            'pattern'   => '^/users/',
+            'oauth'     => true,
+            'stateless' => true,
+        ],
         'public' => [
             'pattern'   => '^/users',
             'anonymous' => true,

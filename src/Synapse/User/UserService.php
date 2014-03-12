@@ -8,6 +8,7 @@ use Synapse\Email\EmailService;
 use Synapse\User\Entity\User as UserEntity;
 use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\View\Email\VerifyRegistration as VerifyRegistrationView;
+use Synapse\View\Email\ResetPassword as ResetPasswordView;
 use OutOfBoundsException;
 
 /**
@@ -41,6 +42,11 @@ class UserService
      * @var Synapse\View\Email\VerifyRegistration
      */
     protected $verifyRegistrationView;
+
+    /**
+     * @var Synapse\View\Email\ResetPassword
+     */
+    protected $resetPasswordView;
 
     /**
      * Find a user by id
@@ -224,6 +230,15 @@ class UserService
     public function setVerifyRegistrationView(VerifyRegistrationView $view)
     {
         $this->verifyRegistrationView = $view;
+        return $this;
+    }
+
+    /**
+     * @param Synapse\View\Email\ResetPassword $view
+     */
+    public function setResetPasswordView(ResetPasswordView $view)
+    {
+        $this->resetPasswordView = $view;
         return $this;
     }
 

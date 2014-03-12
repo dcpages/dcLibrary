@@ -10,6 +10,7 @@ use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\User\Mapper\User as UserMapper;
 use Synapse\User\Mapper\UserToken as UserTokenMapper;
 use Synapse\View\Email\VerifyRegistration as VerifyRegistrationView;
+use Synapse\View\Email\ResetPassword as ResetPasswordView;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -38,11 +39,15 @@ class ServiceProvider implements ServiceProviderInterface
             $verifyRegistrationView = new VerifyRegistrationView($app['mustache']);
             $verifyRegistrationView->setUrlGenerator($app['url_generator']);
 
+            $resetPasswordView = new ResetPasswordView($app['mustache']);
+            $resetPasswordView->setUrlGenerator($app['url_generator']);
+
             $service = new UserService;
             $service->setUserMapper($app['user.mapper'])
                 ->setUserTokenMapper($app['user-token.mapper'])
                 ->setEmailService($app['email.service'])
-                ->setVerifyRegistrationView($verifyRegistrationView);
+                ->setVerifyRegistrationView($verifyRegistrationView)
+                ->setResetPasswordView($resetPasswordView);
 
             return $service;
         });
@@ -77,7 +82,7 @@ class ServiceProvider implements ServiceProviderInterface
             ->method('POST')
             ->bind('verify-registration');
 
-        $app->match('/account/reset-password', 'reset-password.controller:rest')
+        $app->match('/users/{id}/reset-password', 'reset-password.controller:rest')
             ->method('POST|PUT')
             ->bind('reset-password');
     }
