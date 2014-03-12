@@ -8,6 +8,7 @@ use Synapse\User\Entity\User;
 use Synapse\User\UserService;
 use Synapse\Application\SecurityAwareInterface;
 use Synapse\Application\SecurityAwareTrait;
+use Synapse\Stdlib\Arr;
 
 class UserController extends AbstractRestController implements SecurityAwareInterface
 {
@@ -80,7 +81,7 @@ class UserController extends AbstractRestController implements SecurityAwareInte
             $currentPassword = Arr::get($this->content, 'current_password');
 
             if (! password_verify($currentPassword, $user->getPassword())) {
-                return $this->getSimpleResponse(403, 'Current password incorrect');
+                return $this->getSimpleResponse(403, 'Current password missing or incorrect');
             }
         }
 
