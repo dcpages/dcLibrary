@@ -18,7 +18,6 @@
         "jdesrosiers/silex-cors-provider": "~0.1"
     },
     "require-dev": {
-        "silex/web-profiler": "~1.0",
         "phpunit/phpunit": "~4.0"
     }
 }
