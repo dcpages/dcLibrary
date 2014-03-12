@@ -37,7 +37,7 @@ class VerifyRegistrationController extends AbstractRestController implements Sec
         $token = Arr::get($this->content, 'token');
 
         if (! $token) {
-            return $this->getSimpleResponse(400, 'Token not specified.');
+            return $this->getSimpleResponse(422, 'Token not specified.');
         }
 
         $conditions = [
