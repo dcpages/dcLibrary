@@ -13,21 +13,33 @@ class UserController extends AbstractRestController implements SecurityAwareInte
 {
     use SecurityAwareTrait;
 
+    /**
+     * @var UserService
+     */
     protected $userService;
 
+    /**
+     * Return a user entity
+     *
+     * @param  Request $request
+     * @return array
+     */
     public function get(Request $request)
     {
         $id = $request->attributes->get('id');
 
         $user = $this->userService
-            ->findById($id)
-            ->getArrayCopy();
+            ->findById($id);
 
-        unset($user['password']);
-
-        return $user;
+        return $this->userArrayWithoutPassword($user);
     }
 
+    /**
+     * Create a user
+     *
+     * @param  Request $request
+     * @return Symfony\Component\HttpFoundation\Response
+     */
     public function post(Request $request)
     {
         $user = $this->content;
@@ -36,10 +48,8 @@ class UserController extends AbstractRestController implements SecurityAwareInte
             return $this->getSimpleResponse(422, 'Missing required field');
         }
 
-        $newUser = $this->userService->register($user)
-            ->getArrayCopy();
-
-        unset($newUser['password']);
+        $newUser = $this->userService->register($user);
+        $newUser = $this->userArrayWithoutPassword($newUser);
 
         $newUser['_href'] = $this->url('user-entity', array('id' => $newUser['id']));
 
@@ -51,5 +61,20 @@ class UserController extends AbstractRestController implements SecurityAwareInte
     {
         $this->userService = $service;
         return $this;
+    }
+
+    /**
+     * Transform the User entity into an array and remove the password element
+     *
+     * @param  User   $user
+     * @return array
+     */
+    protected function userArrayWithoutPassword(User $user)
+    {
+        $user = $user->getArrayCopy();
+
+        unset($user['password']);
+
+        return $user;
     }
 }
