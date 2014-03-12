@@ -121,7 +121,7 @@ class UserService
 
         $email = $this->emailService->createFromArray([
             'recipient_email' => $user->getEmail(),
-            'subject'         => 'Reset Your Password'.
+            'subject'         => 'Reset Your Password',
             'message'         => (string) $this->resetPasswordView,
         ]);
 

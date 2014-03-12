@@ -33,7 +33,7 @@ trait SecurityAwareTrait
      */
     public function user()
     {
-        if (null === $token = $this['security']->getToken()) {
+        if (null === $token = $this->security->getToken()) {
             return null;
         }
 
