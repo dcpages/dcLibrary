@@ -9,12 +9,16 @@ use Synapse\User\Entity\UserToken;
 use Synapse\User\Entity\User;
 use Synapse\Stdlib\Arr;
 use OutOfBoundsException;
+use Synapse\Application\SecurityAwareInterface;
+use Synapse\Application\SecurityAwareTrait;
 
 /**
  * Controller for resetting passwords
  */
-class ResetPasswordController extends AbstractRestController
+class ResetPasswordController extends AbstractRestController implements SecurityAwareInterface
 {
+    use SecurityAwareTrait;
+
     /**
      * @var Synapse\User\UserService
      */
@@ -28,10 +32,11 @@ class ResetPasswordController extends AbstractRestController
      */
     public function post(Request $request)
     {
-        $id = $this->loggedInUserId();
+        $user = $this->user();
 
-        if (! $id) {
-            return $this->getSimpleResponse(401, 'Not logged in');
+        // Ensure the user in question is logged in
+        if ($request->attributes->get('id') !== $user->getId()) {
+            return $this->getSimpleResponse(403, 'Access denied');
         }
 
         $user = $this->userService->sendResetPasswordEmail($user);
@@ -47,33 +52,45 @@ class ResetPasswordController extends AbstractRestController
      */
     public function put(Request $request)
     {
-        $id    = $this->loggedInUserId();
+        $user = $this->user();
+
+        // Ensure the user in question is logged in
+        if ($request->attributes->get('id') !== $user->getId()) {
+            return $this->getSimpleResponse(403, 'Access denied');
+        }
+
         $token = Arr::get($this->content, 'token');
 
         $conditions = [
-            'user_id' => $id,
+            'user_id' => $user->getId(),
             'token'   => $token,
             'type'    => UserToken::TYPE_RESET_PASSWORD,
         ];
 
+        // Ensure token is valid
         $token = $this->userService->findTokenBy($conditions);
 
         if (! $token) {
             return $this->getSimpleResponse(404, 'Token not found');
         }
 
-        $password       = Arr::get($this->content, 'password');
-        $passwordVerify = Arr::get($this->content, 'password_verify');
+        $currentPassword = Arr::get($this->content, 'current_password');
+        $password        = Arr::get($this->content, 'password');
+        $passwordVerify  = Arr::get($this->content, 'password_verify');
 
-        if (! $password) {
+        // Ensure user input is valid
+        if (! ($password and $passwordVerify and $currentPassword)) {
             return $this->getSimpleResponse(422, 'Missing required field');
+        }
+
+        if (! password_verify($currentPassword, $user->getPassword())) {
+            return $this->getSimpleResponse(403, 'Current password incorrect');
         }
 
         if ($password !== $passwordVerify) {
             return $this->getSimpleResponse(422, 'Passwords do not match');
         }
 
-        $user = $this->userService->findById($id);
         $user = $this->userService->resetPassword($user, $password);
 
         return $this->userArrayWithoutPassword($user);
@@ -86,11 +103,6 @@ class ResetPasswordController extends AbstractRestController
     {
         $this->userService = $service;
         return $this;
-    }
-
-    protected function loggedInUserId()
-    {
-        return 1;
     }
 
     /**
