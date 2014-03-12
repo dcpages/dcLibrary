@@ -14,11 +14,27 @@ class UserService
         return $this->userMapper->findById($id);
     }
 
+    public function findByEmail($email)
+    {
+        return $this->userMapper->findByEmail($email);
+    }
+
     public function register(array $userData)
     {
         $userEntity = new UserEntity;
         $userEntity->setEmail($userData['email'])
             ->setPassword($this->hashPassword($userData['password']))
+            ->setCreated(time())
+            ->setEnabled(true);
+
+        return $this->userMapper->persist($userEntity);
+    }
+
+    public function registerWithoutPassword(array $userData)
+    {
+        $userEntity = new UserEntity;
+        $userEntity->setEmail($userData['email'])
+            ->setPassword(null)
             ->setCreated(time())
             ->setEnabled(true);
 
