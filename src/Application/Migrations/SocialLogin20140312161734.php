@@ -57,6 +57,7 @@ class SocialLogin20140312161734 extends AbstractMigration
 
         $db->query(
             'ALTER TABLE `oauth_access_tokens`
+                CHANGE `user_id` `user_id` INT UNSIGNED NOT NULL,
                 ADD FOREIGN KEY `fk_oauth_access_tokens_user_id` (`user_id`)
                     REFERENCES `users` (`id`)
                     ON UPDATE CASCADE ON DELETE CASCADE',
@@ -65,6 +66,7 @@ class SocialLogin20140312161734 extends AbstractMigration
 
         $db->query(
             'ALTER TABLE `oauth_refresh_tokens`
+                CHANGE `user_id` `user_id` INT UNSIGNED NOT NULL,
                 ADD FOREIGN KEY `fk_oauth_refresh_tokens_user_id` (`user_id`)
                     REFERENCES `users` (`id`)
                     ON UPDATE CASCADE ON DELETE CASCADE',
@@ -73,6 +75,7 @@ class SocialLogin20140312161734 extends AbstractMigration
 
         $db->query(
             'ALTER TABLE `oauth_authorization_codes`
+                CHANGE `user_id` `user_id` INT UNSIGNED NOT NULL,
                 ADD FOREIGN KEY `fk_oauth_auth_codes_user_id` (`user_id`)
                     REFERENCES `users` (`id`)
                     ON UPDATE CASCADE ON DELETE CASCADE',
