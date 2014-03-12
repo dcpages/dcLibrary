@@ -4,10 +4,15 @@ namespace Synapse\User\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Synapse\Controller\AbstractRestController;
+use Synapse\User\Entity\User;
 use Synapse\User\UserService;
+use Synapse\Application\SecurityAwareInterface;
+use Synapse\Application\SecurityAwareTrait;
 
-class UserController extends AbstractRestController
+class UserController extends AbstractRestController implements SecurityAwareInterface
 {
+    use SecurityAwareTrait;
+
     protected $userService;
 
     public function get(Request $request)

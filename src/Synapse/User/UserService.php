@@ -60,6 +60,17 @@ class UserService
     }
 
     /**
+     * Update a user in the database
+     *
+     * @param  UserEntity $user
+     * @return UserEntity
+     */
+    public function update(UserEntity $user)
+    {
+        return $this->userMapper->update($user);
+    }
+
+    /**
      * Find token by given conditions
      *
      * Conditions should be provided in the following format:
