@@ -93,6 +93,8 @@ class ResetPasswordController extends AbstractRestController implements Security
 
         $user = $this->userService->resetPassword($user, $password);
 
+        $this->userService->deleteToken($token);
+
         return $this->userArrayWithoutPassword($user);
     }
 

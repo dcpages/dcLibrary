@@ -77,9 +77,20 @@ class UserService
     }
 
     /**
+     * Delete a user token
+     *
+     * @param  UserToken $token
+     * @return Zend\Db\ResultSet\ResultSet
+     */
+    public function deleteToken(UserTokenEntity $token)
+    {
+        return $this->userTokenMapper->delete($token);
+    }
+
+    /**
      * Register a user
      *
-     * @param  array                    $userData Data with which to populate the user
+     * @param  array $userData Data with which to populate the user
      * @return Synapse\User\Entity\User
      */
     public function register(array $userData)
