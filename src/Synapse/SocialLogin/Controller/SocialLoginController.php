@@ -115,12 +115,13 @@ class SocialLoginController extends AbstractController
 
         try {
             $token = $this->service->handleLoginRequest($loginRequest);
+
+            $redirect = $this->config['redirect-url'];
+            $redirect .= '?'.http_build_query($token);
         } catch (NoLinkedAccountException $e) {
-
+            $redirect = $this->config['redirect-url'];
+            $redirect .= '?login_failure=1';
         }
-
-        $redirect = $this->config['redirect-url'];
-        $redirect .= '?'.http_build_query($token);
 
         $response = new Response();
         $response->setStatusCode(301);
