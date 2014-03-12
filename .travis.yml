@@ -11,6 +11,13 @@ git:
 
 before_script:
   - composer install
+  - pyrus install pear/PHP_CodeSniffer
+  - phpenv rehash
 
 script:
   - vendor/bin/phpunit --configuration phpunit.travis.xml
+  - phpcs --standard=PSR2 src/*
+
+matrix:
+  allow_failures:
+    - php: hhvm

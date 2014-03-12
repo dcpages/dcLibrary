@@ -69,4 +69,6 @@ require_once APPDIR.'/routes.php';
 // Set the default time zone.
 date_default_timezone_set('UTC');
 
+$app->after($app['cors']);
+
 $app->run();
