@@ -57,6 +57,74 @@ class UserController extends AbstractRestController implements SecurityAwareInte
         return $response;
     }
 
+    /**
+     * Edit a user; requires the user to be logged in and the current password provided
+     *
+     * @param  Request $request
+     * @return array
+     */
+    public function put(Request $request)
+    {
+        $user = $this->user();
+
+        // Ensure the user in question is logged in
+        if ($request->attributes->get('id') !== $user->getId()) {
+            return $this->getSimpleResponse(403, 'Access denied');
+        }
+
+        $changes = $this->content;
+
+        $verifyCurrentPassword = (isset($changes['email']) or isset($changes['password']));
+
+        if ($verifyCurrentPassword) {
+            $currentPassword = Arr::get($this->content, 'current_password');
+
+            if (! password_verify($currentPassword, $user->getPassword())) {
+                return $this->getSimpleResponse(403, 'Current password incorrect');
+            }
+        }
+
+        $update = [];
+
+        // Update email
+        if (isset($changes['email'])) {
+            $update['email'] = $changes['email'];
+        }
+
+        // Update password
+        if (isset($changes['password'])) {
+            $password        = Arr::get($this->content, 'password');
+            $passwordVerify  = Arr::get($this->content, 'password_verify');
+
+            // Ensure user input is valid
+            if (! ($password and $passwordVerify)) {
+                return $this->getSimpleResponse(422, 'Missing required field');
+            }
+
+            if ($password !== $passwordVerify) {
+                return $this->getSimpleResponse(422, 'Passwords do not match');
+            }
+
+            if (! $password) {
+                return $this->getSimpleResponse(422, 'Password cannot be empty');
+            }
+
+            $update['password'] = $this->userService->hashPassword($changes['password']);
+        }
+
+        if (! $update) {
+            return $this->userArrayWithoutPassword($user);
+        }
+
+        $user = $user->exchangeArray($update);
+        $user = $this->userService->update($user);
+
+        return $this->userArrayWithoutPassword($user);
+    }
+
+    /**
+     * @param UserService $service
+     */
     public function setUserService(UserService $service)
     {
         $this->userService = $service;
