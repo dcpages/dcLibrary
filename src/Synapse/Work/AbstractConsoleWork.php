@@ -8,8 +8,18 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
+/**
+ * An abstract class for wrapping console commands as Work to be performed by workers
+ *
+ * Simply extend this class and overload getConsoleCommand() to return the correct service from $app
+ */
 abstract class AbstractConsoleWork
 {
+    /**
+     * Manually load, configure, and run the console command
+     *
+     * Inject $this->args as Input object arguments
+     */
     public function perform()
     {
         $app = $this->application();
@@ -23,6 +33,11 @@ abstract class AbstractConsoleWork
         $command->execute($input, $output);
     }
 
+    /**
+     * Return the Silex application loaded with all routes and services
+     *
+     * @return Application
+     */
     protected function application()
     {
         // Initialize the Silex Application
@@ -47,6 +62,11 @@ abstract class AbstractConsoleWork
         return $app;
     }
 
+    /**
+     * Create Console Input object with $this->args loaded as Input arguments
+     *
+     * @return Input
+     */
     protected function createInput()
     {
         $input = new Input;
