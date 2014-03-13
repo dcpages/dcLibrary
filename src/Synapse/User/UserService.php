@@ -59,6 +59,11 @@ class UserService
         return $this->userMapper->findById($id);
     }
 
+    public function findByEmail($email)
+    {
+        return $this->userMapper->findByEmail($email);
+    }
+
     /**
      * Find token by given conditions
      *
@@ -119,6 +124,17 @@ class UserService
         ]);
 
         return $user;
+    }
+
+    public function registerWithoutPassword(array $userData)
+    {
+        $userEntity = new UserEntity;
+        $userEntity->setEmail($userData['email'])
+            ->setPassword(null)
+            ->setCreated(time())
+            ->setEnabled(true);
+
+        return $this->userMapper->persist($userEntity);
     }
 
     /**
