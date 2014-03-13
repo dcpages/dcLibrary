@@ -11,8 +11,9 @@ $app->register(new Synapse\Log\ServiceProvider());
 $app->register(new Synapse\Email\ServiceProvider());
 $app->register(new Synapse\User\ServiceProvider());
 $app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider());
-
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+
+$app->register(new Synapse\SocialLogin\ServiceProvider());
 
 $app->register(new Mustache\Silex\Provider\MustacheServiceProvider, [
     'mustache.path' => APPDIR.'/templates',
@@ -50,7 +51,7 @@ $app['test.command'] = $app->share(function () use ($app) {
 $app->register(new Silex\Provider\SecurityServiceProvider(), [
     'security.firewalls' => [
         'unsecured' => [
-            'pattern'   => '^/oauth',
+            'pattern'   => '^/(oauth|social-login)',
         ],
         'public' => [
             'pattern'   => '^/users$', // Make user creation endpoint public for user registration
