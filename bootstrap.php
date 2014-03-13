@@ -22,53 +22,27 @@ spl_autoload_register(function ($className) {
     }
 });
 
-// Create the application object
-$app = new Synapse\Application;
-
-// Store application version
-$app['version'] = '0.0.0';
-
-// Define acceptable environments
-$environments = array(
-    'production',
-    'staging',
-    'qa',
-    'testing',
-    'development',
-);
-
-// Detect the current application environment
-if (isset($_SERVER['APP_ENV']) && in_array($_SERVER['APP_ENV'], $environments)) {
-    $app['environment'] = $_SERVER['APP_ENV'];
-} else {
-    $app['environment'] = 'development';
-}
-
-// Config is a bit of a special-case service provider and needs to be registered
-// before all the others (so that they can access it)
-$app->register(new Synapse\Provider\ConfigServiceProvider(), array(
-    'config_dirs' => array(
-        APPDIR.'/config/',
-        APPDIR.'/config/'.$app['environment'].'/',
-    ),
-));
-
-$initConfig = $app['config']->load('init');
-
-if ($initConfig['debug']) {
-    Symfony\Component\Debug\Debug::enable();
-    $app['debug'] = true;
-}
-
-// Register services
-require_once APPDIR.'/services.php';
-
-// Create routes
-require_once APPDIR.'/routes.php';
-
 // Set the default time zone.
 date_default_timezone_set('UTC');
 
-$app->after($app['cors']);
+// Initialize the Silex Application
+$applicationInitializer = new Synapse\ApplicationInitializer;
 
+$app = $applicationInitializer->initialize();
+
+// Set the default routes and services
+$defaultRoutes   = new Synapse\Application\Routes;
+$defaultServices = new Synapse\Application\Services;
+
+$defaultRoutes->define($app);
+$defaultServices->register($app);
+
+// Set the application-specific routes and services
+$appRoutes   = new Application\Routes;
+$appServices = new Application\Services;
+
+$appRoutes->define($app);
+$appServices->register($app);
+
+// Run the application
 $app->run();
