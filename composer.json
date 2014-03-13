@@ -1,4 +1,6 @@
 {
+    "name": "synapsestudios/api-template",
+    "description": "Starting point for new projects",
     "require": {
         "silex/silex": "~1.1",
         "mustache/silex-provider": "~1.0",
