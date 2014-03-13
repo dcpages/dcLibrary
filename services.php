@@ -51,21 +51,16 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), [
     'security.firewalls' => [
         'unsecured' => [
             'pattern'   => '^/oauth',
-            'anonymous' => true,
-        ],
-        'api-users' => [
-            'pattern'   => '^/users/',
-            'oauth'     => true,
-            'stateless' => true,
         ],
         'public' => [
-            'pattern'   => '^/users',
+            'pattern'   => '^/users$', // Make user creation endpoint public for user registration
             'anonymous' => true,
         ],
         'api' => [
             'pattern'   => '^/',
+            // Order of oauth and anonymous matters!
             'oauth'     => true,
-            'stateless' => true,
+            'anonymous' => true,
         ],
     ],
 ]);
