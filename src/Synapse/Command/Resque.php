@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Synapse\Log\LoggerAwareInterface;
 use Synapse\Log\LoggerAwareTrait;
 
-use Resque as ResqueLib;
+use Synapse\Resque\Resque as ResqueService;
 use Resque_Event;
 use Resque_Worker;
 
@@ -36,7 +36,7 @@ class Resque extends Command implements LoggerAwareInterface
      */
     protected $output;
 
-    public function setResque(ResqueLib $resque)
+    public function setResque(ResqueService $resque)
     {
         $this->resque = $resque;
         return $this;

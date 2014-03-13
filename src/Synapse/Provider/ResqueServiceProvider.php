@@ -2,7 +2,7 @@
 
 namespace Synapse\Provider;
 
-use Resque;
+use Synapse\Resque\Resque as ResqueService;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -13,7 +13,7 @@ class ResqueServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['resque'] = $app->share(function () use ($app) {
-            return new Resque($app['config']->load('resque'));
+            return new ResqueService($app['config']->load('resque'));
         });
 
         $app['resque.command'] = $app->share(function () use ($app) {
