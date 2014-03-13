@@ -3,9 +3,9 @@
 namespace Synapse\Work;
 
 use Synapse\Application;
-use Synapse\AppliationInitializer;
+use Synapse\ApplicationInitializer;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\Input;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
@@ -26,11 +26,11 @@ abstract class AbstractConsoleWork
 
         $command = $this->getConsoleCommand($app);
 
-        $input  = $this->createInput();
+        // Create Input object with $this->args loaded as Input arguments
+        $input  = new ArrayInput($this->args);
         $output = new ConsoleOutput;
 
-        $command->configure();
-        $command->execute($input, $output);
+        $command->run($input, $output);
     }
 
     /**
@@ -63,27 +63,8 @@ abstract class AbstractConsoleWork
     }
 
     /**
-     * Create Console Input object with $this->args loaded as Input arguments
-     *
-     * @return Input
-     */
-    protected function createInput()
-    {
-        $input = new Input;
-
-        foreach ($this->args as $key => $value) {
-            $input->setArgument($key, $value);
-        }
-
-        return $input;
-    }
-
-    /**
      * @param  Application $app
      * @return Command          The console command this job should run
      */
-    abstract protected function getConsoleCommand(Application $app)
-    {
-        // Return the console command object to execute
-    }
+    abstract protected function getConsoleCommand(Application $app);
 }

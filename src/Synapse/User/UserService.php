@@ -181,6 +181,8 @@ class UserService
             'message'         => (string) $this->verifyRegistrationView,
         ]);
 
+        $this->emailService->enqueueSendEmailJob($email);
+
         return $user;
     }
 

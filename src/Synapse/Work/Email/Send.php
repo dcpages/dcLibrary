@@ -3,7 +3,7 @@
 namespace Synapse\Work\Email;
 
 use Synapse\Application;
-use Synapes\Work\AbstractConsoleWork;
+use Synapse\Work\AbstractConsoleWork;
 
 /**
  * Work for sending emails
@@ -13,7 +13,7 @@ class Send extends AbstractConsoleWork
     /**
      * {@inheritDoc}
      */
-    protected function createConsoleCommand(Application $app)
+    protected function getConsoleCommand(Application $app)
     {
         return $app['email.send'];
     }
