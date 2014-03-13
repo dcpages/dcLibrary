@@ -30,7 +30,8 @@ class ServiceProvider implements ServiceProviderInterface
             $service = new EmailService;
 
             $service->setEmailMapper($app['email.mapper'])
-                ->setEmailConfig($app['config']->load('email'));
+                ->setEmailConfig($app['config']->load('email'))
+                ->setResque($app['resque']);
 
             return $service;
         });

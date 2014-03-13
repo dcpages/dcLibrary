@@ -4,6 +4,7 @@ namespace Synapse\Email;
 
 use Synapse\Email\Mapper\Email as EmailMapper;
 use Synapse\Email\Entity\Email as EmailEntity;
+use Synapse\Resque\Resque;
 use Synapse\Stdlib\Arr;
 
 /**
@@ -11,8 +12,20 @@ use Synapse\Stdlib\Arr;
  */
 class EmailService
 {
+    /**
+     * @var EmailMapper
+     */
     protected $emailMapper;
+
+    /**
+     * @var array
+     */
     protected $emailConfig;
+
+    /**
+     * @var Resque
+     */
+    protected $resque;
 
     /**
      * @param EmailMapper $mapper
@@ -30,6 +43,14 @@ class EmailService
     {
         $this->emailConfig = $config;
         return $this;
+    }
+
+    /**
+     * @param Resque $resque
+     */
+    public function setResque(Resque $resque)
+    {
+        $this->resque = $resque;
     }
 
     /**
@@ -59,5 +80,20 @@ class EmailService
         $email = $this->emailMapper->persist($email);
 
         return $email;
+    }
+
+    /**
+     * Queue a job to send an email
+     *
+     * @param  EmailEntity $email
+     * @return string
+     */
+    public function enqueueSendEmailJob(EmailEntity $email)
+    {
+        return $this->resque->enqueue(
+            'email',
+            'Synapse\\Work\\Email\\Send',
+            ['id' => $email->getId()]
+        );
     }
 }
