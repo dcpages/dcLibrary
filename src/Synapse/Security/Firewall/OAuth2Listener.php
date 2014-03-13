@@ -27,6 +27,10 @@ class OAuth2Listener implements ListenerInterface
     {
         $request = $event->getRequest();
 
+        if ($request->getMethod() === 'OPTIONS') {
+            return;
+        }
+
         $regex = '/Bearer (.*)/';
         if (! $request->headers->has('Authorization') ||
             preg_match($regex, $request->headers->get('Authorization'), $matches) !== 1

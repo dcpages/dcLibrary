@@ -10,6 +10,7 @@ use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\View\Email\VerifyRegistration as VerifyRegistrationView;
 use Synapse\View\Email\ResetPassword as ResetPasswordView;
 use OutOfBoundsException;
+use Arr;
 
 /**
  * Service for general purpose tasks regarding the user
@@ -19,9 +20,11 @@ class UserService
     /**
      * Error codes to return for specific exceptions
      */
-    const INCORRECT_TOKEN_TYPE = 1;
-    const TOKEN_EXPIRED        = 2;
-    const TOKEN_NOT_FOUND      = 3;
+    const CURRENT_PASSWORD_REQUIRED = 1;
+    const FIELD_CANNOT_BE_EMPTY     = 2;
+    const INCORRECT_TOKEN_TYPE      = 3;
+    const TOKEN_EXPIRED             = 4;
+    const TOKEN_NOT_FOUND           = 5;
 
     /**
      * @var Synapse\User\Mapper\User
@@ -62,6 +65,61 @@ class UserService
     public function findByEmail($email)
     {
         return $this->userMapper->findByEmail($email);
+    }
+
+    /**
+     * Update a user
+     *
+     * If email or password are being changed, current_password is required
+     *
+     * @param  UserEntity $user
+     * @param  array      $data New values
+     * @return UserEntity
+     */
+    public function update(UserEntity $user, array $data)
+    {
+        $verifyCurrentPassword = (isset($data['email']) or isset($data['password']));
+
+        if ($verifyCurrentPassword) {
+            $currentPassword = Arr::get($data, 'current_password');
+
+            if (! password_verify($currentPassword, $user->getPassword())) {
+                throw new OutOfBoundsException(
+                    'Current password missing or incorrect',
+                    self::CURRENT_PASSWORD_REQUIRED
+                );
+            }
+        }
+
+        $update = [];
+
+        // Update email
+        if (isset($data['email'])) {
+            if (! $data['email']) {
+                throw new OutOfBoundsException(
+                    'Email cannot be empty',
+                    self::FIELD_CANNOT_BE_EMPTY
+                );
+            }
+
+            $update['email'] = $data['email'];
+        }
+
+        // Update password
+        if (isset($data['password'])) {
+            if (! $data['password']) {
+                throw new OutOfBoundsException(
+                    'Password cannot be empty',
+                    self::FIELD_CANNOT_BE_EMPTY
+                );
+            }
+
+            $update['password'] = $this->hashPassword($data['password']);
+        }
+
+        $user = $user->exchangeArray($update);
+
+        return $this->userMapper->update($user);
     }
 
     /**

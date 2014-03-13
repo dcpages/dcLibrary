@@ -76,19 +76,14 @@ class ResetPasswordController extends AbstractRestController implements Security
 
         $currentPassword = Arr::get($this->content, 'current_password');
         $password        = Arr::get($this->content, 'password');
-        $passwordVerify  = Arr::get($this->content, 'password_verify');
 
         // Ensure user input is valid
-        if (! ($password and $passwordVerify and $currentPassword)) {
-            return $this->getSimpleResponse(422, 'Missing required field');
+        if (! $password) {
+            return $this->getSimpleResponse(422, 'Password cannot be empty');
         }
 
         if (! password_verify($currentPassword, $user->getPassword())) {
             return $this->getSimpleResponse(403, 'Current password incorrect');
-        }
-
-        if ($password !== $passwordVerify) {
-            return $this->getSimpleResponse(422, 'Passwords do not match');
         }
 
         $user = $this->userService->resetPassword($user, $password);
