@@ -36,9 +36,12 @@ class Services implements ServicesInterface
         $app->register(new \Synapse\Log\ServiceProvider());
         $app->register(new \Synapse\Email\ServiceProvider());
         $app->register(new \Synapse\User\ServiceProvider());
-        $app->register(new \JDesrosiers\Silex\Provider\CorsServiceProvider());
-        $app->register(new \Silex\Provider\UrlGeneratorServiceProvider());
 
+        // Register the CORS middleware
+        $app->register(new \JDesrosiers\Silex\Provider\CorsServiceProvider());
+        $app->after($app['cors']);
+
+        $app->register(new \Silex\Provider\UrlGeneratorServiceProvider());
         $app->register(new \Synapse\SocialLogin\ServiceProvider());
 
         $app->register(new \Mustache\Silex\Provider\MustacheServiceProvider, [

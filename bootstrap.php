@@ -44,8 +44,5 @@ $appServices = new Application\Services;
 $appRoutes->define($app);
 $appServices->register($app);
 
-// Register the CORS middleware
-$app->after($app['cors']);
-
 // Run the application
 $app->run();
