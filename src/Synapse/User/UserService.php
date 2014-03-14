@@ -218,6 +218,8 @@ class UserService
             'message'         => (string) $this->resetPasswordView,
         ]);
 
+        $this->emailService->enqueueSendEmailJob($email);
+
         return $user;
     }
 
