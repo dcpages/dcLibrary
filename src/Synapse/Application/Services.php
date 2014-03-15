@@ -27,13 +27,15 @@ class Services implements ServicesInterface
      */
     protected function registerServiceProviders(Application $app)
     {
+        // Load log provider first to catch any exceptions thrown in the others
+        $app->register(new \Synapse\Log\ServiceProvider());
+
         $app->register(new \Synapse\Provider\ConsoleServiceProvider());
         $app->register(new \Synapse\Provider\ZendDbServiceProvider());
         $app->register(new \Synapse\Provider\OAuth2ServerServiceProvider());
         $app->register(new \Synapse\Provider\OAuth2SecurityServiceProvider());
         $app->register(new \Synapse\Provider\ResqueServiceProvider());
         $app->register(new \Synapse\Provider\ControllerServiceProvider());
-        $app->register(new \Synapse\Log\ServiceProvider());
         $app->register(new \Synapse\Email\ServiceProvider());
         $app->register(new \Synapse\User\ServiceProvider());
 
