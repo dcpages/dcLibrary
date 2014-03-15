@@ -39,6 +39,11 @@ class ExceptionLineFormatter extends LineFormatter
         // If no stacktrace was provided, remove the placeholder
         $output = str_replace(self::STACKTRACE_PLACEHOLDER, '', $output);
 
+        // If the output is just a newline, make it an empty string
+        if ($output === PHP_EOL) {
+            $output = '';
+        }
+
         return $output;
     }
 

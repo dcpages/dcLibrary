@@ -2,16 +2,17 @@
 
 namespace Synapse\Log;
 
-use Synapse\Stdlib\Arr;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Monolog\Logger;
 use Monolog\Handler\LogglyHandler;
-use Synapse\Log\Handler\RollbarHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
+use Monolog\ErrorHandler as MonologErrorHandler;
+use Synapse\Log\Handler\RollbarHandler;
 use Synapse\Log\Formatter\ExceptionLineFormatter;
 use Synapse\Config\Exception as ConfigException;
+use Synapse\Stdlib\Arr;
 use RollbarNotifier;
 
 /**
@@ -65,6 +66,10 @@ class ServiceProvider implements ServiceProviderInterface
             return new Logger('main', $handlers);
         });
 
+        // Register Monolog error handler for fatal errors here because Symfony's handler overrides it
+        $monologErrorHandler = new MonologErrorHandler($app['log']);
+        $monologErrorHandler->registerFatalHandler();
+
         $app->initializer('Synapse\\Log\\LoggerAwareInterface', function ($object) use ($app) {
             $object->setLogger($app['log']);
             return $object;
@@ -89,7 +94,7 @@ class ServiceProvider implements ServiceProviderInterface
      */
     protected function fileHandler($file)
     {
-        $format = '[%datetime%] %channel%.%level_name%: %message% %extra%'.PHP_EOL;
+        $format = '[%datetime%] %channel%.%level_name%: %message% %context% %extra%'.PHP_EOL;
 
         $handler = new StreamHandler($file, Logger::INFO);
         $handler->setFormatter(new LineFormatter($format));
