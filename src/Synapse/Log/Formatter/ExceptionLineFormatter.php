@@ -64,6 +64,14 @@ class ExceptionLineFormatter extends LineFormatter
      */
     protected function normalizeException(Exception $e)
     {
-        return 'Stack Trace: '.$e->getTraceAsString();
+        $message = 'Stack Trace: '.PHP_EOL;
+        $message .= sprintf(
+            'in %s on line %s',
+            $e->getFile(),
+            $e->getLine()
+        );
+        $message .= PHP_EOL.$e->getTraceAsString();
+
+        return $message;
     }
 }
