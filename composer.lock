@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5c26bb2f1c2e9b44cfe0e11d5b4ace61",
+    "hash": "a9ef7b2f786dfe225a2ac6fe5f74670a",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -1324,16 +1324,16 @@
     "packages-dev": [
         {
             "name": "phpunit/php-code-coverage",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "23e6ac9513df2af67f9f713347f3e4bf4b59784c"
+                "reference": "2c20ba4872d09d1d3d7ceda5a0c5f82d9a8ff31f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/23e6ac9513df2af67f9f713347f3e4bf4b59784c",
-                "reference": "23e6ac9513df2af67f9f713347f3e4bf4b59784c",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/2c20ba4872d09d1d3d7ceda5a0c5f82d9a8ff31f",
+                "reference": "2c20ba4872d09d1d3d7ceda5a0c5f82d9a8ff31f",
                 "shasum": ""
             },
             "require": {
@@ -1384,7 +1384,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-07 16:03:14"
+            "time": "2014-03-17 10:25:49"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -1566,16 +1566,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.0.7",
+            "version": "4.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "726abb62e9ed37125cd5a75b01f3c0ed36050726"
+                "reference": "c7e9e4b1253142acda4cb86a7686db412684fe04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/726abb62e9ed37125cd5a75b01f3c0ed36050726",
-                "reference": "726abb62e9ed37125cd5a75b01f3c0ed36050726",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c7e9e4b1253142acda4cb86a7686db412684fe04",
+                "reference": "c7e9e4b1253142acda4cb86a7686db412684fe04",
                 "shasum": ""
             },
             "require": {
@@ -1637,7 +1637,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-12 15:09:38"
+            "time": "2014-03-17 15:17:30"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1900,16 +1900,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "1.5.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "a76a39b317ce8106abe6264daa505e24e1731860"
+                "reference": "ec3858064666435e5a825e65ca872465e9af4a8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/a76a39b317ce8106abe6264daa505e24e1731860",
-                "reference": "a76a39b317ce8106abe6264daa505e24e1731860",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/ec3858064666435e5a825e65ca872465e9af4a8e",
+                "reference": "ec3858064666435e5a825e65ca872465e9af4a8e",
                 "shasum": ""
             },
             "require": {
@@ -1923,6 +1923,11 @@
                 "scripts/phpcs"
             ],
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-phpcs-fixer": "2.0.x-dev"
+                }
+            },
             "autoload": {
                 "classmap": [
                     "CodeSniffer.php",
@@ -1966,7 +1971,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2014-02-04 23:49:58"
+            "time": "2014-03-16 22:20:52"
         },
         {
             "name": "symfony/yaml",
@@ -2023,7 +2028,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ircmaxell/password-compat": 20
+        "ircmaxell/password-compat": 20,
+        "squizlabs/php_codesniffer": 20
     },
     "platform": [
 
