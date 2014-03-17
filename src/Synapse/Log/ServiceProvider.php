@@ -10,6 +10,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
 use Monolog\ErrorHandler as MonologErrorHandler;
 use Synapse\Log\Handler\RollbarHandler;
+use Synapse\Log\Handler\DummyExceptionHandler;
 use Synapse\Log\Formatter\ExceptionLineFormatter;
 use Synapse\Config\Exception as ConfigException;
 use Synapse\Stdlib\Arr;
@@ -66,10 +67,6 @@ class ServiceProvider implements ServiceProviderInterface
             return new Logger('main', $handlers);
         });
 
-        // Register Monolog error handler for fatal errors here because Symfony's handler overrides it
-        $monologErrorHandler = new MonologErrorHandler($app['log']);
-        $monologErrorHandler->registerFatalHandler();
-
         $app->initializer('Synapse\\Log\\LoggerAwareInterface', function ($object) use ($app) {
             $object->setLogger($app['log']);
             return $object;
@@ -83,7 +80,11 @@ class ServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        // noop
+        // Register Monolog error handler for fatal errors here because Symfony's handler overrides it
+        $monologErrorHandler = new MonologErrorHandler($app['log']);
+
+        $monologErrorHandler->registerErrorHandler();
+        $monologErrorHandler->registerFatalHandler();
     }
 
     /**
@@ -99,7 +100,7 @@ class ServiceProvider implements ServiceProviderInterface
         $handler = new StreamHandler($file, Logger::INFO);
         $handler->setFormatter(new LineFormatter($format));
 
-        return $handler;
+        return new DummyExceptionHandler($handler);
     }
 
     /**
@@ -110,7 +111,7 @@ class ServiceProvider implements ServiceProviderInterface
      */
     protected function fileExceptionHandler($file)
     {
-        $format = '%context.stacktrace%'.PHP_EOL;
+        $format = '%context.stacktrace%';
 
         $handler = new StreamHandler($file, Logger::ERROR);
         $handler->setFormatter(new ExceptionLineFormatter($format));
