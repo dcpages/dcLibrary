@@ -21,6 +21,11 @@ class OAuth2UserToken extends AbstractToken
         $this->token = $token;
     }
 
+    public function getOAuthToken()
+    {
+        return $this->token;
+    }
+
     public function getCredentials()
     {
         return '';
