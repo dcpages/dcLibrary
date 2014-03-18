@@ -9,8 +9,8 @@ use Synapse\User\Entity\User as UserEntity;
 use Synapse\User\Entity\UserToken as UserTokenEntity;
 use Synapse\View\Email\VerifyRegistration as VerifyRegistrationView;
 use Synapse\View\Email\ResetPassword as ResetPasswordView;
+use Synapse\Stdlib\Arr;
 use OutOfBoundsException;
-use Arr;
 
 /**
  * Service for general purpose tasks regarding the user
@@ -181,6 +181,8 @@ class UserService
             'message'         => (string) $this->verifyRegistrationView,
         ]);
 
+        $this->emailService->enqueueSendEmailJob($email);
+
         return $user;
     }
 
@@ -215,6 +217,8 @@ class UserService
             'subject'         => 'Reset Your Password',
             'message'         => (string) $this->resetPasswordView,
         ]);
+
+        $this->emailService->enqueueSendEmailJob($email);
 
         return $user;
     }
