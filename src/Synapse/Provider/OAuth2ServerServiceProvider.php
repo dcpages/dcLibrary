@@ -8,6 +8,10 @@ use Silex\ServiceProviderInterface;
 use Synapse\Controller\OAuthController;
 use Synapse\OAuth2\Storage\Pdo as OAuth2Pdo;
 use Synapse\OAuth2\ResponseType\AccessToken;
+use Synapse\OAuth2\Mapper\AccessToken as AccessTokenMapper;
+use Synapse\OAuth2\Mapper\RefreshToken as RefreshTokenMapper;
+use Synapse\OAuth2\Entity\AccessToken as AccessTokenEntity;
+use Synapse\OAuth2\Entity\RefreshToken as RefreshTokenEntity;
 
 use OAuth2\HttpFoundationBridge\Response as BridgeResponse;
 use OAuth2\Server as OAuth2Server;
@@ -55,7 +59,19 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
         });
 
         $app['oauth.controller'] = $app->share(function () use ($app) {
-            return new OAuthController($app['oauth_server']);
+            return new OAuthController(
+                $app['oauth_server'],
+                $app['oauth-access-token.mapper'],
+                $app['oauth-refresh-token.mapper']
+            );
+        });
+
+        $app['oauth-access-token.mapper'] = $app->share(function () use ($app) {
+            return new AccessTokenMapper($app['db'], new AccessTokenEntity);
+        });
+
+        $app['oauth-refresh-token.mapper'] = $app->share(function () use ($app) {
+            return new RefreshTokenMapper($app['db'], new RefreshTokenEntity);
         });
     }
 
@@ -65,6 +81,7 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
 
         $app->post('/oauth/authorize', 'oauth.controller:authorize');
         $app->post('/oauth/token', 'oauth.controller:token');
+        $app->post('/logout', 'oauth.controller:logout');
     }
 
     public function boot(Application $app)
