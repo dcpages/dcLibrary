@@ -55,7 +55,10 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
         });
 
         $app['oauth.controller'] = $app->share(function () use ($app) {
-            return new OAuthController($app['oauth_server']);
+            return new OAuthController(
+                $app['oauth_server'],
+                $app['user.service']
+            );
         });
     }
 
