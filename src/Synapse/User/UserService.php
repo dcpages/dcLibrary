@@ -91,7 +91,9 @@ class UserService
             }
         }
 
-        $update = [];
+        $update = $data;
+        unset($update['email']);
+        unset($update['password']);
 
         // Update email
         if (isset($data['email'])) {
