@@ -13,6 +13,7 @@ use Synapse\Application\SecurityAwareInterface;
 use Synapse\Application\SecurityAwareTrait;
 use Synapse\OAuth2\Mapper\AccessToken as AccessTokenMapper;
 use Synapse\OAuth2\Mapper\RefreshToken as RefreshTokenMapper;
+use Synapse\Stdlib\Arr;
 
 class OAuthController implements SecurityAwareInterface
 {
@@ -51,20 +52,60 @@ class OAuthController implements SecurityAwareInterface
 
     public function logout(Request $request)
     {
-        $accessToken = $this->security->getToken()->getOAuthToken();
+        $content = json_decode($request->getContent(), true);
+
+        $securityToken = $this->security->getToken();
+        $user          = $securityToken->getUser();
+        $accessToken   = $securityToken->getOAuthToken();
+        $refreshToken  = Arr::get($content, 'refresh_token');
 
         if (! $accessToken) {
             return new Response('Authentication required', 401);
         }
 
+        if (! $refreshToken) {
+            return new Response('Refresh token not provided', 422);
+        }
+
+        try {
+            $this->expireAccessToken($accessToken);
+            $this->expireRefreshToken($refreshToken, $user);
+        } catch (OutOfBoundsException $e) {
+            return new Response($e->getMessage(), 422);
+        }
+
+        return new Response('', 200);
+    }
+
+    protected function expireAccessToken($accessToken)
+    {
+        // Expire access token
         $token = $this->accessTokenMapper->findBy([
             'access_token' => $accessToken
         ]);
 
+        if (! $token) {
+            throw new OutOfBoundsException('Access token not found.');
+        }
+
         $token->setExpires(date("Y-m-d H:i:s", time()));
 
         $this->accessTokenMapper->update($token);
+    }
 
-        return new Response('', 200);
+    protected function expireRefreshToken($refreshToken, $user)
+    {
+        $token = $this->refreshTokenMapper->findBy([
+            'refresh_token' => $refreshToken,
+            'user_id'       => $user->getId(),
+        ]);
+
+        if (! $token) {
+            throw new OutOfBoundsException('Refresh token not found.');
+        }
+
+        $token->setExpires(date("Y-m-d H:i:s", time()));
+
+        $this->refreshTokenMapper->update($token);
     }
 }
