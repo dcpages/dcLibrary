@@ -15,6 +15,8 @@ use Synapse\OAuth2\Mapper\AccessToken as AccessTokenMapper;
 use Synapse\OAuth2\Mapper\RefreshToken as RefreshTokenMapper;
 use Synapse\Stdlib\Arr;
 
+use OutOfBoundsException;
+
 class OAuthController implements SecurityAwareInterface
 {
     use SecurityAwareTrait;
