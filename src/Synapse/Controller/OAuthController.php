@@ -2,6 +2,8 @@
 
 namespace Synapse\Controller;
 
+use Synapse\User\UserService;
+
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,15 +24,18 @@ class OAuthController implements SecurityAwareInterface
     use SecurityAwareTrait;
 
     protected $server;
+    protected $userService;
     protected $accessTokenMapper;
     protected $refreshTokenMapper;
 
     public function __construct(
         OAuth2Server $server,
+        UserService $userService,
         AccessTokenMapper $accessTokenMapper,
         RefreshTokenMapper $refreshTokenMapper
     ) {
         $this->server             = $server;
+        $this->userService        = $userService;
         $this->accessTokenMapper  = $accessTokenMapper;
         $this->refreshTokenMapper = $refreshTokenMapper;
     }
@@ -46,10 +51,26 @@ class OAuthController implements SecurityAwareInterface
 
     public function token(Request $request)
     {
-        $response     = new BridgeResponse;
-        $oauthRequest = OAuthRequest::createFromRequest($request);
+        $bridgeResponse = new BridgeResponse;
+        $oauthRequest   = OAuthRequest::createFromRequest($request);
 
-        return $this->server->handleTokenRequest($oauthRequest, $response);
+        $response = $this->server->handleTokenRequest($oauthRequest, $bridgeResponse);
+
+        if ($response->isOk()) {
+            $userId = $response->getParameter('user_id');
+            $this->setLastLogin($userId);
+        }
+
+        return $response;
+    }
+
+    protected function setLastLogin($userId)
+    {
+        $user = $this->userService->findById($userId);
+
+        $result = $this->userService->update($user, [
+            'last_login' => time()
+        ]);
     }
 
     public function logout(Request $request)

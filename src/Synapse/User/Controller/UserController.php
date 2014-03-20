@@ -8,6 +8,7 @@ use Synapse\User\Entity\User;
 use Synapse\User\UserService;
 use Synapse\Application\SecurityAwareInterface;
 use Synapse\Application\SecurityAwareTrait;
+use OutOfBoundsException;
 
 class UserController extends AbstractRestController implements SecurityAwareInterface
 {
@@ -48,7 +49,16 @@ class UserController extends AbstractRestController implements SecurityAwareInte
             return $this->getSimpleResponse(422, 'Missing required field');
         }
 
-        $newUser = $this->userService->register($user);
+        try {
+            $newUser = $this->userService->register($user);
+        } catch (OutOfBoundsException $e) {
+            $httpCodes = [
+                UserService::EMAIL_NOT_UNIQUE => 409,
+            ];
+
+            return $this->getSimpleResponse($httpCodes[$e->getCode()], $e->getMessage());
+        }
+
         $newUser = $this->userArrayWithoutPassword($newUser);
 
         $newUser['_href'] = $this->url('user-entity', array('id' => $newUser['id']));

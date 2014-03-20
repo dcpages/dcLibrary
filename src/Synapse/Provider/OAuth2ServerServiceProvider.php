@@ -6,7 +6,7 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 
 use Synapse\Controller\OAuthController;
-use Synapse\OAuth2\Storage\Pdo as OAuth2Pdo;
+use Synapse\OAuth2\Storage\ZendDb as OAuth2ZendDb;
 use Synapse\OAuth2\ResponseType\AccessToken;
 use Synapse\OAuth2\Mapper\AccessToken as AccessTokenMapper;
 use Synapse\OAuth2\Mapper\RefreshToken as RefreshTokenMapper;
@@ -23,11 +23,8 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
     public function setup(Application $app)
     {
         $app['oauth.storage'] = $app->share(function () use ($app) {
-            // Get the PDO object from Zend\Db
-            $pdo = $app['db']->getDriver()->getConnection()->getResource();
-
             // Create the storage object
-            $storage = new OAuth2Pdo($pdo);
+            $storage = new OAuth2ZendDb($app['db']);
             $storage->setUserMapper($app['user.mapper']);
 
             return $storage;
@@ -61,6 +58,7 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
         $app['oauth.controller'] = $app->share(function () use ($app) {
             return new OAuthController(
                 $app['oauth_server'],
+                $app['user.service'],
                 $app['oauth-access-token.mapper'],
                 $app['oauth-refresh-token.mapper']
             );
