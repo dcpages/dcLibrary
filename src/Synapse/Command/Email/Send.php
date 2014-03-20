@@ -71,6 +71,10 @@ class Send extends Command
             throw new LogicException('No email sender configured (did you set the Mandrill API key?)');
         }
 
+        if (! $this->emailMapper) {
+            throw new LogicException('No email mapper configured');
+        }
+
         $output->writeln('Finding email by ID');
 
         $emailId = $input->getArgument('id');
