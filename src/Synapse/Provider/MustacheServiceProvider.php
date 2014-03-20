@@ -38,7 +38,7 @@ class MustacheServiceProvider implements ServiceProviderInterface
             }
 
             if (! is_array($app['mustache.paths'])) {
-                return new \Mustache_Loader_FilesystemLoader($app['mustache.path']);
+                return new \Mustache_Loader_FilesystemLoader($app['mustache.paths']);
             }
 
             $loader = new \Mustache_Loader_CascadingLoader;
