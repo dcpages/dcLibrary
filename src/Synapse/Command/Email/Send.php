@@ -77,7 +77,7 @@ class Send extends Command
 
         $email = $this->emailMapper->findById($emailId);
 
-        if ($email->isNew()) {
+        if (!$email or $email->isNew()) {
             throw new OutOfBoundsException('Email not found.');
         }
 
