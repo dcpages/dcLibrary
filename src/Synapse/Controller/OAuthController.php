@@ -37,9 +37,10 @@ class OAuthController
 
         $response = $this->server->handleTokenRequest($oauthRequest, $bridgeResponse);
 
-        $userId = $response->getParameter('user_id');
-
-        $this->setLastLogin($userId);
+        if ($response->isOk()) {
+            $userId = $response->getParameter('user_id');
+            $this->setLastLogin($userId);
+        }
 
         return $response;
     }

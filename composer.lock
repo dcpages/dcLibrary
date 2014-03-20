@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a9ef7b2f786dfe225a2ac6fe5f74670a",
+    "hash": "7ff4f20bda0e59c1a0e4bd5598070dcd",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -536,51 +536,6 @@
                 "templating"
             ],
             "time": "2014-01-09 00:36:09"
-        },
-        {
-            "name": "mustache/silex-provider",
-            "version": "v1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bobthecow/mustache-silex-provider.git",
-                "reference": "cf68561b094049f327baaaa0f3c625c313ca795c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/mustache-silex-provider/zipball/cf68561b094049f327baaaa0f3c625c313ca795c",
-                "reference": "cf68561b094049f327baaaa0f3c625c313ca795c",
-                "shasum": ""
-            },
-            "require": {
-                "mustache/mustache": "~2.1",
-                "php": ">=5.3.3",
-                "silex/silex": "~1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Mustache": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Justin Hileman",
-                    "email": "justin@justinhileman.info",
-                    "homepage": "http://justinhileman.com"
-                }
-            ],
-            "description": "A Mustache service provider for Silex.",
-            "homepage": "https://github.com/bobthecow/mustache-silex-provider",
-            "keywords": [
-                "mustache",
-                "silex",
-                "templating"
-            ],
-            "time": "2013-12-28 19:10:00"
         },
         {
             "name": "pimple/pimple",
@@ -1566,16 +1521,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.0.9",
+            "version": "4.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c7e9e4b1253142acda4cb86a7686db412684fe04"
+                "reference": "566b51d0237ce2af12a777ce2ea6fc49b787dbd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c7e9e4b1253142acda4cb86a7686db412684fe04",
-                "reference": "c7e9e4b1253142acda4cb86a7686db412684fe04",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/566b51d0237ce2af12a777ce2ea6fc49b787dbd9",
+                "reference": "566b51d0237ce2af12a777ce2ea6fc49b787dbd9",
                 "shasum": ""
             },
             "require": {
@@ -1637,20 +1592,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-17 15:17:30"
+            "time": "2014-03-18 15:45:22"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "2.0.3",
+            "version": "2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "5888b2501d41c34f9132c959b073b23de83235aa"
+                "reference": "c5e6274b8f2bf983cf883bb375cf44f99aff200e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/5888b2501d41c34f9132c959b073b23de83235aa",
-                "reference": "5888b2501d41c34f9132c959b073b23de83235aa",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/c5e6274b8f2bf983cf883bb375cf44f99aff200e",
+                "reference": "c5e6274b8f2bf983cf883bb375cf44f99aff200e",
                 "shasum": ""
             },
             "require": {
@@ -1694,7 +1649,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2014-03-11 09:46:18"
+            "time": "2014-03-18 08:56:48"
         },
         {
             "name": "sebastian/diff",

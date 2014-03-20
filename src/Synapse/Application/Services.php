@@ -46,8 +46,10 @@ class Services implements ServicesInterface
         $app->register(new \Silex\Provider\UrlGeneratorServiceProvider());
         $app->register(new \Synapse\SocialLogin\ServiceProvider());
 
-        $app->register(new \Mustache\Silex\Provider\MustacheServiceProvider, [
-            'mustache.path' => APPDIR.'/templates',
+        $app->register(new \Synapse\Provider\MustacheServiceProvider, [
+            'mustache.paths' => array(
+                APPDIR.'/templates'
+            ),
             'mustache.options' => [
                 'cache' => TMPDIR,
             ],
