@@ -22,9 +22,10 @@ class UserService
      */
     const CURRENT_PASSWORD_REQUIRED = 1;
     const FIELD_CANNOT_BE_EMPTY     = 2;
-    const INCORRECT_TOKEN_TYPE      = 3;
-    const TOKEN_EXPIRED             = 4;
-    const TOKEN_NOT_FOUND           = 5;
+    const EMAIL_NOT_UNIQUE          = 3;
+    const INCORRECT_TOKEN_TYPE      = 4;
+    const TOKEN_EXPIRED             = 5;
+    const TOKEN_NOT_FOUND           = 6;
 
     /**
      * @var Synapse\User\Mapper\User
@@ -160,6 +161,15 @@ class UserService
      */
     public function register(array $userData)
     {
+        $alreadyCreatedUser = $this->findByEmail($userData['email']);
+
+        if ($alreadyCreatedUser) {
+            throw new OutOfBoundsException(
+                'A user was already created with this email address.',
+                self::EMAIL_NOT_UNIQUE
+            );
+        }
+
         $userEntity = new UserEntity;
         $userEntity->setEmail($userData['email'])
             ->setPassword($this->hashPassword($userData['password']))
