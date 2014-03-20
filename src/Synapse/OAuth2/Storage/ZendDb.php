@@ -19,6 +19,7 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Delete;
+use Zend\Db\Sql\Expression;
 
 class ZendDb implements
     AuthorizationCodeInterface,
@@ -81,7 +82,10 @@ class ZendDb implements
     public function getAccessToken($accessToken)
     {
         $select = new Select($this->config['access_token_table']);
-        $select->where(array('access_token' => $accessToken));
+        $select->columns(array(
+            '*',
+            'expires' => new Expression('UNIX_TIMESTAMP(expires)')
+        ))->where(array('access_token' => $accessToken));
 
         return $this->execute($select)->current();
     }
@@ -120,7 +124,10 @@ class ZendDb implements
     public function getAuthorizationCode($code)
     {
         $select = new Select($this->config['code_table']);
-        $select->where(array('authorization_code' => $code));
+        $select->columns(array(
+            '*',
+            'expires' => new Expression('UNIX_TIMESTAMP(expires)')
+        ))->where(array('authorization_code' => $code));
 
         return $this->execute($select)->current();
     }
@@ -178,7 +185,10 @@ class ZendDb implements
     public function getRefreshToken($refreshToken)
     {
         $select = new Select($this->config['refresh_token_table']);
-        $select->where(array('refresh_token' => $refreshToken));
+        $select->columns(array(
+            '*',
+            'expires' => new Expression('UNIX_TIMESTAMP(expires)')
+        ))->where(array('refresh_token' => $refreshToken));
 
         return $this->execute($select)->current();
     }
