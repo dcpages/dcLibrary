@@ -280,4 +280,15 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             $capturedEmailCreation->emailArray['message']
         );
     }
+
+    public function testRegisterWithoutPasswordPersistsUserEntity()
+    {
+        $captured = $this->withCapturedPersistedUserEntity();
+
+        $this->userService->registerWithoutPassword([
+            'email'    => 'new@email.com',
+        ]);
+
+        $this->assertEquals($captured->persistedUserEntity->getEmail(), 'new@email.com');
+    }
 }
