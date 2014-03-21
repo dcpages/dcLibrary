@@ -23,8 +23,11 @@ class ServiceProvider implements ServiceProviderInterface
             $config = $app['config']->load('social-login');
 
             $controller = new Controller\SocialLoginController;
-            $controller->setSocialLoginService($app['social-login.service']);
-            $controller->setConfig($config);
+            $controller
+                ->setSocialLoginService($app['social-login.service'])
+                ->setConfig($config)
+                ->setSession($app['session']);
+
             return $controller;
         });
 
@@ -47,11 +50,8 @@ class ServiceProvider implements ServiceProviderInterface
         $app->get('/social-login/{provider}/link', 'social-login.controller:link')
             ->bind('social-link-auth');
 
-        $app->get('/social-login/{provider}/login-callback', 'social-login.controller:loginCallback')
+        $app->get('/social-login/{provider}/callback', 'social-login.controller:callback')
             ->bind('social-login-callback');
-
-        $app->get('/social-login/{provider}/link-callback', 'social-login.controller:linkCallback')
-            ->bind('social-link-callback');
     }
 
     /**

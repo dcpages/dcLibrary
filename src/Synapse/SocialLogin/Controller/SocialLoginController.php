@@ -6,6 +6,7 @@ use LogicException;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 use Synapse\Controller\AbstractController;
 use Synapse\SocialLogin\Exception\NoLinkedAccountException;
@@ -47,6 +48,13 @@ class SocialLoginController extends AbstractController
      * @var SocialLoginService
      */
     protected $service;
+
+    /**
+     * Session object
+     *
+     * @var Session
+     */
+    protected $session;
 
     /**
      * Map of service keys to names
@@ -99,6 +107,15 @@ class SocialLoginController extends AbstractController
     public function setConfig(array $config = array())
     {
         $this->config = $config;
+        return $this;
+    }
+
+    /**
+     * @param Session $session
+     */
+    public function setSession(Session $session)
+    {
+        $this->session = $session;
         return $this;
     }
 
