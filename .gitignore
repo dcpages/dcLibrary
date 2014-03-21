@@ -1,3 +1,5 @@
 /vendor
 /.vagrant
 /phpunit
+*.sublime-project
+*.sublime-workspace
