@@ -13,6 +13,7 @@ use Synapse\SocialLogin\Exception\NoLinkedAccountException;
 use Synapse\SocialLogin\Exception\LinkedAccountExistsException;
 use Synapse\SocialLogin\LoginRequest;
 use Synapse\SocialLogin\SocialLoginService;
+use Synapse\User\UserService;
 
 use OAuth\ServiceFactory;
 use OAuth\Common\Storage\Session as SessionStorage;
@@ -143,30 +144,6 @@ class SocialLoginController extends AbstractController
     }
 
     /**
-     * Callback for OAuth authentication requests to login via social account
-     *
-     * Passes request with provider token to the appropriate provider method and logs in the user
-     *
-     * @param  Request $request
-     * @return Response
-     */
-    public function loginCallback(Request $request)
-    {
-        return $this->callback($request, self::ACTION_LOGIN_WITH_ACCOUNT);
-    }
-
-    /**
-     * Callback for OAuth authentication requests to link account to social account
-     *
-     * @param  Request $request
-     * @return Response
-     */
-    public function linkCallback(Request $request)
-    {
-        return $this->callback($request, self::ACTION_LINK_ACCOUNT);
-    }
-
-    /**
      * Authenticate via a separate OAuth provider
      *
      * @param  Request $request
@@ -181,9 +158,9 @@ class SocialLoginController extends AbstractController
             return $this->createNotFoundResponse();
         }
 
-        $service = $this->getServiceByProvider($provider, $action);
+        $service = $this->getServiceByProvider($provider);
 
-        $redirectUri = $service->getAuthorizationUri();
+        $redirectUri = $service->getAuthorizationUri(['state' => $action]);
 
         $response = new Response();
         $response->setStatusCode(301);
@@ -195,10 +172,9 @@ class SocialLoginController extends AbstractController
      * Callback for OAuth authentication requests
      *
      * @param  Request  $request
-     * @param  int      $action   Constant representing either Login or Link account
      * @return Response
      */
-    protected function callback(Request $request, $action)
+    public function callback(Request $request)
     {
         // Check to see if this provider exists and has a callback implemented
         $provider = strtolower($request->attributes->get('provider'));
@@ -216,17 +192,26 @@ class SocialLoginController extends AbstractController
 
         // Use provider service and access token from provider to create a LoginRequest for our app
         $code            = $request->query->get('code');
-        $providerService = $this->getServiceByProvider($provider, $action);
+        $providerService = $this->getServiceByProvider($provider);
         $providerToken   = $providerService->requestAccessToken($code);
 
         $socialLoginRequest = $this->$provider($providerService, $providerToken);
 
         // Handle login or link-account request and redirect to the redirect-url
+        $state = (int) $request->query->get('state');
         try {
-            if ($action === self::ACTION_LOGIN_WITH_ACCOUNT) {
+            if ($state === self::ACTION_LOGIN_WITH_ACCOUNT) {
                 $token = $this->service->handleLoginRequest($socialLoginRequest);
-            } elseif ($action === self::ACTION_LINK_ACCOUNT) {
-                $token = $this->service->handleLinkRequest($socialLoginRequest);
+            } elseif ($state === self::ACTION_LINK_ACCOUNT) {
+                $token = $this->service->handleLinkRequest(
+                    $socialLoginRequest,
+                    $this->session->get('user')
+                );
+            } else {
+                return new Response(
+                    'State parameter not set',
+                    422
+                );
             }
 
             $redirect = $this->config['redirect-url'];
@@ -241,8 +226,8 @@ class SocialLoginController extends AbstractController
             $redirect = $this->config['redirect-url'];
             $redirect .= '?login_failure=1';
 
-            if ($e->getCode() === UserService::EXCEPTION_ACCOUNT_NOT_FOUND) {
-                $redirect .= '&error=account_already_linked';
+            if ($e->getCode() === SocialLoginService::EXCEPTION_ACCOUNT_NOT_FOUND) {
+                $redirect .= '&error=account_not_found';
             }
         }
 
@@ -326,15 +311,9 @@ class SocialLoginController extends AbstractController
      * @param  int    $action   Constant representing Login or Link account (to determine which callback to use)
      * @return OAuth\Common\Service\ServiceInterface
      */
-    protected function getServiceByProvider($provider, $action)
+    protected function getServiceByProvider($provider)
     {
-        if ($action === self::ACTION_LOGIN_WITH_ACCOUNT) {
-            $route = 'login_callback_route';
-        } elseif ($action === self::ACTION_LINK_ACCOUNT) {
-            $route = 'link_callback_route';
-        }
-
-        $redirect = $this->url($this->config[$provider][$route], array(
+        $redirect = $this->url($this->config[$provider]['callback_route'], array(
             'provider' => $provider,
         ));
 
