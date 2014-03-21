@@ -101,7 +101,7 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
     }
 
-    public function withCapturedPersistedUserEntity()
+    public function expectingPersistedUserEntity()
     {
         $captured = new \stdClass();
 
@@ -115,7 +115,7 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
         return $captured;
     }
 
-    public function withCapturedPersistedUserToken()
+    public function expectingPersistedUserToken()
     {
         $captured = new \stdClass();
 
@@ -266,7 +266,7 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
     public function testRegisterPersistsUserDataToMapper()
     {
         $this->withNoExistingUser();
-        $captured = $this->withCapturedPersistedUserEntity();
+        $captured = $this->expectingPersistedUserEntity();
         $this->expectingEmailCreatedFromArray();
 
         $this->userService->register([
@@ -281,7 +281,7 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
     public function testRegisterEnqueuesVerifyRegistrationEmail()
     {
         $this->withNoExistingUser();
-        $this->withCapturedPersistedUserEntity();
+        $this->expectingPersistedUserEntity();
         $capturedEmailCreation = $this->expectingEmailCreatedFromArray();
         $capturedEmailSending = $this->expectingEmailEnqueued();
 
@@ -302,7 +302,7 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
 
     public function testRegisterWithoutPasswordPersistsUserEntity()
     {
-        $captured = $this->withCapturedPersistedUserEntity();
+        $captured = $this->expectingPersistedUserEntity();
 
         $this->userService->registerWithoutPassword([
             'email'    => 'new@email.com',
@@ -313,7 +313,7 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
 
     public function testSendResetPasswordEmailEnqueusResetPasswordEmail()
     {
-        $captured = $this->withCapturedPersistedUserToken();
+        $this->expectingPersistedUserToken();
         $capturedEmailCreation = $this->expectingEmailCreatedFromArray();
         $capturedEmailSending = $this->expectingEmailEnqueued();
 
@@ -326,6 +326,24 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
         $this->assertSame(
             $capturedEmailCreation->createdEmailEntity,
             $capturedEmailSending->sentEmailEntity
+        );
+    }
+
+    public function testResetPasswordPersistsUserWithHashedPasswordSet()
+    {
+        $user = $this->getUserEntity();
+        $this->expectingPersistedUserEntity();
+
+        $this->userService->resetPassword(
+            $user,
+            'reset_password'
+        );
+
+        $this->assertTrue(
+            password_verify(
+                'reset_password',
+                $user->getPassword()
+            )
         );
     }
 }
