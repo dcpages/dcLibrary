@@ -57,12 +57,20 @@ class UserService
      *
      * @param  int|string $id
      * @return Synapse\User\Entity\User
+     * @codeCoverageIgnore
      */
     public function findById($id)
     {
         return $this->userMapper->findById($id);
     }
 
+    /**
+     * Find a user by email
+     *
+     * @param  string $email
+     * @return Synapse\User\Entity\User
+     * @codeCoverageIgnore
+     */
     public function findByEmail($email)
     {
         return $this->userMapper->findByEmail($email);
@@ -136,6 +144,7 @@ class UserService
      *
      * @param  array  $where Array of conditions to pass to the mapper
      * @return Zend\Db\ResultSet\AbstractResultSet|bool
+     * @codeCoverageIgnore
      */
     public function findTokenBy(array $where)
     {
@@ -147,6 +156,7 @@ class UserService
      *
      * @param  UserToken $token
      * @return Zend\Db\ResultSet\ResultSet
+     * @codeCoverageIgnore
      */
     public function deleteToken(UserTokenEntity $token)
     {
