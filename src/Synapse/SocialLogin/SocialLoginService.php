@@ -7,9 +7,13 @@ use Synapse\User\UserService as UserService;
 use Synapse\OAuth2\ResponseType\AccessToken;
 use Synapse\OAuth2\Storage\ZendDb as OAuth2ZendDb;
 use Synapse\SocialLogin\Exception\NoLinkedAccountException;
+use Synapse\SocialLogin\Exception\LinkedAccountExistsException;
+use OutOfBoundsException;
 
 class SocialLoginService
 {
+    const EXCEPTION_ACCOUNT_NOT_FOUND = 1;
+
     protected $userService;
     protected $socialLoginMapper;
     protected $tokenStorage;
@@ -34,6 +38,33 @@ class SocialLoginService
 
         $result = $this->registerFromSocialLogin($request);
         return $this->handleLogin($result['user'], $request);
+    }
+
+    public function handleLinkRequest(LoginRequest $request)
+    {
+        $socialLogin = $this->socialLoginMapper->findByProviderUserId(
+            $request->getProviderUserId()
+        );
+
+        if ($socialLogin) {
+            throw new LinkedAccountExistsException;
+        }
+
+        $user = $this->userService->findById($request->getUserId());
+
+        if (! $user) {
+            throw new OutOfBoundsException('Account not found', self::EXCEPTION_ACCOUNT_NOT_FOUND);
+        }
+
+        $socialLoginEntity = new SocialLoginEntity;
+        $socialLoginEntity->setUserId($user->getId())
+            ->setProvider($request->getProvider())
+            ->setProviderUserId($request->getProviderUserId())
+            ->setAccessToken($request->getAccessToken())
+            ->setAccessTokenExpires($request->getAccessTokenExpires())
+            ->setRefreshToken($request->getRefreshToken());
+
+        return $this->socialLoginMapper->persist($socialLoginEntity);
     }
 
     public function registerFromSocialLogin(LoginRequest $request)
