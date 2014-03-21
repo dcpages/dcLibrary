@@ -30,7 +30,16 @@ abstract class AbstractConsoleWork
         $input  = new ArrayInput($this->args);
         $output = new ConsoleOutput;
 
-        $command->run($input, $output);
+        // Output error details to the console if available
+        try {
+            $command->run($input, $output);
+        } catch (\Exception $e) {
+            $output->writeln('Exception: '.$e->getMessage());
+            $output->writeln('Code: '.$e->getCode());
+            $output->writeln('Stack trace: '.$e->getTraceAsString());
+
+            throw $e;
+        }
     }
 
     /**

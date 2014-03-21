@@ -129,6 +129,40 @@ class SocialLoginController extends AbstractController
         return $response;
     }
 
+    protected function facebook(Request $request, $provider)
+    {
+        $code     = $request->query->get('code');
+        $facebook = $this->getServiceByProvider('facebook');
+
+        $token  = $facebook->requestAccessToken($code);
+
+        $user = json_decode($facebook->request('/me'), true);
+
+        $loginRequest = new LoginRequest(
+            'facebook',
+            $user['id'],
+            $token->getAccessToken(),
+            $token->getEndOfLife() > 0 ? $token->getEndOfLife() : 0,
+            $token->getRefreshToken(),
+            [$user['email']]
+        );
+
+        try {
+            $token = $this->service->handleLoginRequest($loginRequest);
+
+            $redirect = $this->config['redirect-url'];
+            $redirect .= '?'.http_build_query($token);
+        } catch (NoLinkedAccountException $e) {
+            $redirect = $this->config['redirect-url'];
+            $redirect .= '?login_failure=1';
+        }
+
+        $response = new Response();
+        $response->setStatusCode(301);
+        $response->headers->set('Location', $redirect);
+        return $response;
+    }
+
     protected function getServiceByProvider($provider)
     {
         $redirect = $this->url($this->config[$provider]['callback_route'], array(

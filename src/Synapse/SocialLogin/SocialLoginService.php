@@ -5,7 +5,7 @@ namespace Synapse\SocialLogin;
 use Synapse\User\Entity\User as UserEntity;
 use Synapse\User\UserService as UserService;
 use Synapse\OAuth2\ResponseType\AccessToken;
-use Synapse\OAuth2\Storage\Pdo as OAuth2Pdo;
+use Synapse\OAuth2\Storage\ZendDb as OAuth2ZendDb;
 use Synapse\SocialLogin\Exception\NoLinkedAccountException;
 
 class SocialLoginService
@@ -74,7 +74,7 @@ class SocialLoginService
         return $token;
     }
 
-    public function setOAuthStorage(OAuth2Pdo $storage)
+    public function setOAuthStorage(OAuth2ZendDb $storage)
     {
         $this->tokenStorage = $storage;
         return $this;
