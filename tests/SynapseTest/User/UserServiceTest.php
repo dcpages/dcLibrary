@@ -11,11 +11,23 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
 {
     const CURRENT_PASSWORD = '12345';
     const VERIFY_REGISTRATION_VIEW_STRING_VALUE = 'verify_registration';
+    const RESET_PASSWORD_VIEW_STRING_VALUE = 'reset_password';
 
     public function setUp()
     {
         $this->userService = new UserService();
 
+        $this->createMocks();
+
+        $this->userService->setUserMapper($this->mockUserMapper);
+        $this->userService->setUserTokenMapper($this->mockUserTokenMapper);
+        $this->userService->setVerifyRegistrationView($this->mockVerifyRegistrationView);
+        $this->userService->setResetPasswordView($this->mockResetPasswordView);
+        $this->userService->setEmailService($this->mockEmailService);
+    }
+
+    public function createMocks()
+    {
         $this->mockUserMapper = $this->getMockBuilder('Synapse\User\Mapper\User')
             ->disableOriginalConstructor()
             ->getMock();
@@ -38,12 +50,15 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             ->method('__toString')
             ->will($this->returnValue(self::VERIFY_REGISTRATION_VIEW_STRING_VALUE));
 
-        $this->mockEmailService = $this->getMock('Synapse\Email\EmailService');
+        $this->mockResetPasswordView = $this->getMockBuilder('Synapse\View\Email\ResetPassword')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->userService->setUserMapper($this->mockUserMapper);
-        $this->userService->setUserTokenMapper($this->mockUserTokenMapper);
-        $this->userService->setVerifyRegistrationView($this->mockVerifyRegistrationView);
-        $this->userService->setEmailService($this->mockEmailService);
+        $this->mockResetPasswordView->expects($this->any())
+            ->method('__toString')
+            ->will($this->returnValue(self::RESET_PASSWORD_VIEW_STRING_VALUE));
+
+        $this->mockEmailService = $this->getMock('Synapse\Email\EmailService');
     }
 
     public function getCurrentPasswordHash()
@@ -55,7 +70,10 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
     {
         $user = new UserEntity();
 
-        $user->fromArray(['password' => $this->getCurrentPasswordHash()]);
+        $user->fromArray([
+            'email'    => 'user@domain.com',
+            'password' => $this->getCurrentPasswordHash()
+        ]);
 
         return $user;
     }
@@ -92,6 +110,20 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             ->will($this->returnCallback(function($userEntity) use ($captured) {
                 $captured->persistedUserEntity = $userEntity;
                 return $userEntity;
+            }));
+
+        return $captured;
+    }
+
+    public function withCapturedPersistedUserToken()
+    {
+        $captured = new \stdClass();
+
+        $this->mockUserTokenMapper->expects($this->once())
+            ->method('persist')
+            ->will($this->returnCallback(function($userTokenEntity) use ($captured) {
+                $captured->persistedUserTokenEntity = $userTokenEntity;
+                return $userTokenEntity;
             }));
 
         return $captured;
@@ -246,7 +278,7 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(password_verify('password', $captured->persistedUserEntity->getPassword()));
     }
 
-    public function testRegisterEnqueuesEmail()
+    public function testRegisterEnqueuesVerifyRegistrationEmail()
     {
         $this->withNoExistingUser();
         $this->withCapturedPersistedUserEntity();
@@ -262,19 +294,6 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             $capturedEmailCreation->createdEmailEntity,
             $capturedEmailSending->sentEmailEntity
         );
-    }
-
-    public function testVerifyRegistrationViewPassedAsMessageToEmailCreationMethod()
-    {
-        $this->withNoExistingUser();
-        $this->withCapturedPersistedUserEntity();
-        $capturedEmailCreation = $this->expectingEmailCreatedFromArray();
-
-        $this->userService->register([
-            'email'    => 'new@email.com',
-            'password' => 'password'
-        ]);
-
         $this->assertSame(
             self::VERIFY_REGISTRATION_VIEW_STRING_VALUE,
             $capturedEmailCreation->emailArray['message']
@@ -290,5 +309,23 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
         ]);
 
         $this->assertEquals($captured->persistedUserEntity->getEmail(), 'new@email.com');
+    }
+
+    public function testSendResetPasswordEmailEnqueusResetPasswordEmail()
+    {
+        $captured = $this->withCapturedPersistedUserToken();
+        $capturedEmailCreation = $this->expectingEmailCreatedFromArray();
+        $capturedEmailSending = $this->expectingEmailEnqueued();
+
+        $this->userService->sendResetPasswordEmail($this->getUserEntity());
+
+        $this->assertSame(
+            self::RESET_PASSWORD_VIEW_STRING_VALUE,
+            $capturedEmailCreation->emailArray['message']
+        );
+        $this->assertSame(
+            $capturedEmailCreation->createdEmailEntity,
+            $capturedEmailSending->sentEmailEntity
+        );
     }
 }
