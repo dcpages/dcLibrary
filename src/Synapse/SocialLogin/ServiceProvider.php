@@ -41,8 +41,11 @@ class ServiceProvider implements ServiceProviderInterface
             return $service;
         });
 
-        $app->get('/social-login/{provider}', 'social-login.controller:auth')
+        $app->get('/social-login/{provider}', 'social-login.controller:login')
             ->bind('social-login-auth');
+
+        $app->get('/social-login/{provider}/link', 'social-login.controller:link')
+            ->bind('social-link-auth');
 
         $app->get('/social-login/{provider}/login-callback', 'social-login.controller:loginCallback')
             ->bind('social-login-callback');

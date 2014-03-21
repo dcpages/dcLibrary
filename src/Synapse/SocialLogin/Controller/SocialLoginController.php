@@ -103,27 +103,26 @@ class SocialLoginController extends AbstractController
     }
 
     /**
-     * Authenticate via a separate OAuth provider
+     * Authenticate via a separate OAuth provider with the intent to login
      *
      * @param  Request $request
      * @return Response
      */
-    public function auth(Request $request)
+    public function login(Request $request)
     {
-        $provider = strtolower($request->attributes->get('provider'));
+        return $this->auth($request, self::ACTION_LOGIN_WITH_ACCOUNT);
+    }
 
-        if (! $this->providerExists($provider)) {
-            return $this->createNotFoundResponse();
-        }
-
-        $service = $this->getServiceByProvider($provider, self::ACTION_LOGIN_WITH_ACCOUNT);
-
-        $redirectUri = $service->getAuthorizationUri();
-
-        $response = new Response();
-        $response->setStatusCode(301);
-        $response->headers->set('Location', (string) $redirectUri);
-        return $response;
+    /**
+     * Authenticate via a separate OAuth provider with the intent to link
+     * the social account to an already established
+     *
+     * @param  Request $request
+     * @return Response
+     */
+    public function link(Request $request)
+    {
+        return $this->auth($request, self::ACTION_LINK_ACCOUNT);
     }
 
     /**
@@ -148,6 +147,31 @@ class SocialLoginController extends AbstractController
     public function linkCallback(Request $request)
     {
         return $this->callback($request, self::ACTION_LINK_ACCOUNT);
+    }
+
+    /**
+     * Authenticate via a separate OAuth provider
+     *
+     * @param  Request $request
+     * @param  int     $action  Constant representing either Login or Link account
+     * @return Response
+     */
+    public function auth(Request $request, $action)
+    {
+        $provider = strtolower($request->attributes->get('provider'));
+
+        if (! $this->providerExists($provider)) {
+            return $this->createNotFoundResponse();
+        }
+
+        $service = $this->getServiceByProvider($provider, $action);
+
+        $redirectUri = $service->getAuthorizationUri();
+
+        $response = new Response();
+        $response->setStatusCode(301);
+        $response->headers->set('Location', (string) $redirectUri);
+        return $response;
     }
 
     /**
