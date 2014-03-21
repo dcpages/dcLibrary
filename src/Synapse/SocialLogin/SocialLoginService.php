@@ -20,6 +20,19 @@ class SocialLoginService
 
     public function handleLoginRequest(LoginRequest $request)
     {
+        $socialLogin = $this->socialLoginMapper->findByProviderUserId(
+            $request->getProvider(),
+            $request->getProviderUserId()
+        );
+
+        if ($socialLogin) {
+            $user = $this->userService->findById(
+                $socialLogin->getUserId()
+            );
+
+            return $this->handleLogin($user, $request);
+        }
+
         $userFound = false;
         foreach ($request->getEmails() as $email) {
             $user = $this->userService->findByEmail($email);
@@ -40,9 +53,10 @@ class SocialLoginService
         return $this->handleLogin($result['user'], $request);
     }
 
-    public function handleLinkRequest(LoginRequest $request)
+    public function handleLinkRequest(LoginRequest $request, $userId)
     {
         $socialLogin = $this->socialLoginMapper->findByProviderUserId(
+            $request->getProvider(),
             $request->getProviderUserId()
         );
 
@@ -50,7 +64,7 @@ class SocialLoginService
             throw new LinkedAccountExistsException;
         }
 
-        $user = $this->userService->findById($request->getUserId());
+        $user = $this->userService->findById($userId);
 
         if (! $user) {
             throw new OutOfBoundsException('Account not found', self::EXCEPTION_ACCOUNT_NOT_FOUND);
@@ -64,7 +78,9 @@ class SocialLoginService
             ->setAccessTokenExpires($request->getAccessTokenExpires())
             ->setRefreshToken($request->getRefreshToken());
 
-        return $this->socialLoginMapper->persist($socialLoginEntity);
+        $socialLogin = $this->socialLoginMapper->persist($socialLoginEntity);
+
+        return $this->handleLogin($user, $request);
     }
 
     public function registerFromSocialLogin(LoginRequest $request)
