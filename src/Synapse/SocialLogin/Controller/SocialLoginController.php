@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Synapse\Controller\AbstractController;
 use Synapse\SocialLogin\Exception\NoLinkedAccountException;
+use Synapse\SocialLogin\Exception\LinkedAccountExistsException;
 use Synapse\SocialLogin\LoginRequest;
 use Synapse\SocialLogin\SocialLoginService;
 
@@ -17,6 +18,8 @@ use OAuth\Common\Storage\Session as SessionStorage;
 use OAuth\Common\Consumer\Credentials as ConsumerCredentials;
 use OAuth\OAuth2\Service as Oauth2Service;
 use OAuth\Common\Token\TokenInterface;
+
+use OutOfBoundsException;
 
 /**
  * Controller for logging in with a social account
@@ -189,7 +192,17 @@ class SocialLoginController extends AbstractController
             $redirect .= '?'.http_build_query($token);
         } catch (NoLinkedAccountException $e) {
             $redirect = $this->config['redirect-url'];
+            $redirect .= '?login_failure=1&error=no_linked_account';
+        } catch (LinkedAccountExistsException $e) {
+            $redirect = $this->config['redirect-url'];
+            $redirect .= '?login_failure=1&error=account_already_linked';
+        } catch (OutOfBoundsException $e) {
+            $redirect = $this->config['redirect-url'];
             $redirect .= '?login_failure=1';
+
+            if ($e->getCode() === UserService::EXCEPTION_ACCOUNT_NOT_FOUND) {
+                $redirect .= '&error=account_already_linked';
+            }
         }
 
         $response = new Response();
