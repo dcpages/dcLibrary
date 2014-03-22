@@ -286,7 +286,7 @@ class UserService
         }
 
         if ($token->getType() !== UserTokenEntity::TYPE_VERIFY_REGISTRATION) {
-            $format  = 'Token specified if of type %s. Expected %s.';
+            $format  = 'Token specified is of type %s. Expected %s.';
             $message = sprintf($format, $token->getType(), UserTokenEntity::TYPE_VERIFY_REGISTRATION);
 
             throw new OutOfBoundsException($message, self::INCORRECT_TOKEN_TYPE);

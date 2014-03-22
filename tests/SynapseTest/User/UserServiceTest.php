@@ -5,6 +5,7 @@ namespace SynapseTest\User;
 use PHPUnit_Framework_TestCase;
 use Synapse\User\UserService;
 use Synapse\User\Entity\User as UserEntity;
+use Synapse\User\Entity\UserToken as UserToken;
 use Synapse\Email\Entity\Email;
 
 class UserServiceTest extends PHPUnit_Framework_TestCase
@@ -81,16 +82,25 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
     public function withExistingUser()
     {
         $email = 'existing@user.com';
+        $id    = 'existing_user_id';
 
         $user = new UserEntity();
-        $user->fromArray(['email' => $email]);
+        $user->fromArray([
+            'id'    => $id,
+            'email' => $email
+        ]);
 
         $this->mockUserMapper->expects($this->any())
             ->method('findByEmail')
             ->with($this->equalTo($email))
             ->will($this->returnValue($user));
 
-        return $email;
+        $this->mockUserMapper->expects($this->any())
+            ->method('findById')
+            ->with($this->equalTo($id))
+            ->will($this->returnValue($user));
+
+        return $user;
     }
 
     public function withNoExistingUser()
@@ -147,6 +157,13 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             }));
 
         return $captured;
+    }
+
+    public function expectingDeletedToken($token)
+    {
+        $this->mockUserTokenMapper->expects($this->once())
+            ->method('delete')
+            ->with($this->identicalTo($token));
     }
 
     public function expectingEmailEnqueued()
@@ -255,10 +272,10 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testRegisterThrowsExceptionIfUserWIthEmailExists()
     {
-        $email = $this->withExistingUser();
+        $user = $this->withExistingUser();
 
         $this->userService->register([
-            'email'    => $email,
+            'email'    => $user->getEmail(),
             'password' => 'password'
         ]);
     }
@@ -345,5 +362,62 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
                 $user->getPassword()
             )
         );
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     */
+    public function testVerifyRegistrationThrowsExceptionIfTokenNotFound()
+    {
+        $this->userService->verifyRegistration(new UserToken);
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     */
+    public function testVerifyRegistrationThrowsExceptionIfTokenIsOfWrongType()
+    {
+        $userToken = new UserToken();
+        $userToken->fromArray([
+            'id'   => '1',
+            'type' => UserToken::TYPE_RESET_PASSWORD
+        ]);
+
+        $this->userService->verifyRegistration($userToken);
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     */
+    public function testVerifyRegistrationThrowsExceptionIfExpireTimeHasPassed()
+    {
+        $userToken = new UserToken();
+        $userToken->fromArray([
+            'id'      => '1',
+            'type'    => UserToken::TYPE_VERIFY_REGISTRATION,
+            'expires' => time() - 1000
+        ]);
+
+        $this->userService->verifyRegistration($userToken);
+    }
+
+    public function testVerifyRegistrationPersistsVerifiedUserAndDeletesToken()
+    {
+        $captured = $this->expectingPersistedUserEntity();
+        $user = $this->withExistingUser();
+
+        $userToken = new UserToken();
+        $userToken->fromArray([
+            'id'      => '1',
+            'type'    => UserToken::TYPE_VERIFY_REGISTRATION,
+            'expires' => time() + 1000,
+            'user_id' => $user->getId()
+        ]);
+        $this->expectingDeletedToken($userToken);
+
+        $returnValue = $this->userService->verifyRegistration($userToken);
+
+        $this->assertTrue($captured->persistedUserEntity->getVerified());
+        $this->assertSame($user, $returnValue);
     }
 }
