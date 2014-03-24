@@ -10,8 +10,8 @@ class ServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
-        $app['session.storage.handler'] = $app->share(function ($app) {
-            return new NativeRedisSessionHandler;
+        $app['session.storage.handler'] = $app->share(function () {
+            return new \SessionHandler('123');
         });
     }
 
