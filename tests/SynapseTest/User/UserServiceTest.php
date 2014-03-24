@@ -5,17 +5,30 @@ namespace SynapseTest\User;
 use PHPUnit_Framework_TestCase;
 use Synapse\User\UserService;
 use Synapse\User\Entity\User as UserEntity;
+use Synapse\User\Entity\UserToken as UserToken;
 use Synapse\Email\Entity\Email;
 
 class UserServiceTest extends PHPUnit_Framework_TestCase
 {
     const CURRENT_PASSWORD = '12345';
     const VERIFY_REGISTRATION_VIEW_STRING_VALUE = 'verify_registration';
+    const RESET_PASSWORD_VIEW_STRING_VALUE = 'reset_password';
 
     public function setUp()
     {
         $this->userService = new UserService();
 
+        $this->createMocks();
+
+        $this->userService->setUserMapper($this->mockUserMapper);
+        $this->userService->setUserTokenMapper($this->mockUserTokenMapper);
+        $this->userService->setVerifyRegistrationView($this->mockVerifyRegistrationView);
+        $this->userService->setResetPasswordView($this->mockResetPasswordView);
+        $this->userService->setEmailService($this->mockEmailService);
+    }
+
+    public function createMocks()
+    {
         $this->mockUserMapper = $this->getMockBuilder('Synapse\User\Mapper\User')
             ->disableOriginalConstructor()
             ->getMock();
@@ -38,12 +51,15 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             ->method('__toString')
             ->will($this->returnValue(self::VERIFY_REGISTRATION_VIEW_STRING_VALUE));
 
-        $this->mockEmailService = $this->getMock('Synapse\Email\EmailService');
+        $this->mockResetPasswordView = $this->getMockBuilder('Synapse\View\Email\ResetPassword')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->userService->setUserMapper($this->mockUserMapper);
-        $this->userService->setUserTokenMapper($this->mockUserTokenMapper);
-        $this->userService->setVerifyRegistrationView($this->mockVerifyRegistrationView);
-        $this->userService->setEmailService($this->mockEmailService);
+        $this->mockResetPasswordView->expects($this->any())
+            ->method('__toString')
+            ->will($this->returnValue(self::RESET_PASSWORD_VIEW_STRING_VALUE));
+
+        $this->mockEmailService = $this->getMock('Synapse\Email\EmailService');
     }
 
     public function getCurrentPasswordHash()
@@ -55,7 +71,10 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
     {
         $user = new UserEntity();
 
-        $user->fromArray(['password' => $this->getCurrentPasswordHash()]);
+        $user->fromArray([
+            'email'    => 'user@domain.com',
+            'password' => $this->getCurrentPasswordHash()
+        ]);
 
         return $user;
     }
@@ -63,16 +82,25 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
     public function withExistingUser()
     {
         $email = 'existing@user.com';
+        $id    = 'existing_user_id';
 
         $user = new UserEntity();
-        $user->fromArray(['email' => $email]);
+        $user->fromArray([
+            'id'    => $id,
+            'email' => $email
+        ]);
 
         $this->mockUserMapper->expects($this->any())
             ->method('findByEmail')
             ->with($this->equalTo($email))
             ->will($this->returnValue($user));
 
-        return $email;
+        $this->mockUserMapper->expects($this->any())
+            ->method('findById')
+            ->with($this->equalTo($id))
+            ->will($this->returnValue($user));
+
+        return $user;
     }
 
     public function withNoExistingUser()
@@ -83,7 +111,7 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue(false));
     }
 
-    public function withCapturedPersistedUserEntity()
+    public function expectingPersistedUserEntity()
     {
         $captured = new \stdClass();
 
@@ -92,6 +120,20 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             ->will($this->returnCallback(function($userEntity) use ($captured) {
                 $captured->persistedUserEntity = $userEntity;
                 return $userEntity;
+            }));
+
+        return $captured;
+    }
+
+    public function expectingPersistedUserToken()
+    {
+        $captured = new \stdClass();
+
+        $this->mockUserTokenMapper->expects($this->once())
+            ->method('persist')
+            ->will($this->returnCallback(function($userTokenEntity) use ($captured) {
+                $captured->persistedUserTokenEntity = $userTokenEntity;
+                return $userTokenEntity;
             }));
 
         return $captured;
@@ -115,6 +157,13 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             }));
 
         return $captured;
+    }
+
+    public function expectingDeletedToken($token)
+    {
+        $this->mockUserTokenMapper->expects($this->once())
+            ->method('delete')
+            ->with($this->identicalTo($token));
     }
 
     public function expectingEmailEnqueued()
@@ -223,10 +272,10 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testRegisterThrowsExceptionIfUserWIthEmailExists()
     {
-        $email = $this->withExistingUser();
+        $user = $this->withExistingUser();
 
         $this->userService->register([
-            'email'    => $email,
+            'email'    => $user->getEmail(),
             'password' => 'password'
         ]);
     }
@@ -234,7 +283,7 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
     public function testRegisterPersistsUserDataToMapper()
     {
         $this->withNoExistingUser();
-        $captured = $this->withCapturedPersistedUserEntity();
+        $captured = $this->expectingPersistedUserEntity();
         $this->expectingEmailCreatedFromArray();
 
         $this->userService->register([
@@ -246,10 +295,10 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(password_verify('password', $captured->persistedUserEntity->getPassword()));
     }
 
-    public function testRegisterEnqueuesEmail()
+    public function testRegisterEnqueuesVerifyRegistrationEmail()
     {
         $this->withNoExistingUser();
-        $this->withCapturedPersistedUserEntity();
+        $this->expectingPersistedUserEntity();
         $capturedEmailCreation = $this->expectingEmailCreatedFromArray();
         $capturedEmailSending = $this->expectingEmailEnqueued();
 
@@ -262,19 +311,6 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
             $capturedEmailCreation->createdEmailEntity,
             $capturedEmailSending->sentEmailEntity
         );
-    }
-
-    public function testVerifyRegistrationViewPassedAsMessageToEmailCreationMethod()
-    {
-        $this->withNoExistingUser();
-        $this->withCapturedPersistedUserEntity();
-        $capturedEmailCreation = $this->expectingEmailCreatedFromArray();
-
-        $this->userService->register([
-            'email'    => 'new@email.com',
-            'password' => 'password'
-        ]);
-
         $this->assertSame(
             self::VERIFY_REGISTRATION_VIEW_STRING_VALUE,
             $capturedEmailCreation->emailArray['message']
@@ -283,12 +319,105 @@ class UserServiceTest extends PHPUnit_Framework_TestCase
 
     public function testRegisterWithoutPasswordPersistsUserEntity()
     {
-        $captured = $this->withCapturedPersistedUserEntity();
+        $captured = $this->expectingPersistedUserEntity();
 
         $this->userService->registerWithoutPassword([
             'email'    => 'new@email.com',
         ]);
 
         $this->assertEquals($captured->persistedUserEntity->getEmail(), 'new@email.com');
+    }
+
+    public function testSendResetPasswordEmailEnqueusResetPasswordEmail()
+    {
+        $this->expectingPersistedUserToken();
+        $capturedEmailCreation = $this->expectingEmailCreatedFromArray();
+        $capturedEmailSending = $this->expectingEmailEnqueued();
+
+        $this->userService->sendResetPasswordEmail($this->getUserEntity());
+
+        $this->assertSame(
+            self::RESET_PASSWORD_VIEW_STRING_VALUE,
+            $capturedEmailCreation->emailArray['message']
+        );
+        $this->assertSame(
+            $capturedEmailCreation->createdEmailEntity,
+            $capturedEmailSending->sentEmailEntity
+        );
+    }
+
+    public function testResetPasswordPersistsUserWithHashedPasswordSet()
+    {
+        $user = $this->getUserEntity();
+        $this->expectingPersistedUserEntity();
+
+        $this->userService->resetPassword(
+            $user,
+            'reset_password'
+        );
+
+        $this->assertTrue(
+            password_verify(
+                'reset_password',
+                $user->getPassword()
+            )
+        );
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     */
+    public function testVerifyRegistrationThrowsExceptionIfTokenNotFound()
+    {
+        $this->userService->verifyRegistration(new UserToken);
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     */
+    public function testVerifyRegistrationThrowsExceptionIfTokenIsOfWrongType()
+    {
+        $userToken = new UserToken();
+        $userToken->fromArray([
+            'id'   => '1',
+            'type' => UserToken::TYPE_RESET_PASSWORD
+        ]);
+
+        $this->userService->verifyRegistration($userToken);
+    }
+
+    /**
+     * @expectedException OutOfBoundsException
+     */
+    public function testVerifyRegistrationThrowsExceptionIfExpireTimeHasPassed()
+    {
+        $userToken = new UserToken();
+        $userToken->fromArray([
+            'id'      => '1',
+            'type'    => UserToken::TYPE_VERIFY_REGISTRATION,
+            'expires' => time() - 1000
+        ]);
+
+        $this->userService->verifyRegistration($userToken);
+    }
+
+    public function testVerifyRegistrationPersistsVerifiedUserAndDeletesToken()
+    {
+        $captured = $this->expectingPersistedUserEntity();
+        $user = $this->withExistingUser();
+
+        $userToken = new UserToken();
+        $userToken->fromArray([
+            'id'      => '1',
+            'type'    => UserToken::TYPE_VERIFY_REGISTRATION,
+            'expires' => time() + 1000,
+            'user_id' => $user->getId()
+        ]);
+        $this->expectingDeletedToken($userToken);
+
+        $returnValue = $this->userService->verifyRegistration($userToken);
+
+        $this->assertTrue($captured->persistedUserEntity->getVerified());
+        $this->assertSame($user, $returnValue);
     }
 }
