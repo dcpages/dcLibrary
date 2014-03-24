@@ -45,9 +45,6 @@ class Services implements ServicesInterface
 
         $app->register(new \Silex\Provider\SessionServiceProvider());
         $app->register(new \Synapse\Session\ServiceProvider());
-        $app->before(function ($request) {
-            $request->getSession()->start();
-        });
 
         $app->register(new \Silex\Provider\UrlGeneratorServiceProvider());
         $app->register(new \Synapse\SocialLogin\ServiceProvider());

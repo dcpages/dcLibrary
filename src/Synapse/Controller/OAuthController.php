@@ -89,6 +89,8 @@ class OAuthController implements SecurityAwareInterface
         $accessToken   = $securityToken->getOAuthToken();
         $refreshToken  = Arr::get($content, 'refresh_token');
 
+        $this->session->set('user', null);
+
         if (! $accessToken) {
             return new Response('Authentication required', 401);
         }
