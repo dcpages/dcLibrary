@@ -17,6 +17,7 @@ use OAuth2\HttpFoundationBridge\Response as BridgeResponse;
 use OAuth2\Server as OAuth2Server;
 use OAuth2\GrantType\AuthorizationCode;
 use OAuth2\GrantType\UserCredentials;
+use OAuth2\ResponseType\AuthorizationCode as AuthorizationCodeResponse;
 
 class OAuth2ServerServiceProvider implements ServiceProviderInterface
 {
@@ -34,23 +35,23 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
             $storage = $app['oauth.storage'];
 
             $grantTypes = [
-                // @todo may want to implement this so that tools like postman are
-                // easier to use
-                // 'authorization_code' => new AuthorizationCode($storage),
+                'authorization_code' => new AuthorizationCode($storage),
                 'user_credentials'   => new UserCredentials($storage),
             ];
 
             $accessTokenResponseType = new AccessToken($storage, $storage);
+            $authCodeResponseType = new AuthorizationCodeResponse($storage);
 
             return new OAuth2Server(
                 $storage,
                 [
-                    'enforce_state'  => true,
+                    'enforce_state'  => false,
                     'allow_implicit' => true,
                 ],
                 $grantTypes,
                 [
                     'token' => $accessTokenResponseType,
+                    'code'  => $authCodeResponseType,
                 ]
             );
         });
@@ -60,7 +61,8 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
                 $app['oauth_server'],
                 $app['user.service'],
                 $app['oauth-access-token.mapper'],
-                $app['oauth-refresh-token.mapper']
+                $app['oauth-refresh-token.mapper'],
+                $app['mustache']
             );
         });
 
@@ -77,7 +79,10 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
     {
         $this->setup($app);
 
-        $app->post('/oauth/authorize', 'oauth.controller:authorize');
+        $app->get('/oauth/authorize', 'oauth.controller:authorize');
+        $app->get('/oauth/authorizeSubmit', 'oauth.controller:authorizeFormSubmit')
+            ->bind('oauth-authorize-form-submit');
+
         $app->post('/oauth/token', 'oauth.controller:token');
         $app->post('/logout', 'oauth.controller:logout');
     }
