@@ -6,6 +6,7 @@ use Synapse\User\UserService;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 use OAuth2\HttpFoundationBridge\Response as BridgeResponse;
 use OAuth2\HttpFoundationBridge\Request as OAuthRequest;
@@ -27,17 +28,20 @@ class OAuthController implements SecurityAwareInterface
     protected $userService;
     protected $accessTokenMapper;
     protected $refreshTokenMapper;
+    protected $session;
 
     public function __construct(
         OAuth2Server $server,
         UserService $userService,
         AccessTokenMapper $accessTokenMapper,
-        RefreshTokenMapper $refreshTokenMapper
+        RefreshTokenMapper $refreshTokenMapper,
+        Session $session
     ) {
         $this->server             = $server;
         $this->userService        = $userService;
         $this->accessTokenMapper  = $accessTokenMapper;
         $this->refreshTokenMapper = $refreshTokenMapper;
+        $this->session            = $session;
     }
 
     public function authorize(Request $request)
@@ -58,7 +62,10 @@ class OAuthController implements SecurityAwareInterface
 
         if ($response->isOk()) {
             $userId = $response->getParameter('user_id');
+
             $this->setLastLogin($userId);
+
+            $this->session->set('user', $userId);
         }
 
         return $response;
@@ -81,6 +88,8 @@ class OAuthController implements SecurityAwareInterface
         $user          = $securityToken->getUser();
         $accessToken   = $securityToken->getOAuthToken();
         $refreshToken  = Arr::get($content, 'refresh_token');
+
+        $this->session->set('user', null);
 
         if (! $accessToken) {
             return new Response('Authentication required', 401);
