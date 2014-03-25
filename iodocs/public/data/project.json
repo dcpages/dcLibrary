@@ -63,6 +63,46 @@
                             "Description":"Current password. Required if email or password are being updated."
                         }
                     ]
+                },
+                {
+                    "MethodName":"verifyRegistration",
+                    "Synopsis":"Verify a user's registration.",
+                    "HTTPMethod":"POST",
+                    "URI":"/users/:userId/verify-registration",
+                    "RequiresOAuth":"Y",
+                    "parameters":[
+                        {
+                            "Name":"token",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"The user's verification token, sent via email upon account registration."
+                        }
+                    ]
+                },
+                {
+                    "MethodName":"requestPasswordReset",
+                    "Synopsis":"Request a password reset for a user. Only allowed for the currently logged in user.",
+                    "HTTPMethod":"POST",
+                    "URI":"/users/:userId/reset-password",
+                    "RequiresOAuth":"Y",
+                    "parameters":[]
+                },
+                {
+                    "MethodName":"resetPassword",
+                    "Synopsis":"Reset the user's password.",
+                    "HTTPMethod":"PUT",
+                    "URI":"/users/:userId/reset-password",
+                    "RequiresOAuth":"Y",
+                    "parameters":[
+                        {
+                            "Name":"token",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"The user's password reset token, sent via email when password reset was requested."
+                        }
+                    ]
                 }
             ]
         },
