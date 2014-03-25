@@ -1,0 +1,184 @@
+{
+    "endpoints":[
+        {
+            "name":"User Resources",
+            "methods":[
+                {
+                    "MethodName":"createUser",
+                    "Synopsis":"Create a user.",
+                    "HTTPMethod":"POST",
+                    "URI":"/users",
+                    "RequiresOAuth":"N",
+                    "parameters":[
+                        {
+                            "Name":"email",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"Email address."
+                        },
+                        {
+                            "Name":"password",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"Password to be assigned to the user."
+                        }
+                    ]
+                },
+                {
+                    "MethodName":"getUser",
+                    "Synopsis":"Find a user.",
+                    "HTTPMethod":"GET",
+                    "URI":"/users/:userId",
+                    "RequiresOAuth":"Y",
+                    "parameters":[]
+                },
+                {
+                    "MethodName":"editUser",
+                    "Synopsis":"Edit a user.",
+                    "HTTPMethod":"PUT",
+                    "URI":"/users/:userId",
+                    "RequiresOAuth":"Y",
+                    "parameters":[
+                        {
+                            "Name":"email",
+                            "Required":"N",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"New email address."
+                        },
+                        {
+                            "Name":"password",
+                            "Required":"N",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"New password."
+                        },
+                        {
+                            "Name":"current_password",
+                            "Required":"N",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"Current password. Required if email or password are being updated."
+                        }
+                    ]
+                },
+                {
+                    "MethodName":"verifyRegistration",
+                    "Synopsis":"Verify a user's registration.",
+                    "HTTPMethod":"POST",
+                    "URI":"/users/:userId/verify-registration",
+                    "RequiresOAuth":"Y",
+                    "parameters":[
+                        {
+                            "Name":"token",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"The user's verification token, sent via email upon account registration."
+                        }
+                    ]
+                },
+                {
+                    "MethodName":"requestPasswordReset",
+                    "Synopsis":"Request a password reset for a user. Only allowed for the currently logged in user.",
+                    "HTTPMethod":"POST",
+                    "URI":"/users/:userId/reset-password",
+                    "RequiresOAuth":"Y",
+                    "parameters":[]
+                },
+                {
+                    "MethodName":"resetPassword",
+                    "Synopsis":"Reset the user's password.",
+                    "HTTPMethod":"PUT",
+                    "URI":"/users/:userId/reset-password",
+                    "RequiresOAuth":"Y",
+                    "parameters":[
+                        {
+                            "Name":"token",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"The user's password reset token, sent via email when password reset was requested."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name":"OAuth Resources",
+            "methods":[
+                {
+                    "MethodName":"authorize",
+                    "Synopsis":"Authorize via OAuth.",
+                    "HTTPMethod":"GET",
+                    "URI":"/oauth/authorize",
+                    "RequiresOAuth":"N",
+                    "parameters":[]
+                },
+                {
+                    "MethodName":"authorizeSubmit",
+                    "Synopsis":"Second step for iodocs to authorize via OAuth.",
+                    "HTTPMethod":"GET",
+                    "URI":"/oauth/authorize-submit",
+                    "RequiresOAuth":"N",
+                    "parameters":[]
+                },
+                {
+                    "MethodName":"getToken",
+                    "Synopsis":"Ask for an OAuth token.",
+                    "HTTPMethod":"POST",
+                    "URI":"/oauth/token",
+                    "RequiresOAuth":"Y",
+                    "parameters":[
+                        {
+                            "Name":"username",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"User's username."
+                        },
+                        {
+                            "Name":"password",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"User's password."
+                        },
+                        {
+                            "Name":"grant_type",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"Must be: password"
+                        },
+                        {
+                            "Name":"client_id",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"OAuth Client ID of the application."
+                        }
+                    ]
+                },
+                {
+                    "MethodName":"logout",
+                    "Synopsis":"Log out of the application.",
+                    "HTTPMethod":"POST",
+                    "URI":"/logout",
+                    "RequiresOAuth":"Y",
+                    "parameters":[
+                        {
+                            "Name":"refresh_token",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"The refresh token assigned to the user upon login."
+                        }
+                    ]
+                }
+            ]
+        },
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "project": {
+        "name" : "Project API",
+        "protocol" : "http",
+        "baseURL" : "api.project.vm",
+        "publicPath" : "/",
+        "privatePath" : "/",
+        "auth" : "oauth2",
+        "oauth2": {
+            "type": "authorization-code",
+            "baseSite": "http://api.project.vm/",
+            "authorizeURL": "oauth/authorize",
+            "accessTokenURL": "oauth/token",
+            "authorizationHeader":"Y"
+        },
+        "keyParam" : "",
+        "headers" : {
+            "Accept"       : "application/json",
+            "Content-Type" : "application/json"
+        }
+    }
+}

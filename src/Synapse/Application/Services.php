@@ -16,7 +16,6 @@ class Services implements ServicesInterface
     public function register(Application $app)
     {
         $this->registerServiceProviders($app);
-        $this->registerControllers($app);
         $this->registerSecurity($app);
     }
 
@@ -59,33 +58,6 @@ class Services implements ServicesInterface
         ]);
 
         $app->register(new \Synapse\Provider\MigrationUpgradeServiceProvider());
-    }
-
-    /**
-     * Register controllers
-     *
-     * @param  Application $app
-     */
-    public function registerControllers(Application $app)
-    {
-        // Register controllers and other shared services
-        $app['index.controller'] = $app->share(function () use ($app) {
-            $index = new \Application\Controller\IndexController(
-                new \Application\View\Test($app['mustache'])
-            );
-
-            return $index;
-        });
-
-        $app['private.controller'] = $app->share(function () use ($app) {
-            $index = new \Application\Controller\PrivateController();
-
-            return $index;
-        });
-
-        $app['rest.controller'] = $app->share(function () use ($app) {
-            return new \Application\Controller\RestController;
-        });
     }
 
     /**
