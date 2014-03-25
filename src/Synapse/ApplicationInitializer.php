@@ -5,8 +5,16 @@ namespace Synapse;
 use Synapse\Provider\ConfigServiceProvider;
 use Symfony\Component\Debug\Debug;
 
+/**
+ * Object for initializing the Silex application
+ */
 class ApplicationInitializer
 {
+    /**
+     * Application version
+     *
+     * @var string
+     */
     protected $appVersion = '0.0.0';
 
     /**

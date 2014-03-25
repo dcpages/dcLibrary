@@ -10,6 +10,9 @@ use Synapse\Application\SecurityAwareInterface;
 use Synapse\Application\SecurityAwareTrait;
 use OutOfBoundsException;
 
+/**
+ * Controller for user related actions
+ */
 class UserController extends AbstractRestController implements SecurityAwareInterface
 {
     use SecurityAwareTrait;

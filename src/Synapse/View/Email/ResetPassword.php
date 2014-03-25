@@ -6,6 +6,9 @@ use Synapse\View\AbstractView;
 use Synapse\User\Entity\UserToken;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 
+/**
+ * View for reset password emails
+ */
 class ResetPassword extends AbstractView
 {
     /**

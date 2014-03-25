@@ -2,6 +2,11 @@
 
 namespace Synapse\View;
 
+/**
+ * Abstract view class, to abstract the rendering of a template using mustache.
+ *
+ * Automatically searches for a template in a corresponding path of the template directory.
+ */
 abstract class AbstractView
 {
     /**
