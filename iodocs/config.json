@@ -1,18 +1,22 @@
 {
-    "title" : "I/O Docs - http://github.com/mashery/iodocs",
-    "address": "0.0.0.0",
-    "port" : 3000,
-    "apiConfigDir" : "./public/data/",
-    "debug" : false,
-    "sessionSecret" : "12345",
-    "basicAuth" : {
-        "username" : "",
-        "password" : ""
-    },
-    "redis" : {
-        "host" : "localhost",
-        "port" : 6379,
-        "password" : "",
-        "database" : "0"
+    "project": {
+        "name" : "Project API",
+        "protocol" : "http",
+        "baseURL" : "api.project.vm",
+        "publicPath" : "/",
+        "privatePath" : "/",
+        "auth" : "oauth2",
+        "oauth2": {
+            "type": "authorization-code",
+            "baseSite": "http://api.project.vm/",
+            "authorizeURL": "oauth/authorize",
+            "accessTokenURL": "oauth/token",
+            "authorizationHeader":"Y"
+        },
+        "keyParam" : "",
+        "headers" : {
+            "Accept"       : "application/json",
+            "Content-Type" : "application/json"
+        }
     }
 }
