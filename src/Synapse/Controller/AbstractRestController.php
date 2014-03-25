@@ -8,6 +8,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Synapse\Rest\Exception\MethodNotImplementedException;
 
+/**
+ * Abstract rest controller. Allows children to simply set get(), post(),
+ * put(), and/or delete() methods.
+ */
 abstract class AbstractRestController extends AbstractController
 {
     protected $content;

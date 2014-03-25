@@ -7,6 +7,9 @@ use Synapse\Application\UrlGeneratorAwareTrait;
 
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Abstract controller defining universal helper methods
+ */
 abstract class AbstractController implements UrlGeneratorAwareInterface
 {
     use UrlGeneratorAwareTrait;
