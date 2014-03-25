@@ -55,10 +55,6 @@ class RedisSessionHandler implements \SessionHandlerInterface
         $this->redis = $redis;
         $this->lifetime = $lifetime;
 
-        if (! is_array($options)) {
-            $options = array();
-        }
-
         $this->options = array_merge(array(
             'key_prefix' => ''
         ), $options);
