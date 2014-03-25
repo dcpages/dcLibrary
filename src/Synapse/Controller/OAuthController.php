@@ -2,6 +2,8 @@
 
 namespace Synapse\Controller;
 
+use Mustache_Engine;
+
 use Synapse\User\UserService;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -14,20 +16,27 @@ use OAuth2\Server as OAuth2Server;
 
 use Synapse\Application\SecurityAwareInterface;
 use Synapse\Application\SecurityAwareTrait;
+use Synapse\Controller\AbstractController;
+use Synapse\Log\LoggerAwareInterface;
+use Synapse\Log\LoggerAwareTrait;
 use Synapse\OAuth2\Mapper\AccessToken as AccessTokenMapper;
 use Synapse\OAuth2\Mapper\RefreshToken as RefreshTokenMapper;
 use Synapse\Stdlib\Arr;
 
 use OutOfBoundsException;
 
-class OAuthController implements SecurityAwareInterface
+class OAuthController extends AbstractController implements
+    SecurityAwareInterface,
+    LoggerAwareInterface
 {
     use SecurityAwareTrait;
+    use LoggerAwareTrait;
 
     protected $server;
     protected $userService;
     protected $accessTokenMapper;
     protected $refreshTokenMapper;
+    protected $mustache;
     protected $session;
 
     public function __construct(
@@ -35,22 +44,53 @@ class OAuthController implements SecurityAwareInterface
         UserService $userService,
         AccessTokenMapper $accessTokenMapper,
         RefreshTokenMapper $refreshTokenMapper,
+        Mustache_Engine $mustache,
         Session $session
     ) {
         $this->server             = $server;
         $this->userService        = $userService;
         $this->accessTokenMapper  = $accessTokenMapper;
         $this->refreshTokenMapper = $refreshTokenMapper;
+        $this->mustache           = $mustache;
         $this->session            = $session;
     }
 
+    /**
+     * The user is directed here to log in
+     */
     public function authorize(Request $request)
+    {
+        $submitUrl = $this->url('oauth-authorize-form-submit');
+
+        $vars = array();
+        foreach ($request->query->all() as $param => $value) {
+            $vars[] = array(
+                'name'  => $param,
+                'value' => $value
+            );
+        }
+
+        return $this->mustache->render('OAuth/Authorize', array(
+            'submitUrl' => $submitUrl,
+            'vars'      => $vars,
+        ));
+    }
+
+    public function authorizeFormSubmit(Request $request)
     {
         $response     = new BridgeResponse;
         $oauthRequest = OAuthRequest::createFromRequest($request);
-        $authorized   = (bool) $request->get('authorize');
 
-        return $this->server->handleAuthorizeRequest($oauthRequest, $response, $authorized);
+        $user = $this->userService->findByEmail($request->query->get('username'));
+
+        if ($user && password_verify($request->query->get('password'), $user->getPassword())) {
+            $authorized = true;
+        } else {
+            $authorized = false;
+        }
+
+        $res = $this->server->handleAuthorizeRequest($oauthRequest, $response, $authorized, $user->getId());
+        return $res;
     }
 
     public function token(Request $request)
