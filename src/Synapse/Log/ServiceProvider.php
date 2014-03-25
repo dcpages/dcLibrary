@@ -111,7 +111,7 @@ class ServiceProvider implements ServiceProviderInterface
      */
     protected function fileExceptionHandler($file)
     {
-        $format = '%context.stacktrace%';
+        $format = '%context.stacktrace%'.PHP_EOL;
 
         $handler = new StreamHandler($file, Logger::ERROR);
         $handler->setFormatter(new ExceptionLineFormatter($format));
