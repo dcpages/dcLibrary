@@ -112,8 +112,16 @@
                 {
                     "MethodName":"authorize",
                     "Synopsis":"Authorize via OAuth.",
-                    "HTTPMethod":"POST",
+                    "HTTPMethod":"GET",
                     "URI":"/oauth/authorize",
+                    "RequiresOAuth":"N",
+                    "parameters":[]
+                },
+                {
+                    "MethodName":"authorizeSubmit",
+                    "Synopsis":"Second step for iodocs to authorize via OAuth.",
+                    "HTTPMethod":"GET",
+                    "URI":"/oauth/authorize-submit",
                     "RequiresOAuth":"N",
                     "parameters":[]
                 },
