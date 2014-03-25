@@ -13,6 +13,8 @@
 
 namespace Symfony\Component\HttpFoundation\Session\Storage\Handler;
 
+use Redis;
+
 /**
  * RedisSessionHandler
  *
@@ -48,16 +50,15 @@ class RedisSessionHandler implements \SessionHandlerInterface
      *
      * @throws \InvalidArgumentException When Redis instance not provided
      */
-    public function __construct($redis, $lifetime, array $options = array())
+    public function __construct(Redis $redis, $lifetime, array $options = array())
     {
-        if (!$redis instanceof \Redis) {
-            throw new \InvalidArgumentException('Redis instance required');
-        }
-
         $this->redis = $redis;
         $this->lifetime = $lifetime;
 
-        if(!is_array($options)) $options = array();
+        if (! is_array($options)) {
+            $options = array();
+        }
+
         $this->options = array_merge(array(
             'key_prefix' => ''
         ), $options);
@@ -124,7 +125,7 @@ class RedisSessionHandler implements \SessionHandlerInterface
      */
     protected function getKey($sessionId)
     {
-        if(is_string($this->options['key_prefix'])) {
+        if (is_string($this->options['key_prefix'])) {
             return $this->options['key_prefix'].$sessionId;
         }
         return $sessionId;

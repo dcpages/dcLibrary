@@ -2,6 +2,7 @@
 
 namespace Synapse\Session;
 
+use Redis;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
