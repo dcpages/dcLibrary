@@ -92,7 +92,7 @@ class UserService
         if ($verifyCurrentPassword) {
             $currentPassword = Arr::get($data, 'current_password');
 
-            if (! password_verify($currentPassword, $user->getPassword())) {
+            if (! $currentPassword or ! password_verify($currentPassword, $user->getPassword())) {
                 throw new OutOfBoundsException(
                     'Current password missing or incorrect',
                     self::CURRENT_PASSWORD_REQUIRED

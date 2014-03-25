@@ -62,7 +62,8 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
                 $app['user.service'],
                 $app['oauth-access-token.mapper'],
                 $app['oauth-refresh-token.mapper'],
-                $app['mustache']
+                $app['mustache'],
+                $app['session']
             );
         });
 

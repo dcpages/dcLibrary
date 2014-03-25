@@ -8,6 +8,7 @@ use Synapse\User\UserService;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 use OAuth2\HttpFoundationBridge\Response as BridgeResponse;
 use OAuth2\HttpFoundationBridge\Request as OAuthRequest;
@@ -35,19 +36,23 @@ class OAuthController extends AbstractController implements
     protected $userService;
     protected $accessTokenMapper;
     protected $refreshTokenMapper;
+    protected $mustache;
+    protected $session;
 
     public function __construct(
         OAuth2Server $server,
         UserService $userService,
         AccessTokenMapper $accessTokenMapper,
         RefreshTokenMapper $refreshTokenMapper,
-        Mustache_Engine $mustache
+        Mustache_Engine $mustache,
+        Session $session
     ) {
         $this->server             = $server;
         $this->userService        = $userService;
         $this->accessTokenMapper  = $accessTokenMapper;
         $this->refreshTokenMapper = $refreshTokenMapper;
         $this->mustache           = $mustache;
+        $this->session            = $session;
     }
 
     /**
@@ -97,7 +102,10 @@ class OAuthController extends AbstractController implements
 
         if ($response->isOk()) {
             $userId = $response->getParameter('user_id');
+
             $this->setLastLogin($userId);
+
+            $this->session->set('user', $userId);
         }
 
         return $response;
@@ -120,6 +128,8 @@ class OAuthController extends AbstractController implements
         $user          = $securityToken->getUser();
         $accessToken   = $securityToken->getOAuthToken();
         $refreshToken  = Arr::get($content, 'refresh_token');
+
+        $this->session->set('user', null);
 
         if (! $accessToken) {
             return new Response('Authentication required', 401);

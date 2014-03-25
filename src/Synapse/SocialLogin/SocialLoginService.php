@@ -7,15 +7,32 @@ use Synapse\User\UserService as UserService;
 use Synapse\OAuth2\ResponseType\AccessToken;
 use Synapse\OAuth2\Storage\ZendDb as OAuth2ZendDb;
 use Synapse\SocialLogin\Exception\NoLinkedAccountException;
+use Synapse\SocialLogin\Exception\LinkedAccountExistsException;
+use OutOfBoundsException;
 
 class SocialLoginService
 {
+    const EXCEPTION_ACCOUNT_NOT_FOUND = 1;
+
     protected $userService;
     protected $socialLoginMapper;
     protected $tokenStorage;
 
     public function handleLoginRequest(LoginRequest $request)
     {
+        $socialLogin = $this->socialLoginMapper->findByProviderUserId(
+            $request->getProvider(),
+            $request->getProviderUserId()
+        );
+
+        if ($socialLogin) {
+            $user = $this->userService->findById(
+                $socialLogin->getUserId()
+            );
+
+            return $this->handleLogin($user, $request);
+        }
+
         $userFound = false;
         foreach ($request->getEmails() as $email) {
             $user = $this->userService->findByEmail($email);
@@ -34,6 +51,36 @@ class SocialLoginService
 
         $result = $this->registerFromSocialLogin($request);
         return $this->handleLogin($result['user'], $request);
+    }
+
+    public function handleLinkRequest(LoginRequest $request, $userId)
+    {
+        $socialLogin = $this->socialLoginMapper->findByProviderUserId(
+            $request->getProvider(),
+            $request->getProviderUserId()
+        );
+
+        if ($socialLogin) {
+            throw new LinkedAccountExistsException;
+        }
+
+        $user = $this->userService->findById($userId);
+
+        if (! $user) {
+            throw new OutOfBoundsException('Account not found', self::EXCEPTION_ACCOUNT_NOT_FOUND);
+        }
+
+        $socialLoginEntity = new SocialLoginEntity;
+        $socialLoginEntity->setUserId($user->getId())
+            ->setProvider($request->getProvider())
+            ->setProviderUserId($request->getProviderUserId())
+            ->setAccessToken($request->getAccessToken())
+            ->setAccessTokenExpires($request->getAccessTokenExpires())
+            ->setRefreshToken($request->getRefreshToken());
+
+        $socialLogin = $this->socialLoginMapper->persist($socialLoginEntity);
+
+        return $this->handleLogin($user, $request);
     }
 
     public function registerFromSocialLogin(LoginRequest $request)
