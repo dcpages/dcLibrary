@@ -81,7 +81,7 @@ class OAuth2ServerServiceProvider implements ServiceProviderInterface
         $this->setup($app);
 
         $app->get('/oauth/authorize', 'oauth.controller:authorize');
-        $app->get('/oauth/authorizeSubmit', 'oauth.controller:authorizeFormSubmit')
+        $app->get('/oauth/authorize-submit', 'oauth.controller:authorizeFormSubmit')
             ->bind('oauth-authorize-form-submit');
 
         $app->post('/oauth/token', 'oauth.controller:token');
