@@ -18,4 +18,13 @@ abstract class AbstractController implements UrlGeneratorAwareInterface
         $response->setContent('Not found');
         return $response;
     }
+
+    protected function getSimpleResponse($code = 500, $content = 'Unknown error')
+    {
+        $response = new Response;
+        $response->setStatusCode($code)
+            ->setContent($content);
+
+        return $response;
+    }
 }

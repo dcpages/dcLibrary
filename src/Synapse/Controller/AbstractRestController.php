@@ -51,13 +51,4 @@ abstract class AbstractRestController extends AbstractController
             throw new RuntimeException('Unhandled response type from controller');
         }
     }
-
-    protected function getSimpleResponse($code = 500, $content = 'Unknown error')
-    {
-        $response = new Response;
-        $response->setStatusCode($code)
-            ->setContent($content);
-
-        return $response;
-    }
 }
