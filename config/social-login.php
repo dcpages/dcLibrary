@@ -25,6 +25,6 @@ return array(
         'secret'         => '',
         'callback_route' => 'social-login-callback',
         'scope'          => [Google::SCOPE_USERINFO_EMAIL, Google::SCOPE_USERINFO_PROFILE],
-    );
+    )
 
 );
