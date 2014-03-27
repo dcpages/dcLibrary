@@ -25,6 +25,8 @@
 
 ### Viewing I/O Docs API Documentation
 1. `vagrant ssh`
-1. `cd iodocs`
+1. `cd ~/iodocs`
 1. `npm start`
-1. Point browser to project.vm:3000
+1. Point browser to http://project.vm:3000 (Adjust domain to whatever points to the project.)
+
+See the [I/O Docs README](https://github.com/mashery/iodocs) for more details.
