@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "7ff4f20bda0e59c1a0e4bd5598070dcd",
+    "hash": "8d8ece74c1d66361ad9c4f6d76034dba",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -1190,6 +1190,56 @@
             "time": "2014-02-11 13:52:09"
         },
         {
+            "name": "synapsestudios/api-template-base-library",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/synapsestudios/api-template-base-library.git",
+                "reference": "c4703e4f5b58154428b926bc9bbbb79010701504"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/synapsestudios/api-template-base-library/zipball/c4703e4f5b58154428b926bc9bbbb79010701504",
+                "reference": "c4703e4f5b58154428b926bc9bbbb79010701504",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "dev-master"
+            },
+            "suggest": {
+                "bshaffer/oauth2-server-httpfoundation-bridge": "v1.0",
+                "bshaffer/oauth2-server-php": "v1.0",
+                "chrisboulton/php-resque": "v1.2",
+                "guzzle/guzzle": "~3.7",
+                "ircmaxell/password-compat": "dev-master",
+                "jdesrosiers/silex-cors-provider": "~0.1",
+                "lusitanian/oauth": "~0.2",
+                "mandrill/mandrill": "1.0.52",
+                "monolog/monolog": "~1.7",
+                "mustache/mustache": "~2.5.1",
+                "psr/log": "v1.0.0",
+                "rollbar/rollbar": "0.6.3",
+                "silex/silex": "~1.1",
+                "symfony/console": "~2.3.8",
+                "symfony/security": "~2.3",
+                "zendframework/zend-db": "~2.2.5",
+                "zendframework/zend-stdlib": "~2.2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Synapse": "src/"
+                }
+            },
+            "description": "Base code for the API template",
+            "support": {
+                "source": "https://github.com/synapsestudios/api-template-base-library/tree/0.1.0",
+                "issues": "https://github.com/synapsestudios/api-template-base-library/issues"
+            },
+            "time": "2014-03-26 23:54:12"
+        },
+        {
             "name": "zendframework/zend-db",
             "version": "2.2.6",
             "target-dir": "Zend/Db",
@@ -1527,16 +1577,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.0.12",
+            "version": "4.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "e7631ea91f9e41149c55527047b5dee94538ae1d"
+                "reference": "fca5bc6a50d09b26db280c5cc3c84978c9cace3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e7631ea91f9e41149c55527047b5dee94538ae1d",
-                "reference": "e7631ea91f9e41149c55527047b5dee94538ae1d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/fca5bc6a50d09b26db280c5cc3c84978c9cace3f",
+                "reference": "fca5bc6a50d09b26db280c5cc3c84978c9cace3f",
                 "shasum": ""
             },
             "require": {
@@ -1598,7 +1648,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-20 16:22:50"
+            "time": "2014-03-26 11:55:27"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

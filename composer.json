@@ -1,7 +1,14 @@
 {
     "name": "synapsestudios/api-template",
     "description": "Starting point for new projects",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/synapsestudios/api-template-base-library"
+        }
+    ],
     "require": {
+        "synapsestudios/api-template-base-library": "~0.1.0",
         "silex/silex": "~1.1",
         "symfony/console": "~2.3.8",
         "symfony/security": "~2.3",
