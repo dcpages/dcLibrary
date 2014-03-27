@@ -13,6 +13,4 @@ $appVersion = '0.0.0';
 return [
     'version'    => $appVersion,
     'debug'      => false,
-    'migrations' => 'Application\Migrations\\',
-    'upgrades'   => 'Application\Upgrades\\',
 ];
