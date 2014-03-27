@@ -22,3 +22,9 @@
  - Change the namespace in `Application/Routes.php`, `Application/Services.php`, and `Application/Upgrades/Install.php` to match the new namespace.
  - In `bootstrap.php` modify the namespace of `Application\Routes` and `Application\Services`.
 1. Personalize the templates in `templates/Email/` according to the needs of your project.
+
+### Viewing I/O Docs API Documentation
+1. `vagrant ssh`
+1. `cd iodocs`
+1. `npm start`
+1. Point browser to project.vm:3000
