@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8d8ece74c1d66361ad9c4f6d76034dba",
+    "hash": "5119e6ae5851a51661bd33aefc456f54",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -1190,16 +1190,16 @@
             "time": "2014-02-11 13:52:09"
         },
         {
-            "name": "synapsestudios/api-template-base-library",
+            "name": "synapsestudios/synapse-base",
             "version": "0.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/synapsestudios/api-template-base-library.git",
+                "url": "https://github.com/synapsestudios/synapse-base.git",
                 "reference": "c4703e4f5b58154428b926bc9bbbb79010701504"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/synapsestudios/api-template-base-library/zipball/c4703e4f5b58154428b926bc9bbbb79010701504",
+                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/c4703e4f5b58154428b926bc9bbbb79010701504",
                 "reference": "c4703e4f5b58154428b926bc9bbbb79010701504",
                 "shasum": ""
             },
@@ -1234,8 +1234,8 @@
             },
             "description": "Base code for the API template",
             "support": {
-                "source": "https://github.com/synapsestudios/api-template-base-library/tree/0.1.0",
-                "issues": "https://github.com/synapsestudios/api-template-base-library/issues"
+                "source": "https://github.com/synapsestudios/synapse-base/tree/0.1.0",
+                "issues": "https://github.com/synapsestudios/synapse-base/issues"
             },
             "time": "2014-03-26 23:54:12"
         },
