@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5119e6ae5851a51661bd33aefc456f54",
+    "hash": "fdf183332a837f09c6734a99737665b2",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -1191,16 +1191,16 @@
         },
         {
             "name": "synapsestudios/synapse-base",
-            "version": "0.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/synapsestudios/synapse-base.git",
-                "reference": "c4703e4f5b58154428b926bc9bbbb79010701504"
+                "reference": "b7dc5bc66bdc440874e34b9f8600c5a43f514413"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/c4703e4f5b58154428b926bc9bbbb79010701504",
-                "reference": "c4703e4f5b58154428b926bc9bbbb79010701504",
+                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/b7dc5bc66bdc440874e34b9f8600c5a43f514413",
+                "reference": "b7dc5bc66bdc440874e34b9f8600c5a43f514413",
                 "shasum": ""
             },
             "require-dev": {
@@ -1234,10 +1234,10 @@
             },
             "description": "Base code for the API template",
             "support": {
-                "source": "https://github.com/synapsestudios/synapse-base/tree/0.1.0",
+                "source": "https://github.com/synapsestudios/synapse-base/tree/master",
                 "issues": "https://github.com/synapsestudios/synapse-base/issues"
             },
-            "time": "2014-03-26 23:54:12"
+            "time": "2014-03-27 17:02:54"
         },
         {
             "name": "zendframework/zend-db",
@@ -2039,6 +2039,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "synapsestudios/synapse-base": 20,
         "ircmaxell/password-compat": 20,
         "squizlabs/php_codesniffer": 20
     },
