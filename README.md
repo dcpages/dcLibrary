@@ -17,7 +17,7 @@
  - Modify `apiconfig.json` so that the key of the JavaScript object is your project's name, exactly as used above.
  - Modify both URLs in `apiconfig.json` to be your project's API URL.
  - Edit `name` in `apiconfig.json` to your project's name.
- - As you build out the API, document it in `apiconfig.json`. See the [I/O Docs README](https://github.com/mashery/iodocs) for more details.
+ - As you build out the API, document it in `project.json`. See the [I/O Docs README](https://github.com/mashery/iodocs) for more details.
 1. Rename the `Application` namespace to a namespace more appropriate for your application.
  - Rename the `src/Application` folder.
  - Change the namespace in `Application/Routes.php`, `Application/Services.php`, and `Application/Upgrades/Install.php` to match the new namespace.
@@ -29,5 +29,3 @@
 1. `cd ~/iodocs`
 1. `npm start`
 1. Point browser to http://project.vm:3000 (Adjust domain to whatever points to the project.)
-
-See the [I/O Docs README](https://github.com/mashery/iodocs) for more details.
