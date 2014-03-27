@@ -7,6 +7,11 @@ use Silex\ServiceProviderInterface;
 
 class ControllerServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * Register the controller resolver and initializers
+     *
+     * @param  Application $app
+     */
     public function register(Application $app)
     {
         $app['resolver'] = $app->share($app->extend('resolver', function ($resolver, $app) {

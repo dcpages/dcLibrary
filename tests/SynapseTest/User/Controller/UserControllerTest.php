@@ -52,7 +52,7 @@ class UserControllerTest extends PHPUnit_Framework_TestCase
 
         $this->mockUserService->expects($this->any())
             ->method('register')
-            ->will($this->returnCallback(function($userValues) use ($existingUser, $captured) {
+            ->will($this->returnCallback(function ($userValues) use ($existingUser, $captured) {
                 if (Arr::get($userValues, 'email') === $existingUser->getEmail()) {
                     throw new OutOfBoundsException(
                         '',
@@ -83,7 +83,7 @@ class UserControllerTest extends PHPUnit_Framework_TestCase
         );
         $this->mockUrlGenerator->expects($this->any())
             ->method('generate')
-            ->will($this->returnCallback(function($name, $params, $refType) use ($captured) {
+            ->will($this->returnCallback(function ($name, $params, $refType) use ($captured) {
                 $generatedUrl = '/users/'.Arr::get($params, 'id');
 
                 $captured->generatedUrl = $generatedUrl;
@@ -94,9 +94,9 @@ class UserControllerTest extends PHPUnit_Framework_TestCase
         $this->captured = $captured;
     }
 
-    public function makeGetRequest()
+    public function makeGetRequest($id = '1')
     {
-        $request = new Request(['id' => '1']);
+        $request = new Request(['id' => $id]);
         $request->setMethod('get');
         $request->headers->set('CONTENT_TYPE', 'application/json');
 
@@ -164,7 +164,7 @@ class UserControllerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $userArrayWithoutPassword,
-            json_decode($response->getContent(), TRUE)
+            json_decode($response->getContent(), true)
         );
     }
 
@@ -206,7 +206,26 @@ class UserControllerTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             $expected,
-            json_decode($response->getContent(), TRUE)
+            json_decode($response->getContent(), true)
         );
+    }
+
+    public function testReturnsResponseWhenRequestedUserIsNotFound()
+    {
+        $mockUserService = $this->getMock('Synapse\User\UserService');
+        $mockUserService->expects($this->any())
+            ->method('findById')
+            ->will($this->returnValue(false));
+
+        $userController = new UserController;
+        $userController->setUserService($mockUserService);
+
+        $request = new Request(['id' => 999]);
+        $request->setMethod('get');
+        $request->headers->set('CONTENT_TYPE', 'application/json');
+
+        $response = $userController->execute($request);
+
+        $this->assertEquals(404, $response->getStatusCode());
     }
 }

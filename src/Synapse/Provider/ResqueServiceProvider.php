@@ -8,8 +8,14 @@ use Silex\ServiceProviderInterface;
 
 use Synapse\Command\Resque as ResqueCommand;
 
+/**
+ * Service provider for Resque services
+ */
 class ResqueServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     public function register(Application $app)
     {
         $app['resque'] = $app->share(function () use ($app) {
@@ -21,9 +27,11 @@ class ResqueServiceProvider implements ServiceProviderInterface
             $command->setResque($app['resque']);
             return $command;
         });
-
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function boot(Application $app)
     {
         $app->command('resque.command');

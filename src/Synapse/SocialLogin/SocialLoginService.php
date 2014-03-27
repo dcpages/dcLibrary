@@ -10,14 +10,37 @@ use Synapse\SocialLogin\Exception\NoLinkedAccountException;
 use Synapse\SocialLogin\Exception\LinkedAccountExistsException;
 use OutOfBoundsException;
 
+/**
+ * Generic service for social login related tasks
+ */
 class SocialLoginService
 {
+    /**
+     * Constant for account not found exceptions
+     */
     const EXCEPTION_ACCOUNT_NOT_FOUND = 1;
 
+    /**
+     * @var UserService
+     */
     protected $userService;
+
+    /**
+     * @var SocialLoginMapper
+     */
     protected $socialLoginMapper;
+
+    /**
+     * @var OAuth2ZendDb
+     */
     protected $tokenStorage;
 
+    /**
+     * Handle a request to log in via a social login provider
+     *
+     * @param  LoginRequest $request
+     * @return AccessToken
+     */
     public function handleLoginRequest(LoginRequest $request)
     {
         $socialLogin = $this->socialLoginMapper->findByProviderUserId(
@@ -50,9 +73,17 @@ class SocialLoginService
         }
 
         $result = $this->registerFromSocialLogin($request);
-        return $this->handleLogin($result['user'], $request);
+
+        return $this->handleLogin($result['user']);
     }
 
+    /**
+     * Handle a request to link a social account to a non-social account
+     *
+     * @param  LoginRequest $request
+     * @param  string       $userId  ID of the non-social account to link with the social account
+     * @return AccessToken
+     */
     public function handleLinkRequest(LoginRequest $request, $userId)
     {
         $socialLogin = $this->socialLoginMapper->findByProviderUserId(
@@ -83,6 +114,12 @@ class SocialLoginService
         return $this->handleLogin($user, $request);
     }
 
+    /**
+     * Register a new user account from a social login provider
+     *
+     * @param  LoginRequest $request
+     * @return array                  Array containing user and social login
+     */
     public function registerFromSocialLogin(LoginRequest $request)
     {
         $email = $request->getEmails()[0];
@@ -105,6 +142,13 @@ class SocialLoginService
         );
     }
 
+    /**
+     * Determine if a given user has a social login linked with a given provider
+     *
+     * @param  string $provider
+     * @param  string $user
+     * @return bool
+     */
     public function userHasSocialLoginWithProvider($provider, $user)
     {
         return (bool) $this->socialLoginMapper->findBy([
@@ -113,7 +157,13 @@ class SocialLoginService
         ]);
     }
 
-    public function handleLogin(UserEntity $user, LoginRequest $request)
+    /**
+     * Create an access token given a user entity
+     *
+     * @param  UserEntity   $user
+     * @return AccessToken
+     */
+    public function handleLogin(UserEntity $user)
     {
         $accessToken = new AccessToken($this->tokenStorage, $this->tokenStorage);
         $token = $accessToken->createAccessToken('', $user->getId(), null, true);
@@ -121,18 +171,27 @@ class SocialLoginService
         return $token;
     }
 
+    /**
+     * @param OAuth2ZendDb $storage
+     */
     public function setOAuthStorage(OAuth2ZendDb $storage)
     {
         $this->tokenStorage = $storage;
         return $this;
     }
 
+    /**
+     * @param SocialLoginMapper $mapper
+     */
     public function setSocialLoginMapper(SocialLoginMapper $mapper)
     {
         $this->socialLoginMapper = $mapper;
         return $this;
     }
 
+    /**
+     * @param UserService $service
+     */
     public function setUserService(UserService $service)
     {
         $this->userService = $service;

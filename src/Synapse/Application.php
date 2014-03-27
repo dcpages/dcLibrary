@@ -8,12 +8,25 @@ use Silex\Application\SecurityTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Silex Application extended
+ */
 class Application extends SilexApp
 {
     use SecurityTrait;
 
+    /**
+     * Controller initializers, used to perform a callback on controllers that implement a given interface
+     *
+     * @var array
+     */
     protected $initializers = array();
 
+    /**
+     * Set the route class
+     *
+     * @param array $values
+     */
     public function __construct(array $values = array())
     {
         parent::__construct($values);
@@ -38,6 +51,12 @@ class Application extends SilexApp
         return $value;
     }
 
+    /**
+     * Initialize an object
+     *
+     * @param  mixed $object Object to be initialized
+     * @return mixed
+     */
     protected function initialize($object)
     {
         foreach ($this->initializers as $initializer) {

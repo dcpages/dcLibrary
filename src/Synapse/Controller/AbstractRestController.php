@@ -6,8 +6,13 @@ use RuntimeException;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Synapse\Rest\Exception\MethodNotImplementedException;
 
+/**
+ * Abstract rest controller. Allows children to simply set get(), post(),
+ * put(), and/or delete() methods.
+ */
 abstract class AbstractRestController extends AbstractController
 {
     protected $content;
@@ -31,14 +36,10 @@ abstract class AbstractRestController extends AbstractController
             );
         }
 
-        if ($request->getContentType() === 'json') {
-            $this->content = json_decode($request->getContent(), true);
+        $this->content = json_decode($request->getContent(), true);
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                return $this->getSimpleResponse(400, 'Could not parse json body');
-            }
-        } else {
-            return $this->getSimpleResponse(415, 'Content-Type must be application/json');
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return $this->getSimpleResponse(400, 'Could not parse json body');
         }
 
         $result = $this->{$method}($request);
@@ -46,18 +47,9 @@ abstract class AbstractRestController extends AbstractController
         if ($result instanceof Response) {
             return $result;
         } elseif (is_array($result)) {
-            return new Response(json_encode($result));
+            return new JsonResponse($result);
         } else {
             throw new RuntimeException('Unhandled response type from controller');
         }
-    }
-
-    protected function getSimpleResponse($code = 500, $content = 'Unknown error')
-    {
-        $response = new Response;
-        $response->setStatusCode($code)
-            ->setContent($content);
-
-        return $response;
     }
 }

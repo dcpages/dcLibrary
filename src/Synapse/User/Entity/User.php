@@ -33,11 +33,21 @@ class User extends AbstractEntity implements UserInterface
         return $this->roles;
     }
 
+    /**
+     * Retrieve the user's password
+     *
+     * @return string
+     */
     public function getPassword()
     {
         return $this->object['password'];
     }
 
+    /**
+     * Set the user's roles
+     *
+     * @param array $roles
+     */
     public function setRoles(array $roles = array())
     {
         $this->roles = $roles;
