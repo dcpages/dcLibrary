@@ -3,28 +3,28 @@
 use OAuth\OAuth2\Service\Facebook;
 use OAuth\OAuth2\Service\Google;
 
-return array(
+return [
     'redirect-url' => 'http://127.0.0.1:9000/receive-token',
 
-    'facebook' => array(
+    'facebook' => [
         'key'            => '',
         'secret'         => '',
         'callback_route' => 'social-login-callback',
-        'scope'          => array(Facebook::SCOPE_EMAIL, Facebook::SCOPE_READ_FRIENDLIST),
-    ),
+        'scope'          => [Facebook::SCOPE_EMAIL, Facebook::SCOPE_READ_FRIENDLIST],
+    ],
 
-    'github' => array(
+    'github' => [
         'key'            => '',
         'secret'         => '',
         'callback_route' => 'social-login-callback',
-        'scope'          => array('user'),
-    ),
+        'scope'          => ['user'],
+    ],
 
-    'google' => array(
+    'google' => [
         'key'            => '',
         'secret'         => '',
         'callback_route' => 'social-login-callback',
         'scope'          => [Google::SCOPE_USERINFO_EMAIL, Google::SCOPE_USERINFO_PROFILE],
-    )
+    ]
 
-);
+];
