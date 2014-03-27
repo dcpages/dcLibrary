@@ -4,11 +4,11 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/synapsestudios/api-template-base-library"
+            "url": "https://github.com/synapsestudios/synapse-base"
         }
     ],
     "require": {
-        "synapsestudios/api-template-base-library": "~0.1.0",
+        "synapsestudios/synapse-base": "~0.1.0",
         "silex/silex": "~1.1",
         "symfony/console": "~2.3.8",
         "symfony/security": "~2.3",
