@@ -14,9 +14,9 @@
 1. Modify any applicable config files in `config/`.
 1. Modify the *I/O Docs* files in `docs/`.
  - Rename `project.json` to your project's name + `.json`. (Must be lowercase.)
- - Modify `config.json` so that the key of the JavaScript object is your project's name, exactly as used above.
- - Modify both URLs in `config.json` to be your project's API URL.
- - Edit `name` in `config.json` to your project's name.
+ - Modify `apiconfig.json` so that the key of the JavaScript object is your project's name, exactly as used above.
+ - Modify both URLs in `apiconfig.json` to be your project's API URL.
+ - Edit `name` in `apiconfig.json` to your project's name.
 1. Rename the `Application` namespace to a namespace more appropriate for your application.
  - Rename the `src/Application` folder.
  - Change the namespace in `Application/Routes.php`, `Application/Services.php`, and `Application/Upgrades/Install.php` to match the new namespace.
