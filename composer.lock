@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "7ff4f20bda0e59c1a0e4bd5598070dcd",
+    "hash": "f27019de3a4b587494eb5b3e8f1c2838",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -34,9 +34,9 @@
             ],
             "authors": [
                 {
-                    "name": "العاب",
+                    "name": "Brent Shaffer",
                     "email": "bshafs@gmail.com",
-                    "homepage": "http://astaza.com"
+                    "homepage": "http://brentertainment.com"
                 }
             ],
             "description": "A bridge to HttpFoundation for oauth2-server-php",
@@ -1190,6 +1190,56 @@
             "time": "2014-02-11 13:52:09"
         },
         {
+            "name": "synapsestudios/synapse-base",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/synapsestudios/synapse-base.git",
+                "reference": "f9cd9e42cce96ca260fec27e93199f4b5407593c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/f9cd9e42cce96ca260fec27e93199f4b5407593c",
+                "reference": "f9cd9e42cce96ca260fec27e93199f4b5407593c",
+                "shasum": ""
+            },
+            "require": {
+                "bshaffer/oauth2-server-httpfoundation-bridge": "v1.0",
+                "bshaffer/oauth2-server-php": "v1.0",
+                "chrisboulton/php-resque": "v1.2",
+                "guzzle/guzzle": "~3.7",
+                "ircmaxell/password-compat": "dev-master",
+                "jdesrosiers/silex-cors-provider": "~0.1",
+                "lusitanian/oauth": "~0.2",
+                "mandrill/mandrill": "1.0.52",
+                "monolog/monolog": "~1.7",
+                "mustache/mustache": "~2.5.1",
+                "psr/log": "v1.0.0",
+                "rollbar/rollbar": "0.6.3",
+                "silex/silex": "~1.1",
+                "symfony/console": "~2.3.8",
+                "symfony/security": "~2.3",
+                "zendframework/zend-db": "~2.2.5",
+                "zendframework/zend-stdlib": "~2.2.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Synapse": "src/"
+                }
+            },
+            "description": "Base code for the API template",
+            "support": {
+                "source": "https://github.com/synapsestudios/synapse-base/tree/master",
+                "issues": "https://github.com/synapsestudios/synapse-base/issues"
+            },
+            "time": "2014-03-27 17:32:53"
+        },
+        {
             "name": "zendframework/zend-db",
             "version": "2.2.6",
             "target-dir": "Zend/Db",
@@ -1527,16 +1577,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.0.12",
+            "version": "4.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "e7631ea91f9e41149c55527047b5dee94538ae1d"
+                "reference": "fca5bc6a50d09b26db280c5cc3c84978c9cace3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e7631ea91f9e41149c55527047b5dee94538ae1d",
-                "reference": "e7631ea91f9e41149c55527047b5dee94538ae1d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/fca5bc6a50d09b26db280c5cc3c84978c9cace3f",
+                "reference": "fca5bc6a50d09b26db280c5cc3c84978c9cace3f",
                 "shasum": ""
             },
             "require": {
@@ -1598,7 +1648,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-20 16:22:50"
+            "time": "2014-03-26 11:55:27"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -1987,9 +2037,9 @@
     "aliases": [
 
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
-        "ircmaxell/password-compat": 20,
+        "synapsestudios/synapse-base": 20,
         "squizlabs/php_codesniffer": 20
     },
     "platform": [
