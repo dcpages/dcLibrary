@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: database_vm
 -- ------------------------------------------------------
--- Server version	5.5.35-0ubuntu0.12.04.2
+-- Server version	5.5.35-0ubuntu0.12.04.2-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -21,6 +21,7 @@
 
 LOCK TABLES `app_versions` WRITE;
 /*!40000 ALTER TABLE `app_versions` DISABLE KEYS */;
+INSERT INTO `app_versions` VALUES ('0.0.0','1395695949');
 /*!40000 ALTER TABLE `app_versions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -30,6 +31,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `app_migrations` WRITE;
 /*!40000 ALTER TABLE `app_migrations` DISABLE KEYS */;
+INSERT INTO `app_migrations` VALUES ('20140310174952','Add verification flag to users table'),('20140318180619','Require unique email address upon registration'),('20140312161734','social login');
 /*!40000 ALTER TABLE `app_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -52,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-03-27 21:23:59
+-- Dump completed on 2014-03-28 22:39:03
