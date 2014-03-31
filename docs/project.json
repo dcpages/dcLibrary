@@ -30,7 +30,7 @@
                     "MethodName":"getUser",
                     "Synopsis":"Find a user.",
                     "HTTPMethod":"GET",
-                    "URI":"/users/:userId",
+                    "URI":"/users/:id",
                     "RequiresOAuth":"Y",
                     "parameters":[]
                 },
@@ -38,7 +38,7 @@
                     "MethodName":"editUser",
                     "Synopsis":"Edit a user.",
                     "HTTPMethod":"PUT",
-                    "URI":"/users/:userId",
+                    "URI":"/users/:id",
                     "RequiresOAuth":"Y",
                     "parameters":[
                         {
@@ -68,7 +68,7 @@
                     "MethodName":"verifyRegistration",
                     "Synopsis":"Verify a user's registration.",
                     "HTTPMethod":"POST",
-                    "URI":"/users/:userId/verify-registration",
+                    "URI":"/users/:id/verify-registration",
                     "RequiresOAuth":"Y",
                     "parameters":[
                         {
@@ -84,7 +84,7 @@
                     "MethodName":"requestPasswordReset",
                     "Synopsis":"Request a password reset for a user. Only allowed for the currently logged in user.",
                     "HTTPMethod":"POST",
-                    "URI":"/users/:userId/reset-password",
+                    "URI":"/users/:id/reset-password",
                     "RequiresOAuth":"Y",
                     "parameters":[]
                 },
@@ -92,7 +92,7 @@
                     "MethodName":"resetPassword",
                     "Synopsis":"Reset the user's password.",
                     "HTTPMethod":"PUT",
-                    "URI":"/users/:userId/reset-password",
+                    "URI":"/users/:id/reset-password",
                     "RequiresOAuth":"Y",
                     "parameters":[
                         {
@@ -101,6 +101,13 @@
                             "Default":"",
                             "Type":"string",
                             "Description":"The user's password reset token, sent via email when password reset was requested."
+                        },
+                        {
+                            "Name":"password",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"The new password."
                         }
                     ]
                 }
