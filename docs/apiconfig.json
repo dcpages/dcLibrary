@@ -9,7 +9,7 @@
         "oauth2": {
             "type": "authorization-code",
             "baseSite": "http://api.project.vm/",
-            "authorizeURL": "oauth/authorize",
+            "authorizeURL": "oauth/authorize?redirect_uri=http%3A%2F%2Fapi.project.vm%3A3000%2Foauth2Success%2Fproject&response_type=code&client_id=123&type=web_server",
             "accessTokenURL": "oauth/token",
             "authorizationHeader":"Y"
         },
