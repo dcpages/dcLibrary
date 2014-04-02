@@ -1196,12 +1196,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/synapsestudios/synapse-base.git",
-                "reference": "01467dfaa9ed1c9751f01ef5a04f4d7a3bc836fa"
+                "reference": "fe2b33f044e1e230ea79ec6e1f48ef922be11075"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/01467dfaa9ed1c9751f01ef5a04f4d7a3bc836fa",
-                "reference": "01467dfaa9ed1c9751f01ef5a04f4d7a3bc836fa",
+                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/fe2b33f044e1e230ea79ec6e1f48ef922be11075",
+                "reference": "fe2b33f044e1e230ea79ec6e1f48ef922be11075",
                 "shasum": ""
             },
             "require": {
@@ -1238,7 +1238,7 @@
                 "source": "https://github.com/synapsestudios/synapse-base/tree/master",
                 "issues": "https://github.com/synapsestudios/synapse-base/issues"
             },
-            "time": "2014-04-02 17:20:15"
+            "time": "2014-04-02 17:41:18"
         },
         {
             "name": "zendframework/zend-db",
