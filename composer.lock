@@ -34,9 +34,9 @@
             ],
             "authors": [
                 {
-                    "name": "العاب",
+                    "name": "Brent Shaffer",
                     "email": "bshafs@gmail.com",
-                    "homepage": "http://astaza.com"
+                    "homepage": "http://brentertainment.com"
                 }
             ],
             "description": "A bridge to HttpFoundation for oauth2-server-php",
@@ -321,16 +321,16 @@
         },
         {
             "name": "lusitanian/oauth",
-            "version": "v0.2.5",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Lusitanian/PHPoAuthLib.git",
-                "reference": "27e375e13e1badcd6dca7fb47b154b3c48fdec0c"
+                "reference": "f981b349c03f7e233b7058a9d30903809898659c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Lusitanian/PHPoAuthLib/zipball/27e375e13e1badcd6dca7fb47b154b3c48fdec0c",
-                "reference": "27e375e13e1badcd6dca7fb47b154b3c48fdec0c",
+                "url": "https://api.github.com/repos/Lusitanian/PHPoAuthLib/zipball/f981b349c03f7e233b7058a9d30903809898659c",
+                "reference": "f981b349c03f7e233b7058a9d30903809898659c",
                 "shasum": ""
             },
             "require": {
@@ -342,6 +342,7 @@
                 "symfony/http-foundation": "~2.1"
             },
             "suggest": {
+                "ext-openssl": "Allows for usage of secure connections with the stream-based HTTP client.",
                 "predis/predis": "Allows using the Redis storage backend.",
                 "symfony/http-foundation": "Allows using the Symfony Session storage backend."
             },
@@ -380,7 +381,7 @@
                 "oauth",
                 "security"
             ],
-            "time": "2013-12-25 20:05:42"
+            "time": "2014-03-30 13:50:10"
         },
         {
             "name": "mandrill/mandrill",
@@ -1195,12 +1196,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/synapsestudios/synapse-base.git",
-                "reference": "a255412cd305be0b367fe6bb7d1e6aad71486e33"
+                "reference": "01467dfaa9ed1c9751f01ef5a04f4d7a3bc836fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/a255412cd305be0b367fe6bb7d1e6aad71486e33",
-                "reference": "a255412cd305be0b367fe6bb7d1e6aad71486e33",
+                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/01467dfaa9ed1c9751f01ef5a04f4d7a3bc836fa",
+                "reference": "01467dfaa9ed1c9751f01ef5a04f4d7a3bc836fa",
                 "shasum": ""
             },
             "require": {
@@ -1237,7 +1238,7 @@
                 "source": "https://github.com/synapsestudios/synapse-base/tree/master",
                 "issues": "https://github.com/synapsestudios/synapse-base/issues"
             },
-            "time": "2014-03-28 18:21:51"
+            "time": "2014-04-02 17:20:15"
         },
         {
             "name": "zendframework/zend-db",
@@ -1915,12 +1916,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "47644150b92eb88caf53bb195202f8cc925b8a16"
+                "reference": "623905ce571d64a8cb873826d47b81321cd55011"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/47644150b92eb88caf53bb195202f8cc925b8a16",
-                "reference": "47644150b92eb88caf53bb195202f8cc925b8a16",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/623905ce571d64a8cb873826d47b81321cd55011",
+                "reference": "623905ce571d64a8cb873826d47b81321cd55011",
                 "shasum": ""
             },
             "require": {
@@ -1982,7 +1983,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2014-03-24 02:18:54"
+            "time": "2014-03-30 21:41:14"
         },
         {
             "name": "symfony/yaml",
