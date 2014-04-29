@@ -16,16 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Dumping data for table `app_versions`
---
-
-LOCK TABLES `app_versions` WRITE;
-/*!40000 ALTER TABLE `app_versions` DISABLE KEYS */;
-INSERT INTO `app_versions` VALUES ('0.0.0','1395695949');
-/*!40000 ALTER TABLE `app_versions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `app_migrations`
 --
 
