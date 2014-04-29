@@ -29,20 +29,6 @@ CREATE TABLE `app_migrations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `app_versions`
---
-
-DROP TABLE IF EXISTS `app_versions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `app_versions` (
-  `version` varchar(50) NOT NULL,
-  `timestamp` varchar(14) NOT NULL,
-  KEY `timestamp` (`timestamp`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `emails`
 --
 
