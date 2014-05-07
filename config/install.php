@@ -11,5 +11,6 @@ return [
     'dataTables' => [
         'app_migrations',
         'user_roles',
+        'user_token_types',
     ],
 ];
