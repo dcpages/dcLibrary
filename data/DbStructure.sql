@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.35, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.37, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: database_vm
 -- ------------------------------------------------------
--- Server version	5.5.35-0ubuntu0.12.04.2-log
+-- Server version	5.5.37-0ubuntu0.12.04.1-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -216,6 +216,21 @@ CREATE TABLE `user_social_logins` (
   UNIQUE KEY `uk_social_logins_provider_provider_user_id` (`provider`,`provider_user_id`),
   KEY `k_social_logins_user_id_provider` (`user_id`,`provider`),
   CONSTRAINT `user_social_logins_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user_token_types`
+--
+
+DROP TABLE IF EXISTS `user_token_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_token_types` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(40) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `k_user_token_types_key` (`key`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -230,13 +245,16 @@ CREATE TABLE `user_tokens` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
   `token` varchar(40) NOT NULL,
-  `type` varchar(20) NOT NULL,
   `created` int(10) NOT NULL,
   `expires` int(10) NOT NULL,
+  `token_type_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_user_tokens_user_id_type` (`user_id`,`type`),
+  KEY `fk_user_tokens_user_id_type` (`user_id`),
   KEY `fk_user_tokens_expires` (`expires`),
-  CONSTRAINT `fk_user_tokens_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  KEY `fk_user_tokens_user_token_type_id` (`token_type_id`),
+  KEY `k_user_tokens_user_id_token_type_id` (`user_id`,`token_type_id`),
+  CONSTRAINT `fk_user_tokens_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_user_tokens_user_token_type_id` FOREIGN KEY (`token_type_id`) REFERENCES `user_token_types` (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -270,4 +288,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-03-28 22:39:03
+-- Dump completed on 2014-05-07 23:29:40
