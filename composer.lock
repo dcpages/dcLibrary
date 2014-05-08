@@ -1196,12 +1196,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/synapsestudios/synapse-base.git",
-                "reference": "fe2b33f044e1e230ea79ec6e1f48ef922be11075"
+                "reference": "8a2d0690d8d5ddcc40ef6e68b927366793498dc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/fe2b33f044e1e230ea79ec6e1f48ef922be11075",
-                "reference": "fe2b33f044e1e230ea79ec6e1f48ef922be11075",
+                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/8a2d0690d8d5ddcc40ef6e68b927366793498dc8",
+                "reference": "8a2d0690d8d5ddcc40ef6e68b927366793498dc8",
                 "shasum": ""
             },
             "require": {

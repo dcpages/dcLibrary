@@ -82,17 +82,25 @@
                 },
                 {
                     "MethodName":"requestPasswordReset",
-                    "Synopsis":"Request a password reset for a user. Only allowed for the currently logged in user.",
+                    "Synopsis":"Request a password reset for a user",
                     "HTTPMethod":"POST",
-                    "URI":"/users/:id/reset-password",
+                    "URI":"/user/reset-password",
                     "RequiresOAuth":"Y",
-                    "parameters":[]
+                    "parameters":[
+                        {
+                            "Name":"email",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"User's email address"
+                        }
+                    ]
                 },
                 {
                     "MethodName":"resetPassword",
                     "Synopsis":"Reset the user's password.",
                     "HTTPMethod":"PUT",
-                    "URI":"/users/:id/reset-password",
+                    "URI":"/user/reset-password",
                     "RequiresOAuth":"Y",
                     "parameters":[
                         {

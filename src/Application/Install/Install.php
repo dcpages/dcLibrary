@@ -1,11 +1,11 @@
 <?php
 
-namespace Application\Upgrades;
+namespace Application\Install;
 
-use Synapse\Upgrade\AbstractUpgrade;
+use Synapse\Install\AbstractInstall;
 use Zend\Db\Adapter\Adapter as DbAdapter;
 
-class Install extends AbstractUpgrade
+class Install extends AbstractInstall
 {
     public function execute(DbAdapter $db)
     {
