@@ -36,7 +36,7 @@
                 },
                 {
                     "MethodName":"getUserById",
-                    "Synopsis":"Get info on a specific user. (admin only)",
+                    "Synopsis":"Get info on a specific user. (Admin only)",
                     "HTTPMethod":"GET",
                     "URI":"/users/:id",
                     "RequiresOAuth":"Y",
@@ -46,7 +46,7 @@
                             "Required":"Y",
                             "Default":"",
                             "Type":"string",
-                            "Description":"User id"
+                            "Description":"User ID"
                         }
                     ]
                 },
