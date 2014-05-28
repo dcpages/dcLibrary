@@ -35,6 +35,22 @@
                     "parameters":[]
                 },
                 {
+                    "MethodName":"getUserById",
+                    "Synopsis":"Get info on a specific user. (admin only)",
+                    "HTTPMethod":"GET",
+                    "URI":"/users/:id",
+                    "RequiresOAuth":"Y",
+                    "parameters":[
+                         {
+                            "Name":"id",
+                            "Required":"Y",
+                            "Default":"",
+                            "Type":"string",
+                            "Description":"User id"
+                        }
+                    ]
+                },
+                {
                     "MethodName":"editUser",
                     "Synopsis":"Edit a user.",
                     "HTTPMethod":"PUT",
