@@ -9,6 +9,7 @@
  */
 defined('WEBDIR') or define('WEBDIR', realpath(__DIR__));
 defined('APPDIR') or define('APPDIR', realpath(WEBDIR.'/..'));
+defined('DATADIR') or define('DATADIR', APPDIR.'/data');
 defined('TMPDIR') or define('TMPDIR', '/tmp');
 
 require APPDIR.'/bootstrap.php';
