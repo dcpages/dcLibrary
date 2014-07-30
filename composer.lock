@@ -1,7 +1,8 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
     "hash": "f27019de3a4b587494eb5b3e8f1c2838",
     "packages": [
@@ -1052,66 +1053,6 @@
             "time": "2014-05-22 21:04:05"
         },
         {
-            "name": "symfony/property-access",
-            "version": "v2.4.5",
-            "target-dir": "Symfony/Component/PropertyAccess",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/PropertyAccess.git",
-                "reference": "3679b3bd147d8f06b9cdef2dd3f9c8b9ddcbdc33"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/PropertyAccess/zipball/3679b3bd147d8f06b9cdef2dd3f9c8b9ddcbdc33",
-                "reference": "3679b3bd147d8f06b9cdef2dd3f9c8b9ddcbdc33",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\PropertyAccess\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony PropertyAccess Component",
-            "homepage": "http://symfony.com",
-            "keywords": [
-                "access",
-                "array",
-                "extraction",
-                "index",
-                "injection",
-                "object",
-                "property",
-                "property path",
-                "reflection"
-            ],
-            "time": "2014-05-21 13:15:17"
-        },
-        {
             "name": "symfony/routing",
             "version": "v2.4.5",
             "target-dir": "Symfony/Component/Routing",
@@ -1257,17 +1198,17 @@
         },
         {
             "name": "symfony/translation",
-            "version": "v2.4.5",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Translation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Translation.git",
-                "reference": "9a3941444487ea57acd38f5c61bee1e0c3f69293"
+                "reference": "059d57c361043f5a06eb348b9b7554213f9ab8d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Translation/zipball/9a3941444487ea57acd38f5c61bee1e0c3f69293",
-                "reference": "9a3941444487ea57acd38f5c61bee1e0c3f69293",
+                "url": "https://api.github.com/repos/symfony/Translation/zipball/059d57c361043f5a06eb348b9b7554213f9ab8d1",
+                "reference": "059d57c361043f5a06eb348b9b7554213f9ab8d1",
                 "shasum": ""
             },
             "require": {
@@ -1284,7 +1225,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -1310,48 +1251,53 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-05-22 13:46:01"
+            "time": "2014-07-15 14:22:44"
         },
         {
             "name": "symfony/validator",
-            "version": "v2.4.4",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/Validator",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Validator.git",
-                "reference": "5bbcdcc520bc7fb3826abb44020880f14c9c03a7"
+                "reference": "8205456fe5cae985094a2e2a7b4352d1cef06a25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Validator/zipball/5bbcdcc520bc7fb3826abb44020880f14c9c03a7",
-                "reference": "5bbcdcc520bc7fb3826abb44020880f14c9c03a7",
+                "url": "https://api.github.com/repos/symfony/Validator/zipball/8205456fe5cae985094a2e2a7b4352d1cef06a25",
+                "reference": "8205456fe5cae985094a2e2a7b4352d1cef06a25",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
-                "symfony/property-access": "~2.2",
                 "symfony/translation": "~2.0"
             },
             "require-dev": {
                 "doctrine/annotations": "~1.0",
                 "doctrine/cache": "~1.0",
+                "egulias/email-validator": "~1.0",
                 "symfony/config": "~2.2",
+                "symfony/expression-language": "~2.4",
                 "symfony/http-foundation": "~2.1",
                 "symfony/intl": "~2.3",
+                "symfony/property-access": "~2.2",
                 "symfony/yaml": "~2.0"
             },
             "suggest": {
                 "doctrine/annotations": "For using the annotation mapping. You will also need doctrine/cache.",
-                "doctrine/cache": "For using the default cached annotation reader",
+                "doctrine/cache": "For using the default cached annotation reader and metadata cache.",
+                "egulias/email-validator": "Strict (RFC compliant) email validation",
                 "symfony/config": "",
+                "symfony/expression-language": "For using the 2.4 Expression validator",
                 "symfony/http-foundation": "",
                 "symfony/intl": "",
+                "symfony/property-access": "For using the 2.4 Validator API",
                 "symfony/yaml": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -1377,7 +1323,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "http://symfony.com",
-            "time": "2014-04-27 13:34:57"
+            "time": "2014-07-15 14:15:12"
         },
         {
             "name": "synapsestudios/synapse-base",
@@ -1385,12 +1331,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/synapsestudios/synapse-base.git",
-                "reference": "1a3d14e6571f03f18a59e68e92990e4093fcc92f"
+                "reference": "451806238ea8f306e3ea4631d1736a9e19c25bc2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/1a3d14e6571f03f18a59e68e92990e4093fcc92f",
-                "reference": "1a3d14e6571f03f18a59e68e92990e4093fcc92f",
+                "url": "https://api.github.com/repos/synapsestudios/synapse-base/zipball/451806238ea8f306e3ea4631d1736a9e19c25bc2",
+                "reference": "451806238ea8f306e3ea4631d1736a9e19c25bc2",
                 "shasum": ""
             },
             "require": {
@@ -1414,7 +1360,7 @@
                 "zendframework/zend-stdlib": "~2.2.5"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0",
+                "phpunit/phpunit": "~4.1",
                 "squizlabs/php_codesniffer": "dev-master"
             },
             "type": "library",
@@ -1428,7 +1374,7 @@
                 "source": "https://github.com/synapsestudios/synapse-base/tree/master",
                 "issues": "https://github.com/synapsestudios/synapse-base/issues"
             },
-            "time": "2014-05-20 23:22:02"
+            "time": "2014-07-29 22:51:29"
         },
         {
             "name": "zendframework/zend-db",
@@ -2171,12 +2117,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "f9ee30f5460e21811b72e6e07f1b8ceba704c6cf"
+                "reference": "623905ce571d64a8cb873826d47b81321cd55011"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/f9ee30f5460e21811b72e6e07f1b8ceba704c6cf",
-                "reference": "f9ee30f5460e21811b72e6e07f1b8ceba704c6cf",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/623905ce571d64a8cb873826d47b81321cd55011",
+                "reference": "623905ce571d64a8cb873826d47b81321cd55011",
                 "shasum": ""
             },
             "require": {
@@ -2238,7 +2184,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2014-05-22 01:56:27"
+            "time": "2014-03-30 21:41:14"
         },
         {
             "name": "symfony/yaml",
