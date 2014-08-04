@@ -197,7 +197,7 @@
                     "MethodName":"logout",
                     "Synopsis":"Log out of the application.",
                     "HTTPMethod":"POST",
-                    "URI":"/logout",
+                    "URI":"/oauth/logout",
                     "RequiresOAuth":"Y",
                     "parameters":[
                         {
