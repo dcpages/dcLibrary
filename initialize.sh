@@ -16,7 +16,7 @@ while [[ ! $repo_url =~ $ssh_pattern ]]; do
   if [[ $repo_url != "" ]]; then
     echo "Invalid Git SSH URL"
   fi
-  read -p "Enter project Git SSH URL: " repo_url
+  read -p "Enter Project Git SSH URL: " repo_url
 done
 
 cookbooks_repo_url=""
@@ -24,7 +24,7 @@ while [[ ! $cookbooks_repo_url =~ $ssh_pattern ]]; do
   if [[ $cookbooks_repo_url != "" ]]; then
     echo "Invalid Git SSH URL"
   fi
-  read -p "Enter cookbooks Git SSH URL: " cookbooks_repo_url
+  read -p "Enter Cookbooks Git SSH URL: " cookbooks_repo_url
 done
 
 # Get input for Vagrantfile
@@ -58,7 +58,7 @@ if [[ $confirm =~ ^[yY] ]]; then
   git init
 
   git remote add origin $repo_url
-  git checkout master
+  git checkout -b master
   # Add submodules from .gitmodules, if any
   if [ -e ".gitmodules" ] && [ -s ".gitmodules" ]; then
     git config -f .gitmodules --get-regexp '^submodule\..*\.path$' > tempfile
@@ -75,9 +75,9 @@ if [[ $confirm =~ ^[yY] ]]; then
   git submodule update --init --recursive
 
   # Update Vagrantfile
-  sed -i s/%QA_APP_NAME%/$qa_app_name/g Vagrantfile
-  sed -i s/%QA_HOST%/$qa_host/g Vagrantfile
-  sed -i s/%DEV_IP_BLOCK%/$dev_ip_block/g Vagrantfile
+  sed -i "" s/%QA_APP_NAME%/$qa_app_name/g Vagrantfile
+  sed -i "" s/%QA_HOST%/$qa_host/g Vagrantfile
+  sed -i "" s/%DEV_IP_BLOCK%/$dev_ip_block/g Vagrantfile
 
   rm initialize.sh
 else
