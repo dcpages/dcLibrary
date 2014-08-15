@@ -3,10 +3,10 @@ php:
   - 5.4
 git:
   submodules: false
-env:
-  global:
-    - SLACK_ORG=@todo PROJECT=@todo
-    - secure: @todo
+#env:
+#  global:
+#    - SLACK_ORG=@todo PROJECT=@todo
+#    - secure: @todo
 before_script:
   - composer install --prefer-source
   - mkdir -p shippable/codecoverage
@@ -16,5 +16,5 @@ script:
   - vendor/bin/phpcs --standard=PSR2 src/*
 notifications:
   email: false
-after_failure:
-  - python slack_notifier.py --project $PROJECT --org $SLACK_ORG --token $SLACK_TOKEN
+#after_failure:
+#  - python slack_notifier.py --project $PROJECT --org $SLACK_ORG --token $SLACK_TOKEN
