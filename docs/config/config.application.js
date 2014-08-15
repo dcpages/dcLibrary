@@ -14,7 +14,7 @@ module.exports = {
         'tokenParam'   : 'Bearer'
     },
     'resources' : [
-        require('./project/oauth'),
-        require('./project/users')
+        require('./application/oauth'),
+        require('./application/users')
     ]
 };
