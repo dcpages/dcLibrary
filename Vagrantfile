@@ -14,7 +14,7 @@ Vagrant.configure('2') do |config|
     # Give the base box a project-specific name, but the same box url. This will
     # allow us to easily create a prebuilt base box on the QA server, decreasing
     # the setup time for Chef recipes.
-    config.vm.box     = '%QA_APP_ENV%'
+    config.vm.box     = '%QA_APP_NAME%'
     config.vm.box_url = 'http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box'
 
     # QA environment uses DHCP on the host-only network adapter
@@ -31,7 +31,7 @@ Vagrant.configure('2') do |config|
       chef.cookbooks_path = './cookbooks'
       chef.add_role 'qa'
 
-      app_name = ENV['APP_NAME'] || '%QA_APP_ENV%'
+      app_name = ENV['APP_NAME'] || '%QA_APP_NAME%'
 
       chef.json = {
         'server' => {
