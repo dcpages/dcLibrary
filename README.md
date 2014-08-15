@@ -1,6 +1,6 @@
 # API Template
 
-[![Build Status](https://travis-ci.org/synapsestudios/api-template.svg?branch=master)](https://travis-ci.org/synapsestudios/api-template)
+[![Build Status](https://api.shippable.com/projects/53e54a66bec73bdc0222ec30/badge/master)](https://www.shippable.com/projects/53e54a66bec73bdc0222ec30)
 
 ### Initializing the Development Environment
 1. `git submodule update --init --recursive`
