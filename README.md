@@ -12,10 +12,6 @@
     - QA APP_ENV environment variable
     - QA Host host domain
     - Development static IP block (last number of IP Address)
-1. Set up Shippable:
-    - Change `shippable.yml` to include your slack org name, slack channel to report to.
-    - [Generate a secure value for the slack token](http://blog.shippable.com/devops-chat-a-simple-way-to-use-slack-notifications-with-shippable).
-    - Uncomment the `env` and `after_failure` sections in `shippable.yml`.
 1. Update README:
     - Get a new Build Status widget from Shippable
     - Remove this section
@@ -32,9 +28,13 @@
 1. Access Lively API Documentation at http://lively.project.vm.
 1. (Adjust `project.vm` to a domain name fitting to your application.)
 
-### Stuff to Keep In Mind
+### Other Stuff
 1. As you build out the API, document it in `config.project.json`. See the [Lively README](https://github.com/synapsestudios/lively) for more details.
 1. Personalize the templates in `templates/Email/` according to the needs of your project.
+1. Set up Shippable alerts to Slack:
+    - Change `shippable.yml` to include your slack org name, slack channel to report to.
+    - [Generate a secure value for the slack token](http://blog.shippable.com/devops-chat-a-simple-way-to-use-slack-notifications-with-shippable).
+    - Uncomment the `env` and `after_failure` sections in `shippable.yml`.
 
 ### Running Tests
 1. To run PHPCS, run `vendor/bin/phpcs --standard=PSR2 src/*` in the root directory.
