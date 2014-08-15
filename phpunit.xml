@@ -9,7 +9,7 @@
          verbose="true"
          bootstrap="tests/bootstrap.php">
     <testsuites>
-        <testsuite name="@todo">
+        <testsuite name="Application">
             <directory>tests/Test</directory>
         </testsuite>
     </testsuites>
