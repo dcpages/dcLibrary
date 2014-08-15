@@ -11,6 +11,8 @@
 
 ### Customizing the Template for a Project
 1. Set the static IP to be used for your project in `Vagrantfile`. Set an alias for this in your hosts file.
+1. Change the testsuite name in `phpunit.xml` and `phpunit.shippable.xml` to your project's name
+1. Update shippable.yaml to include your slack org name, slack channel to report to and [generate a secure value for the slack token](http://blog.shippable.com/devops-chat-a-simple-way-to-use-slack-notifications-with-shippable)
 1. Modify any applicable config files in `config/`.
 1. Modify the *I/O Docs* files in `docs/`.
  - Rename `project.json` to your project's name + `.json`. (Must be lowercase.)
