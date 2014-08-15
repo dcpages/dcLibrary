@@ -1,33 +1,41 @@
 # API Template
 
-[![Build Status](https://travis-ci.org/synapsestudios/api-template.svg?branch=master)](https://travis-ci.org/synapsestudios/api-template)
+[![Build Status](https://api.shippable.com/projects/53e54a66bec73bdc0222ec30/badge/master)](https://www.shippable.com/projects/53e54a66bec73bdc0222ec30)
+
+### Starting the Project
+1. Create a new repository for this project
+1. Create a cookbooks repository for this project (see the [cookbook-template README](https://github.com/synapsestudios/cookbook-template) for more details).
+1. Clone this repository `git clone git@github.com:synapsestudios/api-template.git <project-name>`.
+1. Run the initialization script `chmod +x initialize.sh; ./initialize.sh;` from the project directory. It will ask for:
+    - Repository SSH clone URL
+    - Cookbooks repository SSH clone URL
+    - QA APP_ENV environment variable
+    - QA Host host domain
+    - Development static IP block (last number of IP Address)
+1. Update README:
+    - Get a new Build Status widget from Shippable
+    - Remove this section
+1. Commit all files and push to master
 
 ### Initializing the Development Environment
-1. `git submodule update --init --recursive`
-1. `composer install`
-1. `vagrant up`
-1. To run PHPCS, run `vendor/bin/phpcs --standard=PSR2 src/*` in the root directory
-1. To run unit tests, run `vendor/bin/phpunit` in the root directory
+1. Run `composer install` once to install dependencies.
+1. Run `vagrant up` to provision the VM (see the [Vagrant Docs](http://docs.vagrantup.com/v2/) for more details).
 
-### Customizing the Template for a Project
-1. Set the static IP to be used for your project in `Vagrantfile`. Set an alias for this in your hosts file.
-1. Change the testsuite name in `phpunit.xml` and `phpunit.shippable.xml` to your project's name.
-1. Update `shippable.yml` to include your slack org name, slack channel to report to and [generate a secure value for the slack token](http://blog.shippable.com/devops-chat-a-simple-way-to-use-slack-notifications-with-shippable) and then uncomment the `env` and `after_failure` sections.
-1. Modify any applicable config files in `config/`.
-1. Modify the *I/O Docs* files in `docs/`.
- - Rename `project.json` to your project's name + `.json`. (Must be lowercase.)
- - Modify `apiconfig.json` so that the key of the JavaScript object is your project's name, exactly as used above.
- - Modify both URLs in `apiconfig.json` to be your project's API URL.
- - Edit `name` in `apiconfig.json` to your project's name.
- - As you build out the API, document it in `project.json`. See the [I/O Docs README](https://github.com/mashery/iodocs) for more details.
-1. Rename the `Application` namespace to a namespace more appropriate for your application.
- - Rename the `src/Application` folder.
- - Change the namespace in `Application/Routes.php`, `Application/Services.php`, and `Application/Upgrades/Install.php` to match the new namespace.
- - In `bootstrap.php` modify the namespace of `Application\Routes` and `Application\Services`.
+### Viewing the Project
+1. Get the project static IP address from the Vagrantfile.
+1. Create aliases for 'project.vm' and 'lively.project.vm' at that static IP in your computer's hosts file.
+1. Access the application at http://project.vm.
+1. Access Lively API Documentation at http://lively.project.vm.
+1. (Adjust `project.vm` to a domain name fitting to your application.)
+
+### Other Stuff
+1. As you build out the API, document it in `config.project.json`. See the [Lively README](https://github.com/synapsestudios/lively) for more details.
 1. Personalize the templates in `templates/Email/` according to the needs of your project.
+1. Set up Shippable alerts to Slack:
+    - Change `shippable.yml` to include your slack org name, slack channel to report to.
+    - [Generate a secure value for the slack token](http://blog.shippable.com/devops-chat-a-simple-way-to-use-slack-notifications-with-shippable).
+    - Uncomment the `env` and `after_failure` sections in `shippable.yml`.
 
-### Viewing I/O Docs API Documentation
-1. `vagrant ssh`
-1. `cd ~/iodocs`
-1. `npm start`
-1. Point browser to http://project.vm:3000 (Adjust domain to whatever points to the project.)
+### Running Tests
+1. To run PHPCS, run `vendor/bin/phpcs --standard=PSR2 src/*` in the root directory.
+1. To run unit tests, run `vendor/bin/phpunit` in the root directory.
