@@ -2,32 +2,30 @@
 
 [![Build Status](https://api.shippable.com/projects/53e54a66bec73bdc0222ec30/badge/master)](https://www.shippable.com/projects/53e54a66bec73bdc0222ec30)
 
-### Initializing the Development Environment
-1. `git submodule update --init --recursive`
-1. `composer install`
-1. `vagrant up`
-1. To run PHPCS, run `vendor/bin/phpcs --standard=PSR2 src/*` in the root directory
-1. To run unit tests, run `vendor/bin/phpunit` in the root directory
-
 ### Customizing the Template for a Project
-1. Set the static IP to be used for your project in `Vagrantfile`. Set an alias for this in your hosts file.
-1. Change the testsuite name in `phpunit.xml` and `phpunit.shippable.xml` to your project's name.
-1. Update `shippable.yml` to include your slack org name, slack channel to report to and [generate a secure value for the slack token](http://blog.shippable.com/devops-chat-a-simple-way-to-use-slack-notifications-with-shippable) and then uncomment the `env` and `after_failure` sections.
-1. Modify any applicable config files in `config/`.
-1. Modify the *I/O Docs* files in `docs/`.
- - Rename `project.json` to your project's name + `.json`. (Must be lowercase.)
- - Modify `apiconfig.json` so that the key of the JavaScript object is your project's name, exactly as used above.
- - Modify both URLs in `apiconfig.json` to be your project's API URL.
- - Edit `name` in `apiconfig.json` to your project's name.
- - As you build out the API, document it in `project.json`. See the [I/O Docs README](https://github.com/mashery/iodocs) for more details.
-1. Rename the `Application` namespace to a namespace more appropriate for your application.
- - Rename the `src/Application` folder.
- - Change the namespace in `Application/Routes.php`, `Application/Services.php`, and `Application/Upgrades/Install.php` to match the new namespace.
- - In `bootstrap.php` modify the namespace of `Application\Routes` and `Application\Services`.
+1. Update the Build Status widget in this README.
+1. Update all `@todo`'s in the repository
+- Change `shippable.yml` to include your slack org name, slack channel to report to and [generate a secure value for the slack token](http://blog.shippable.com/devops-chat-a-simple-way-to-use-slack-notifications-with-shippable) and then uncomment the `env` and `after_failure` sections.
+- Change the QA VM box name
+- Change the QA APP_ENV variable
+- Change the QA deploy domain
+- Change the static IP to one specific to this project and update in the Synapse wiki
+1. As you build out the API, document it in `config.project.json`. See the [Lively README](https://github.com/synapsestudios/lively) for more details.
 1. Personalize the templates in `templates/Email/` according to the needs of your project.
 
-### Viewing I/O Docs API Documentation
-1. `vagrant ssh`
-1. `cd ~/iodocs`
-1. `npm start`
-1. Point browser to http://project.vm:3000 (Adjust domain to whatever points to the project.)
+### Initializing the Development Environment
+1. Create a cookbooks repository for this project and add as a submodule called `cookbooks`. See the [cookbook-template README](https://github.com/synapsestudios/cookbook-template) for details.
+1. `composer install`
+1. `vagrant up`
+
+### Viewing the Project
+1. Create an alias for project.vm at the static IP from `Vagrantfile` in your computer's hosts file.
+1. Point browser to http://project.vm (adjust domain to whateer points to the project)
+
+### Viewing Lively API Documentation
+1. Create an alias for `lively.project.vm` at the static IP from `Vagrantfile` in your computer's hosts file.
+1. Point browser to http://lively.project.vm (Adjust domain to whatever points to the project.)
+
+### Running Tests
+1. To run PHPCS, run `vendor/bin/phpcs --standard=PSR2 src/*` in the root directory
+1. To run unit tests, run `vendor/bin/phpunit` in the root directory
