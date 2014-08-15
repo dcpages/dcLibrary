@@ -8,8 +8,17 @@
          verbose="true"
          bootstrap="tests/bootstrap.php">
     <testsuites>
-        <testsuite name="Synapse">
-            <directory>tests/SynapseTest</directory>
+        <testsuite name="@todo">
+            <directory>tests/Test</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <whitelist>
+            <directory>src/</directory>
+            <exclude>
+                <directory>src/Application/Migrations/</directory>
+                <directory>src/Application/Upgrades/</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>
