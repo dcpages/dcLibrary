@@ -29,7 +29,7 @@
 1. (Adjust `project.vm` to a domain name fitting to your application.)
 
 ### Other Stuff
-1. As you build out the API, document it in `config.project.json`. See the [Lively README](https://github.com/synapsestudios/lively) for more details.
+1. As you build out the API, document it in `config.application.json`. See the [Lively README](https://github.com/synapsestudios/lively) for more details.
 1. Personalize the templates in `templates/Email/` according to the needs of your project.
 1. Set up Shippable alerts to Slack:
     - Change `shippable.yml` to include your slack org name, slack channel to report to.
