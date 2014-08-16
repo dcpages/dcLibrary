@@ -9,8 +9,6 @@ git:
 #    - secure: @todo
 before_script:
   - composer install --prefer-source
-  - mkdir -p shippable/codecoverage
-  - mkdir -p shippable/testresults
 script:
   - vendor/bin/phpunit --configuration phpunit.shippable.xml
   - vendor/bin/phpcs --standard=PSR2 src/*
