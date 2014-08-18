@@ -39,5 +39,8 @@
 ### Running Tests
 1. To run PHPCS, run `vendor/bin/phpcs --standard=PSR2 src/*` in the root directory.
 1. To run unit tests, run `vendor/bin/phpunit` in the root directory.
-1. To initalize the repo in test mode, run `./initialize.sh -t`. This will create a repo with no remote.
-    - You will have to initialize a test cookbooks repo for `vagrant up` to work. See the [cookbook-template README](https://github.com/synapsestudios/cookbook-template) for more details.
+1. To initalize the repo in test mode
+    - Run `./initialize.sh -t`. This will create a repo with no remote.
+    - Run `git submodule add git@github.com:synapsestudios/cookbook-template.git cookbooks`.
+    - Navigate into the cookbooks directory.
+    - Initalize the cookbooks in test mode with `chmod +x initialize.sh; ./initialize.sh -t`.
