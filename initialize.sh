@@ -54,17 +54,20 @@ while [[ ! $dev_ip_block =~ $number_pattern ]] || (($dev_ip_block < 1)) || (($de
 done
 
 # Confirm settings are correct
+echo -e "\n"
 if [[ $test_init == false ]]; then
-  echo -e "\nProject Git URL\t\t$repo_url"
+  echo -e "Project Git URL\t\t$repo_url"
   echo -e "Cookbooks Git URL\t$cookbooks_repo_url"
   echo -e "QA App Name\t\t$qa_app_name"
   echo -e "QA Host\t\t\t$qa_host"
 fi
 
-echo -e "Dev IP Block\t\t$dev_ip_block\n"
+echo -e "Dev IP Block\t\t$dev_ip_block"
+echo -e "\n"
 
 read -p "Are these settings correct? " confirm
 if [[ $confirm =~ ^[yY] ]]; then
+
   # Intialize new git repo
   set -e
   rm -rf .git
