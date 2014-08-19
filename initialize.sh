@@ -75,18 +75,6 @@ if [[ $confirm =~ ^[yY] ]]; then
     git checkout -b master
   fi
 
-  # Add submodules from .gitmodules, if any
-  if [ -e ".gitmodules" ] && [ -s ".gitmodules" ]; then
-    git config -f .gitmodules --get-regexp '^submodule\..*\.path$' > tempfile
-    while read -u 3 path_key path
-    do
-        url_key=$(echo $path_key | sed 's/\.path/.url/')
-        url=$(git config -f .gitmodules --get "$url_key")
-        rm -rf $path
-        git submodule add $url $path
-    done 3<tempfile
-    rm tempfile
-  fi
 
   if [[ $test_init == false ]]; then
     git submodule add $cookbooks_repo_url cookbooks
