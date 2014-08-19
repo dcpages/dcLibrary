@@ -54,17 +54,20 @@ while [[ ! $dev_ip_block =~ $number_pattern ]] || (($dev_ip_block < 1)) || (($de
 done
 
 # Confirm settings are correct
+echo -e "\n"
 if [[ $test_init == false ]]; then
-  echo -e "\nProject Git URL\t\t$repo_url"
+  echo -e "Project Git URL\t\t$repo_url"
   echo -e "Cookbooks Git URL\t$cookbooks_repo_url"
   echo -e "QA App Name\t\t$qa_app_name"
   echo -e "QA Host\t\t\t$qa_host"
 fi
 
-echo -e "Dev IP Block\t\t$dev_ip_block\n"
+echo -e "Dev IP Block\t\t$dev_ip_block"
+echo -e "\n"
 
 read -p "Are these settings correct? " confirm
 if [[ $confirm =~ ^[yY] ]]; then
+
   # Intialize new git repo
   set -e
   rm -rf .git
@@ -73,28 +76,13 @@ if [[ $confirm =~ ^[yY] ]]; then
   if [[ $test_init == false ]]; then
     git remote add origin $repo_url
     git checkout -b master
+
+    echo "Upating cookbooks submodule"
+    git submodule add $cookbooks_repo_url cookbooks 2>&1 >/dev/null
+    git submodule update --init --recursive 2>&1 >/dev/null
   fi
 
-  # Add submodules from .gitmodules, if any
-  if [ -e ".gitmodules" ] && [ -s ".gitmodules" ]; then
-    git config -f .gitmodules --get-regexp '^submodule\..*\.path$' > tempfile
-    while read -u 3 path_key path
-    do
-        url_key=$(echo $path_key | sed 's/\.path/.url/')
-        url=$(git config -f .gitmodules --get "$url_key")
-        rm -rf $path
-        git submodule add $url $path
-    done 3<tempfile
-    rm tempfile
-  fi
-
-  if [[ $test_init == false ]]; then
-    git submodule add $cookbooks_repo_url cookbooks
-  fi
-
-  git submodule update --init --recursive
-
-  # Update Vagrantfile
+  echo "Upating Vagrantfile"
   if [[ $test_init == false ]]; then
     sed -i "" s/%QA_APP_NAME%/$qa_app_name/g Vagrantfile
     sed -i "" s/%QA_HOST%/$qa_host/g Vagrantfile
