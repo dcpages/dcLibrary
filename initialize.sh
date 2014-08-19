@@ -76,16 +76,13 @@ if [[ $confirm =~ ^[yY] ]]; then
   if [[ $test_init == false ]]; then
     git remote add origin $repo_url
     git checkout -b master
+
+    echo "Upating cookbooks submodule"
+    git submodule add $cookbooks_repo_url cookbooks 2>&1 >/dev/null
+    git submodule update --init --recursive 2>&1 >/dev/null
   fi
 
-
-  if [[ $test_init == false ]]; then
-    git submodule add $cookbooks_repo_url cookbooks
-  fi
-
-  git submodule update --init --recursive
-
-  # Update Vagrantfile
+  echo "Upating Vagrantfile"
   if [[ $test_init == false ]]; then
     sed -i "" s/%QA_APP_NAME%/$qa_app_name/g Vagrantfile
     sed -i "" s/%QA_HOST%/$qa_host/g Vagrantfile
