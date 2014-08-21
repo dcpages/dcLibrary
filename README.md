@@ -19,6 +19,7 @@
 
 ### Initializing the Development Environment
 1. Run `composer install` once to install dependencies.
+1. Run `git submodule update --init --recursive`
 1. Run `vagrant up` to provision the VM (see the [Vagrant Docs](http://docs.vagrantup.com/v2/) for more details).
 
 ### Viewing the Project
