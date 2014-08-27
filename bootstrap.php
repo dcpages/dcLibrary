@@ -37,11 +37,9 @@ $defaultServices = new Synapse\Application\Services;
 $defaultRoutes->define($app);
 $defaultServices->register($app);
 
-// Set the application-specific routes and services
-$appRoutes   = new Application\Routes;
+// Set the application-specific  services
 $appServices = new Application\Services;
 
-$appRoutes->define($app);
 $appServices->register($app);
 
 // Run the application
