@@ -1,0 +1,39 @@
+# Disable directory indexes
+Options All -Indexes
+
+<LimitExcept GET PUT POST DELETE HEAD OPTIONS>
+    Order deny,allow
+    Deny from all
+</LimitExcept>
+
+# Turn on URL rewriting
+RewriteEngine On
+
+# Installation directory
+RewriteBase /
+
+# Pass through the Authorization header
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Protect hidden files from being viewed
+RedirectMatch 404 ".*\/\..*"
+
+# Force http requests to https
+# RewriteCond %{ENV:KOHANA_ENV} (production|staging)
+# RewriteCond %{HTTP:X-Forwarded-Proto} =http
+# RewriteCond %{REQUEST_URI} !/ping$ [NC]
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# Block older IE versions
+# RewriteCond %{REQUEST_URI} !/browser-upgrade$ [NC]
+# RewriteCond %{REQUEST_FILENAME} !-f1
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteCond %{HTTP_USER_AGENT} "MSIE [6-8]" [NC]
+# RewriteRule ^(.*)$ /browser-upgrade [R=301,L]
+
+# Allow any files or directories that exist to be displayed directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewrite all other URLs to index.php/URL
+RewriteRule ^ index.php [QSA,L]

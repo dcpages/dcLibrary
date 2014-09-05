@@ -1,0 +1,24 @@
+<phpunit colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false"
+         syntaxCheck="false"
+         strict="true"
+         verbose="true"
+         bootstrap="tests/bootstrap.php">
+    <testsuites>
+        <testsuite name="Application">
+            <directory>tests/Test</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>src/</directory>
+            <exclude>
+                <directory>src/Application/Migrations/</directory>
+                <directory>src/Application/Upgrades/</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

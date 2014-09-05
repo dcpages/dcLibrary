@@ -1,0 +1,70 @@
+<?php
+
+namespace Application\Migrations;
+
+use Synapse\Migration\AbstractMigration;
+use Zend\Db\Adapter\Adapter as DbAdapter;
+
+/**
+ * {{description}}
+ */
+class {{classname}} extends AbstractMigration
+{
+    /**
+     * Description of this migration, to record in the database when it is run
+     *
+     * @var string
+     */
+    protected $description = '{{description}}';
+
+    /**
+     * Timestamp of when this migration was created
+     *
+     * @var string
+     */
+    protected $timestamp = '{{timestamp}}';
+
+    /**
+     * Run database queries to apply this migration
+     *
+     * @param  DbAdapter $db
+     */
+    public function execute(DbAdapter $db)
+    {
+        // Simple query example:
+        // $db->query(
+        //     'CREATE TABLE ... ',
+        //     DbAdapter::QUERY_MODE_EXECUTE
+        // );
+
+        /**
+         * Example for rolling back transactions on failure.
+         * (Useful when migration involves multiple statements.)
+         *
+         * Note: This may not work for most migrations because
+         * "Some databases, including MySQL, automatically issue an implicit
+         * COMMIT when a database definition language (DDL) statement such as
+         * DROP TABLE or CREATE TABLE is issued within a transaction."
+         *
+         * http://www.php.net/manual/en/pdo.begintransaction.php
+         */
+        // $connection = $db->getDriver()->getConnection();
+
+        // $connection->beginTransaction();
+
+        // $db->createStatement(
+        //     'INSERT INTO `table` (...) VALUES (...)'
+        // )->execute();
+
+        // $db->createStatement(
+        //     'UPDATE `table` SET `column` = "value" WHERE ... '
+        // )->execute();
+
+        // try {
+        //     $connection->commit();
+        // } catch (\Exception $e) {
+        //     $connection->rollBack();
+        //     throw $e;
+        // }
+    }
+}
