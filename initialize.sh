@@ -1,0 +1,96 @@
+#!/bin/bash
+host_pattern=^.*\..*$
+number_pattern=^[0-9]+$
+protocol_pattern=\/\/
+ssh_pattern=^.*@.*\..*:.*$
+
+# Check for git
+git --version > /dev/null 2>&1
+GIT_INSTALLED=$?
+
+[[ $GIT_INSTALLED -ne 0 ]] && { echo "Install git before executing this script."; exit 0; }
+
+test_init=false
+while getopts ":t" opt; do
+  case $opt in
+    t) test_init=true;;
+    \?) echo "Invalid option: -$OPTARG" >&2; exit 1;;
+  esac
+done
+
+# Get input for Git
+if [[ $test_init == false ]]; then
+  repo_url=""
+  while [[ ! $repo_url =~ $ssh_pattern ]]; do
+    if [[ $repo_url != "" ]]; then
+      echo "Invalid Git SSH URL"
+    fi
+    read -p "Enter Project Git SSH URL: " repo_url
+  done
+
+  cookbooks_repo_url=""
+  while [[ ! $cookbooks_repo_url =~ $ssh_pattern ]]; do
+    if [[ $cookbooks_repo_url != "" ]]; then
+      echo "Invalid Git SSH URL"
+    fi
+    read -p "Enter Cookbooks Git SSH URL: " cookbooks_repo_url
+  done
+
+  # Get input for Vagrantfile
+  qa_app_name=""
+  while [[ $qa_app_name == "" ]]; do
+    read -p "Enter QA App Name [project-name-qa]: " qa_app_name
+  done
+
+  qa_host=""
+  while [[ ! $qa_host =~ $host_pattern ]] || [[ $qa_host =~ $protocol_pattern ]]; do
+    read -p "Enter QA Host [domain only]: " qa_host
+  done
+fi
+
+dev_ip_block=""
+while [[ ! $dev_ip_block =~ $number_pattern ]] || (($dev_ip_block < 1)) || (($dev_ip_block > 254)); do
+  read -p "Enter Dev IP Block [1-254]: " dev_ip_block
+done
+
+# Confirm settings are correct
+echo -e "\n"
+if [[ $test_init == false ]]; then
+  echo -e "Project Git URL\t\t$repo_url"
+  echo -e "Cookbooks Git URL\t$cookbooks_repo_url"
+  echo -e "QA App Name\t\t$qa_app_name"
+  echo -e "QA Host\t\t\t$qa_host"
+fi
+
+echo -e "Dev IP Block\t\t$dev_ip_block"
+echo -e "\n"
+
+read -p "Are these settings correct? " confirm
+if [[ $confirm =~ ^[yY] ]]; then
+
+  # Intialize new git repo
+  set -e
+  rm -rf .git
+  git init
+
+  if [[ $test_init == false ]]; then
+    git remote add origin $repo_url
+    git checkout -b master
+
+    echo "Upating cookbooks submodule"
+    git submodule add $cookbooks_repo_url cookbooks 2>&1 >/dev/null
+    git submodule update --init --recursive 2>&1 >/dev/null
+  fi
+
+  echo "Upating Vagrantfile"
+  if [[ $test_init == false ]]; then
+    sed -i "" s/%QA_APP_NAME%/$qa_app_name/g Vagrantfile
+    sed -i "" s/%QA_HOST%/$qa_host/g Vagrantfile
+  fi
+
+  sed -i "" s/%DEV_IP_BLOCK%/$dev_ip_block/g Vagrantfile
+
+  rm initialize.sh
+else
+  echo "Initialization cancelled"
+fi
